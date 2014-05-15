@@ -1,6 +1,11 @@
 (function(parent){
+  Pt = parent.Point;
   function create(minimal, maximal){
     return Object.freeze({minimal: minimal, maximal: maximal});
+  }
+
+  function midpoint(view){
+    return Pt.scalar(0.5)(Pt.add(view.minimal)(view.maximal));
   }
 
   function translate(delta){
@@ -11,6 +16,7 @@
   }
 
   var operands = {
+    midpoint: midpoint,
     translate: translate
   };
 

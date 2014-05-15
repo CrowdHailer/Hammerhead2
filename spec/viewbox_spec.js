@@ -20,6 +20,17 @@ describe('ViewBox', function(){
     });
   });
 
+  describe('geometry', function(){
+    beforeEach(function(){
+      viewBox = VB(p1, p2);
+    });
+    it('should be return a midpoint', function(){
+      var midpoint = VB.midpoint(viewBox);
+      expect(midpoint.x).toEqual(4);
+      expect(midpoint.y).toEqual(4);
+    });
+  });
+
   describe('transformations "of content"', function(){
     it('should translate', function(){
       viewBox = VB(p1, p2);
