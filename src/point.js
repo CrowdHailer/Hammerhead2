@@ -39,8 +39,8 @@
 
   function matrixTransform(m){
     return function(q){
-      var x = m.a * q.x + m.c * q.y;
-      var y = m.b * q.x + m.d * q.y;
+      var x = m.a * q.x + m.c * q.y + m.e;
+      var y = m.b * q.x + m.d * q.y + m.f;
       return create(x, y);
     };
   }
