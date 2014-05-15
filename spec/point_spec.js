@@ -49,4 +49,15 @@ describe('Point', function(){
       expect(Object.isFrozen(p3)).toBe(true);
     });
   });
+  describe('comparison operations "curries"', function(){
+    var p1, p2, p3;
+    it('should calculate BBox min', function(){
+      p1 = Pt(2, 3);
+      p2 = Pt(4, 5);
+      p3 = Pt.min(p1)(p2);
+      expect(p3.x).toEqual(2);
+      expect(p3.y).toEqual(3);
+      expect(Object.isFrozen(p3)).toBe(true);
+    });
+  });
 });
