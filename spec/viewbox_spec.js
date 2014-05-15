@@ -24,11 +24,11 @@ describe('ViewBox', function(){
     it('should translate', function(){
       viewBox = VB(p1, p2);
       newViewBox = VB.translate(Pt(1, 1))(viewBox);
-      console.log(newViewBox);
-      expect(newViewBox.minimal.x).toEqual(1);
-      expect(newViewBox.minimal.y).toEqual(2);
-      expect(newViewBox.maximal.x).toEqual(9);
-      expect(newViewBox.maximal.y).toEqual(8);
+      expect(newViewBox.minimal.x).toEqual(-1);
+      expect(newViewBox.minimal.y).toEqual(0);
+      expect(newViewBox.maximal.x).toEqual(7);
+      expect(newViewBox.maximal.y).toEqual(6);
+      expect(Object.isFrozen(newViewBox)).toBe(true);
     });
   });
 });

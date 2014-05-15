@@ -5,8 +5,8 @@
 
   function translate(delta){
     return function(view){
-      translation = parent.Point.add(delta);
-      return _.objMap(view, translation);
+      translation = parent.Point.negate(delta);
+      return Object.freeze(_.objMap(view, translation));
     };
   }
 
