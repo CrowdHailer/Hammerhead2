@@ -1,6 +1,6 @@
 (function(parent){
   function create(x, y){
-    return Object.freeze({x: x|0, y: y|0});
+    return Object.freeze({x: x || 0, y: y || 0});
   }
 
   function add(p){
@@ -12,6 +12,13 @@
   function subtract(p){
     return function(q){
       return create(p.x - q.x, p.y - q.y);
+    };
+  }
+
+  function negate(p){
+    return function(q){
+      q = q || create();
+      return create(q.x - p.x, q.y - p.y);
     };
   }
 
@@ -48,6 +55,7 @@
   var operands ={
     add: add,
     subtract: subtract,
+    negate: negate,
     scalar: scalar,
     min: min,
     max: max,

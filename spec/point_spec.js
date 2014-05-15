@@ -48,6 +48,20 @@ describe('Point', function(){
       expect(p3.y).toEqual(9);
       expect(Object.isFrozen(p3)).toBe(true);
     });
+
+    it('should be able to multiply decimal scalar', function(){
+      p3 = Pt.scalar(0.5)(p1);
+      expect(p3.x).toEqual(1);
+      expect(p3.y).toEqual(1.5);
+      expect(Object.isFrozen(p3)).toBe(true);
+    });
+
+    it('should be able to negate a point', function(){
+      p3 = Pt.negate(p1)();
+      expect(p3.x).toEqual(-2);
+      expect(p3.y).toEqual(-3);
+      expect(Object.isFrozen(p3)).toBe(true);
+    });
   });
   describe('comparison operations "curried"', function(){
     var p1, p2, p3;
