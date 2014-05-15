@@ -33,5 +33,11 @@ describe('Point', function(){
       expect(p3.y).toEqual(8);
       expect(Object.isFrozen(p3)).toBe(true);
     });
+    it('should be able to subtract points', function(){
+      p3 = Pt.subtract(p1)(p2);
+      expect(p3.x).toEqual(-2);
+      expect(p3.y).toEqual(-2);
+      expect(Object.isFrozen(p3)).toBe(true);
+    });
   });
 });
