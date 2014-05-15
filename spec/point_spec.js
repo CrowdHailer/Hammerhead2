@@ -21,4 +21,17 @@ describe('Point', function(){
       expect(pt.y).toEqual(0);
     });
   });
+  describe('geometric operations "curried"', function(){
+    var p1, p2, p3;
+    beforeEach(function(){
+      p1 = Pt(2, 3);
+      p2 = Pt(4, 5);
+    });
+    it('should be able to add points', function(){
+      p3 = Pt.add(p1)(p2);
+      expect(p3.x).toEqual(6);
+      expect(p3.y).toEqual(8);
+
+    });
+  });
 });
