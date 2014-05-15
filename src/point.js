@@ -29,11 +29,20 @@
     };
   }
 
+  function max(p){
+    return function(q){
+      var x = (p.x > q.x)? p.x : q.x;
+      var y = (p.y > q.y)? p.y : q.y;
+      return create(x, y);
+    };
+  }
+
   var operands ={
     add: add,
     subtract: subtract,
     scalar: scalar,
-    min: min
+    min: min,
+    max: max
   };
 
   parent.Point = _.extend(create, operands);

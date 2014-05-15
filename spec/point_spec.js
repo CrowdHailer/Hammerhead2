@@ -52,11 +52,20 @@ describe('Point', function(){
   describe('comparison operations "curries"', function(){
     var p1, p2, p3;
     it('should calculate BBox min', function(){
-      p1 = Pt(2, 3);
-      p2 = Pt(4, 5);
+      p1 = Pt(4, 3);
+      p2 = Pt(2, 5);
       p3 = Pt.min(p1)(p2);
       expect(p3.x).toEqual(2);
       expect(p3.y).toEqual(3);
+      expect(Object.isFrozen(p3)).toBe(true);
+    });
+
+    it('should calculate BBox max', function(){
+      p1 = Pt(4, 3);
+      p2 = Pt(2, 5);
+      p3 = Pt.max(p1)(p2);
+      expect(p3.x).toEqual(4);
+      expect(p3.y).toEqual(5);
       expect(Object.isFrozen(p3)).toBe(true);
     });
   });
