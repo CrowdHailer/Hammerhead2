@@ -1,4 +1,5 @@
 describe('agile SVG', function(){
+  var VB = Hammerhead.ViewBox;
   var element, agile, delta, center;
   beforeEach(function(){
     element = {
@@ -18,25 +19,19 @@ describe('agile SVG', function(){
 
   describe('itialisation', function(){
     it('should have a current position', function(){
-      var current = agile.getCurrent();
-      expect(current.minimal.x).toEqual(0);
-      expect(current.maximal.y).toEqual(7);
+      expect(VB.attrString(agile.getCurrent())).toEqual('0 1 8 6');
     });
   });
 
   describe('manipulations in SVG units', function(){
     it('should translate in SVG units', function(){
       agile.translate(delta).fix();
-      var current = agile.getCurrent();
-      expect(current.minimal.x).toEqual(-1);
-      expect(current.maximal.y).toEqual(6);
+      expect(VB.attrString(agile.getCurrent())).toEqual('-1 0 8 6');
     });
 
     it('should not affect current view without a fix', function(){
       agile.translate(delta);
-      var current = agile.getCurrent();
-      expect(current.minimal.x).not.toEqual(-1);
-      expect(current.maximal.y).not.toEqual(6);
+      expect(VB.attrString(agile.getCurrent())).toEqual('0 1 8 6');
     });
   });
 });
