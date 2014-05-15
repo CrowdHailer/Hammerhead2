@@ -1,5 +1,6 @@
 (function(parent){
   var VB = parent.ViewBox;
+  var Pt = parent.Point;
   prototype = {
     translate: function(delta){
       var newViewBox = VB.translate(delta)(this.getCurrent());
@@ -10,6 +11,11 @@
       var newViewBox = VB.zoom(magnification)(center)(this.getCurrent());
       this.setTemporary(newViewBox);
       return this;
+    },
+    drag: function(screenDelta){
+      var matrix = _.extend(this.getScreenCTM().inverse(), {e: 0, f: 0});
+      var delta = Pt.matrixTransform(matrix)(screenDelta);
+      return this.translate(delta);
     }
   };
   function create(element, options){
@@ -20,7 +26,8 @@
     _.extend(instance, {
       getCurrent: function(){ return current; },
       setTemporary: function(value){ temporary = value; },
-      fix: function(){ current = temporary; }
+      fix: function(){ current = temporary; },
+      getScreenCTM: function(){ return element.getScreenCTM(); }
     });
     return instance;
   }

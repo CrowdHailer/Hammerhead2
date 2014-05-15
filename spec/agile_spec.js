@@ -39,4 +39,12 @@ describe('agile SVG', function(){
       expect(VB.attrString(agile.getCurrent())).toEqual('0 1 4 3');
     });
   });
+
+  describe('manipulations in screen units', function(){
+    it('should drag in screen units', function(){
+      agile.drag(delta).fix();
+      expect(VB.attrString(agile.getCurrent())).toEqual('-2 -1 8 6');
+    });
+  });
+  // displace distort 
 });
