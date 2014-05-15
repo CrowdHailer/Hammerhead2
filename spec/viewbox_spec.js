@@ -30,6 +30,11 @@ describe('ViewBox', function(){
     beforeEach(function(){
       viewBox = VB(p1, p2);
     });
+
+    it('should return an attribute string', function(){
+      expect(VB.attrString(viewBox)).toEqual('0 1 8 6');
+    });
+    
     it('should be return a midpoint', function(){
       var midpoint = VB.midpoint(viewBox);
       expect(midpoint.x).toEqual(4);

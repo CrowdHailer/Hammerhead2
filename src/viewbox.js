@@ -15,6 +15,12 @@
     return create(minimal, maximal);
   }
 
+  function attrString(view){
+    var x0 = view.minimal.x, y0 = view.minimal.y, x1 = view.maximal.x, y1 = view.maximal.y;
+    var values = [x0, y0, x1-x0, y1-y0];
+    return values.join(' ');
+  }
+
   function midpoint(view){
     return Pt.scalar(0.5)(Pt.add(view.minimal)(view.maximal));
   }
@@ -50,7 +56,8 @@
     midpoint: midpoint,
     translate: translate,
     scale: scale,
-    zoom: zoom
+    zoom: zoom,
+    attrString: attrString
   };
 
   parent.ViewBox = _.extend(create, operands);
