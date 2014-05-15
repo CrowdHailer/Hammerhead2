@@ -79,5 +79,13 @@ describe('Point', function(){
       expect(qt.y).toEqual(6);
       expect(Object.isFrozen(qt)).toBe(true);
     });
+    it('should rotate by matrix', function(){
+      pt = Pt(2, 3);
+      m1 = {a: 0, b: 1, c: -1, d: 0, e: 0, f: 0};
+      qt = Pt.matrixTransform(m1)(pt);
+      expect(qt.x).toEqual(-3);
+      expect(qt.y).toEqual(2);
+      expect(Object.isFrozen(qt)).toBe(true);
+    });
   });
 });
