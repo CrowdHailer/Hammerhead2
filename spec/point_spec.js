@@ -48,6 +48,13 @@ describe('Point', function(){
       expect(p3.y).toEqual(9);
       expect(Object.isFrozen(p3)).toBe(true);
     });
+
+    it('should be able to negate a point', function(){
+      p3 = Pt.negate(p1)();
+      expect(p3.x).toEqual(-2);
+      expect(p3.y).toEqual(-3);
+      expect(Object.isFrozen(p3)).toBe(true);
+    });
   });
   describe('comparison operations "curried"', function(){
     var p1, p2, p3;

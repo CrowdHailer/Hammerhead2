@@ -15,6 +15,13 @@
     };
   }
 
+  function negate(p){
+    return function(q){
+      q = q || create();
+      return create(q.x - p.x, q.y - p.y);
+    };
+  }
+
   function scalar(a){
     return function(q){
       return create(a * q.x, a * q.y);
@@ -48,6 +55,7 @@
   var operands ={
     add: add,
     subtract: subtract,
+    negate: negate,
     scalar: scalar,
     min: min,
     max: max,
