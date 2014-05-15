@@ -5,6 +5,11 @@
       var newViewBox = VB.translate(delta)(this.getCurrent());
       this.setTemporary(newViewBox);
       return this;
+    },
+    scale: function(magnification, center){
+      var newViewBox = VB.zoom(magnification)(center)(this.getCurrent());
+      this.setTemporary(newViewBox);
+      return this;
     }
   };
   function create(element, options){

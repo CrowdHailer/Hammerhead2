@@ -33,5 +33,10 @@ describe('agile SVG', function(){
       agile.translate(delta);
       expect(VB.attrString(agile.getCurrent())).toEqual('0 1 8 6');
     });
+
+    it('should scale in SVG units', function(){
+      agile.scale(2, center).fix();
+      expect(VB.attrString(agile.getCurrent())).toEqual('0 1 4 3');
+    });
   });
 });
