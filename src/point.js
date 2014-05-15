@@ -5,7 +5,7 @@
 
   function add(a){
     return function(b){
-      return {x: a.x + b.x, y: a.y + b.y};
+      return create(a.x + b.x, a.y + b.y);
     };
   }
 

@@ -31,7 +31,7 @@ describe('Point', function(){
       p3 = Pt.add(p1)(p2);
       expect(p3.x).toEqual(6);
       expect(p3.y).toEqual(8);
-
+      expect(Object.isFrozen(p3)).toBe(true);
     });
   });
 });
