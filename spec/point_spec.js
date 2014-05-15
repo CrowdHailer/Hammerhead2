@@ -49,7 +49,7 @@ describe('Point', function(){
       expect(Object.isFrozen(p3)).toBe(true);
     });
   });
-  describe('comparison operations "curries"', function(){
+  describe('comparison operations "curried"', function(){
     var p1, p2, p3;
     it('should calculate BBox min', function(){
       p1 = Pt(4, 3);
@@ -67,6 +67,17 @@ describe('Point', function(){
       expect(p3.x).toEqual(4);
       expect(p3.y).toEqual(5);
       expect(Object.isFrozen(p3)).toBe(true);
+    });
+  });
+  describe('matrix operations "curried"', function(){
+    var m1, m2, pt, qt;
+    it('should scale by matrix', function(){
+      pt = Pt(2, 3);
+      m1 = {a: 2, b: 0, c: 0, d: 2, e: 0, f: 0};
+      qt = Pt.matrixTransform(m1)(pt);
+      expect(qt.x).toEqual(4);
+      expect(qt.y).toEqual(6);
+      expect(Object.isFrozen(qt)).toBe(true);
     });
   });
 });

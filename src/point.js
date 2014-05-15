@@ -37,12 +37,21 @@
     };
   }
 
+  function matrixTransform(m){
+    return function(q){
+      var x = m.a * q.x + m.c * q.y;
+      var y = m.b * q.x + m.d * q.y;
+      return create(x, y);
+    };
+  }
+
   var operands ={
     add: add,
     subtract: subtract,
     scalar: scalar,
     min: min,
-    max: max
+    max: max,
+    matrixTransform: matrixTransform
   };
 
   parent.Point = _.extend(create, operands);
