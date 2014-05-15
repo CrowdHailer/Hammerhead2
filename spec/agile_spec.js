@@ -30,7 +30,13 @@ describe('agile SVG', function(){
       var current = agile.getCurrent();
       expect(current.minimal.x).toEqual(-1);
       expect(current.maximal.y).toEqual(6);
-      // expect(element.setAttribute).toHaveBeenCalledWith('viewBox', '-1 0 8 6');
+    });
+
+    it('should not affect current view without a fix', function(){
+      agile.translate(delta);
+      var current = agile.getCurrent();
+      expect(current.minimal.x).not.toEqual(-1);
+      expect(current.maximal.y).not.toEqual(6);
     });
   });
 });
