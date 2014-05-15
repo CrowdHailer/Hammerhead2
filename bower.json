@@ -1,0 +1,20 @@
+{
+  "name": "HammerHead2",
+  "version": "0.0.0",
+  "authors": [
+    "Peter <peterhsaxton@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "hammerjs": "1.0.10",
+    "underscore": "~1.6.0"
+  }
+}

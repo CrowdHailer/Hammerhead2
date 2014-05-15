@@ -1,0 +1,25 @@
+{
+  "name": "HammerHead2",
+  "version": "0.0.0",
+  "description": "Updated version of hammerhead library to pan, zoom SVG graphics",
+  "main": "index.js",
+  "scripts": {
+    "test": "karma start"
+  },
+  "keywords": [
+    "SVG"
+  ],
+  "author": "Peter Saxton",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "0.4.x",
+    "karma-jasmine": "~0.1.5",
+    "karma-phantomjs-launcher": "~0.1.4",
+    "karma": "~0.10.10",
+    "karma-spec-reporter": "0.0.12",
+    "grunt-contrib-concat": "^0.4.0",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-karma": "0.6.2",
+    "grunt-strip-code": "^0.1.2"
+  }
+}
