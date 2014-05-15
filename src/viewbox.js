@@ -1,6 +1,18 @@
 (function(parent){
   function create(minimal, maximal){
-    return {minimal: minimal, maximal: maximal};
+    return Object.freeze({minimal: minimal, maximal: maximal});
   }
-  parent.ViewBox = create;
+
+  function translate(delta){
+    return function(view){
+      translation = parent.Point.add(delta);
+      return _.objMap(view, translation);
+    };
+  }
+
+  var operands = {
+    translate: translate
+  };
+
+  parent.ViewBox = _.extend(create, operands);
 }(Hammerhead));
