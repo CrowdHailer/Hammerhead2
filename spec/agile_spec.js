@@ -24,10 +24,13 @@ describe('agile SVG', function(){
     });
   });
 
-  xdescribe('manipulations in SVG units', function(){
+  describe('manipulations in SVG units', function(){
     it('should translate in SVG units', function(){
-      agile.translate(delta);
-      expect(element.setAttribute).toHaveBeenCalledWith('viewBox', '-1 0 8 6');
+      agile.translate(delta).fix();
+      var current = agile.getCurrent();
+      expect(current.minimal.x).toEqual(-1);
+      expect(current.maximal.y).toEqual(6);
+      // expect(element.setAttribute).toHaveBeenCalledWith('viewBox', '-1 0 8 6');
     });
   });
 });
