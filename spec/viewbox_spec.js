@@ -18,6 +18,12 @@ describe('ViewBox', function(){
       viewBox.minimal = 3;
       expect(viewBox.minimal).toEqual(p1);
     });
+
+    it('from a viewbox attribute string', function(){
+      viewBox = VB('1 2 3 4');
+      expect(viewBox.minimal.x).toEqual(1);
+      expect(viewBox.maximal.y).toEqual(6);
+    });
   });
 
   describe('geometry', function(){
