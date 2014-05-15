@@ -13,14 +13,18 @@
       return this;
     },
     drag: function(screenDelta){
-      var matrix = _.extend(this.getScreenCTM().inverse(), {e: 0, f: 0});
-      var delta = Pt.matrixTransform(matrix)(screenDelta);
+      var delta = this.scaleTo()(screenDelta);
       return this.translate(delta);
     },
     zoom: function(scale, screenCenter){
-      var matrix = this.getScreenCTM().inverse();
-      var center = Pt.matrixTransform(matrix)(screenCenter);
+      var center = this.mapTo()(screenCenter);
       return this.scale(scale, center);
+    },
+    mapTo: function(){
+      return Pt.matrixTransform(this.getScreenCTM().inverse());
+    },
+    scaleTo: function(){
+      return Pt.matrixTransform(_.extend(this.getScreenCTM().inverse(), {e: 0, f: 0}));
     }
   };
   function create(element, options){
