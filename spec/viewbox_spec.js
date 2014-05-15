@@ -53,7 +53,7 @@ describe('ViewBox', function(){
       expect(Object.isFrozen(newViewBox)).toBe(true);
     });
     
-    xit('should zoom to center', function(){
+    it('should zoom to center', function(){
       newViewBox = VB.zoom(2)()(viewBox);
       expect(newViewBox.minimal.x).toEqual(2);
       expect(newViewBox.minimal.y).toEqual(2.5);

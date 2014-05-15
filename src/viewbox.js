@@ -22,24 +22,25 @@
     };
   }
 
-  // function scale(magnification){
-  //   return function(center){
-  //     return function(view){
-  //       center = center || midpoint(view);
-  //       var translation = parent.Point.negate(center);
-  //       var tmp = _.objMap(view, translate);
-  //       var mag = Pt.scalar(1/magnification);
-  //       tmp = _.objMap(tmp, mag);
-  //       translation = parent.Point.add(center);
-  //       return _.objMap(tmp, translation);
-  //     };
-  //   };
-  // }
+  function zoom(magnification){
+    return function(center){
+      return function(view){
+        center = center || midpoint(view);
+        var translation = parent.Point.negate(center);
+        var tmp = _.objMap(view, translation);
+        var mag = Pt.scalar(1/magnification);
+        tmp = _.objMap(tmp, mag);
+        translation = parent.Point.add(center);
+        return Object.freeze(_.objMap(tmp, translation));
+      };
+    };
+  }
 
   var operands = {
     midpoint: midpoint,
     translate: translate,
-    scale: scale
+    scale: scale,
+    zoom: zoom
   };
 
   parent.ViewBox = _.extend(create, operands);
