@@ -16,6 +16,11 @@
       var matrix = _.extend(this.getScreenCTM().inverse(), {e: 0, f: 0});
       var delta = Pt.matrixTransform(matrix)(screenDelta);
       return this.translate(delta);
+    },
+    zoom: function(scale, screenCenter){
+      var matrix = this.getScreenCTM().inverse();
+      var center = Pt.matrixTransform(matrix)(screenCenter);
+      return this.scale(scale, center);
     }
   };
   function create(element, options){

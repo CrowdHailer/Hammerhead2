@@ -45,6 +45,11 @@ describe('agile SVG', function(){
       agile.drag(delta).fix();
       expect(VB.attrString(agile.getCurrent())).toEqual('-2 -1 8 6');
     });
+
+    it('should zoom in screen units', function(){
+      agile.zoom(2, screenCenter).fix();
+      expect(VB.attrString(agile.getCurrent())).toEqual('0 1 4 3');
+    });
   });
   // displace distort 
 });
