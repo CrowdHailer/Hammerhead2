@@ -26,13 +26,11 @@
     return function(center){
       return function(view){
         center = center || midpoint(view);
-        var transformation = _.compose(
-          Pt.add(center), 
-          Pt.scalar(1/magnification),
-          Pt.negate(center)
-        );
-        return Object.freeze(
-          _.objMap(view, transformation));
+        return _.compose(
+          translate(Pt.negate(center)()),
+          scale(magnification),
+          translate(center)
+        )(view);
       };
     };
   }
