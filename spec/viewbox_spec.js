@@ -32,13 +32,33 @@ describe('ViewBox', function(){
   });
 
   describe('transformations "of content"', function(){
-    it('should translate', function(){
+    beforeEach(function(){
       viewBox = VB(p1, p2);
+    });
+    it('should translate', function(){
       newViewBox = VB.translate(Pt(1, 1))(viewBox);
       expect(newViewBox.minimal.x).toEqual(-1);
       expect(newViewBox.minimal.y).toEqual(0);
       expect(newViewBox.maximal.x).toEqual(7);
       expect(newViewBox.maximal.y).toEqual(6);
+      expect(Object.isFrozen(newViewBox)).toBe(true);
+    });
+
+    it('should scale from origin', function(){
+      newViewBox = VB.scale(2)(viewBox);
+      expect(newViewBox.minimal.x).toEqual(0);
+      expect(newViewBox.minimal.y).toEqual(0.5);
+      expect(newViewBox.maximal.x).toEqual(4);
+      expect(newViewBox.maximal.y).toEqual(3.5);
+      expect(Object.isFrozen(newViewBox)).toBe(true);
+    });
+    
+    xit('should zoom to center', function(){
+      newViewBox = VB.zoom(2)()(viewBox);
+      expect(newViewBox.minimal.x).toEqual(2);
+      expect(newViewBox.minimal.y).toEqual(2.5);
+      expect(newViewBox.maximal.x).toEqual(6);
+      expect(newViewBox.maximal.y).toEqual(5.5);
       expect(Object.isFrozen(newViewBox)).toBe(true);
     });
   });
