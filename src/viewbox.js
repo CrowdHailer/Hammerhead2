@@ -28,14 +28,14 @@
   function translate(delta){
     return function(view){
       var transformation = Pt.negate(delta);
-      return Object.freeze(_.objMap(view, transformation));
+      return Object.freeze(_.map(transformation)(view));
     };
   }
 
   function scale(factor){
     return function(view){
       var transformation = Pt.scalar(1.0/factor);
-      return Object.freeze(_.objMap(view, transformation));
+      return Object.freeze(_.map(transformation)(view));
     };
   }
 
@@ -52,13 +52,14 @@
     };
   }
 
-  var operands = {
+  var extendMethods = _.extend({
     midpoint: midpoint,
     translate: translate,
     scale: scale,
     zoom: zoom,
     attrString: attrString
-  };
+  });
 
-  parent.ViewBox = _.extend(create, operands);
+  extendMethods(create);
+  parent.ViewBox = create;
 }(Hammerhead));
