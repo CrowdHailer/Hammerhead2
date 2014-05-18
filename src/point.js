@@ -52,7 +52,7 @@
     };
   }
 
-  var operands ={
+  var methodsToExtend = _.extend({
     add: add,
     subtract: subtract,
     negate: negate,
@@ -60,10 +60,8 @@
     min: min,
     max: max,
     matrixTransform: matrixTransform
-  };
+  });
 
-  
-
-  _.extend(operands)(create);
+  methodsToExtend(create);
   parent.Point = (create);
 }(Hammerhead));
