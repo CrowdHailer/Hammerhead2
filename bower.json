@@ -15,6 +15,6 @@
   ],
   "dependencies": {
     "hammerjs": "1.0.10",
-    "underscore": "~1.6.0"
+    "cuminjs": "CrowdHailer/cuminjs"
   }
 }

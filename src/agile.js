@@ -24,7 +24,7 @@
       return Pt.matrixTransform(this.getScreenCTM().inverse());
     },
     scaleTo: function(){
-      return Pt.matrixTransform(_.extend(this.getScreenCTM().inverse(), {e: 0, f: 0}));
+      return Pt.matrixTransform(_.merge({e: 0, f: 0})(this.getScreenCTM().inverse()));
     }
   };
   function create(element, options){
@@ -32,12 +32,12 @@
     current = temporary = HOME =  parent.ViewBox(element.getAttribute('viewBox'));
 
     var instance = Object.create(prototype);
-    _.extend(instance, {
+    _.extend({
       getCurrent: function(){ return current; },
       setTemporary: function(value){ temporary = value; },
       fix: function(){ current = temporary; },
       getScreenCTM: function(){ return element.getScreenCTM(); }
-    });
+    })(instance);
     return instance;
   }
 

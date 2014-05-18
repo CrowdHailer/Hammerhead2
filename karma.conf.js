@@ -3,7 +3,8 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['jasmine'],
     files: [
-      'bower_components/**/*.js',
+      'bower_components/hammerjs/hammer.js',
+      'bower_components/cuminjs/dist/cuminjs.js',
       'src/prefix.js',
       'src/point.js',
       'src/viewbox.js',
