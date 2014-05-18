@@ -8,11 +8,11 @@ module.exports = function(config) {
       'src/prefix.js',
       'src/point.js',
       'src/viewbox.js',
-      // 'src/agile.js',
+      'src/agile.js',
       // 'src/viewer.js',
       'spec/point_spec.js',
       'spec/viewbox_spec.js',
-      // 'spec/agile_spec.js'
+      'spec/agile_spec.js'
       // 'spec/viewer_spec.js'
     ],
     exclude: [
