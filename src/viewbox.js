@@ -27,15 +27,15 @@
 
   function translate(delta){
     return function(view){
-      var transformation = Pt.negate(delta);
-      return Object.freeze(_.map(transformation)(view));
+      var transformAll = _.map(Pt.negate(delta));
+      return Object.freeze(transformAll(view));
     };
   }
 
   function scale(factor){
     return function(view){
-      var transformation = Pt.scalar(1.0/factor);
-      return Object.freeze(_.map(transformation)(view));
+      var transformAll = _.map(Pt.scalar(1.0/factor));
+      return Object.freeze(transformAll(view));
     };
   }
 
