@@ -21,7 +21,7 @@ describe('Point', function(){
       expect(pt.y).toEqual(0);
     });
   });
-  xdescribe('geometric operations "curried"', function(){
+  describe('geometric operations "curried"', function(){
     var p1, p2, p3;
     beforeEach(function(){
       p1 = Pt(2, 3);

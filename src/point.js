@@ -62,6 +62,8 @@
     matrixTransform: matrixTransform
   };
 
-  // parent.Point = _.extend(create, operands);
-  parent.Point = create;
+  
+
+  _.extend(operands)(create);
+  parent.Point = (create);
 }(Hammerhead));
