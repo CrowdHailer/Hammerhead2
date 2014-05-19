@@ -1,5 +1,5 @@
 describe('controller', function(){
-  var hammertime, testSVG, testPath, preventDefault;
+  var hammertime, testSVG, testPath, preventDefault, defaultGesture;
   beforeEach(function(){
     hammertime = Hammer(document);
     preventDefault = function(){};
@@ -7,6 +7,7 @@ describe('controller', function(){
     document.body.innerHTML += svgString;
     testSVG = document.getElementById('test');
     testPath = document.getElementById('test-path');
+    defaultGesture = {target: testPath, preventDefault: preventDefault};
   });
 
   afterEach(function(){
@@ -18,17 +19,34 @@ describe('controller', function(){
   });
 
   describe('event beginning broadcast', function(){
+    var controller;
+    beforeEach(function(){
+      controller = Hammerhead.Controller(testSVG, {hammertime: hammertime});
+      spyOn(pubsubz, 'publish');
+    });
+    afterEach(function(){
+      controller.kill();
+    });
+    it('should publish a start event on touchdown', function(){
+      hammertime.trigger('touch', defaultGesture);
+      expect(pubsubz.publish).toHaveBeenCalled();
+    });
+    it('should not publish a start on wrong element', function(){
+      defaultGesture.target = 'not-element';
+      hammertime.trigger('touch', defaultGesture);
+      expect(pubsubz.publish).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('drag publishing', function(){
     beforeEach(function(){
       Hammerhead.Controller(testSVG, {hammertime: hammertime});
       spyOn(pubsubz, 'publish');
     });
-    it('should publish a start event on touchdown', function(){
-      hammertime.trigger('touch', {target: testPath, preventDefault: preventDefault});
-      expect(pubsubz.publish).toHaveBeenCalledWith('hammerhead', {x: 1});
-    });
-    it('should not publish a start on wrong element', function(){
-      hammertime.trigger('touch', {target: 'not-element', preventDefault: preventDefault});
-      expect(pubsubz.publish).not.toHaveBeenCalled();
+    it('should publish drag events after valid touchdown', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      expect(pubsubz.publish.calls.length).toEqual(2);
     });
   });
 });
