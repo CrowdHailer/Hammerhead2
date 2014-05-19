@@ -40,13 +40,20 @@ describe('controller', function(){
 
   describe('drag publishing', function(){
     beforeEach(function(){
-      Hammerhead.Controller(testSVG, {hammertime: hammertime});
+      controller = Hammerhead.Controller(testSVG, {hammertime: hammertime});
       spyOn(pubsubz, 'publish');
+    });
+    afterEach(function(){
+      controller.kill();
     });
     it('should publish drag events after valid touchdown', function(){
       hammertime.trigger('touch', defaultGesture);
       hammertime.trigger('drag', defaultGesture);
       expect(pubsubz.publish.calls.length).toEqual(2);
+    });
+    it('should not publish drag events after no touchdown', function(){
+      hammertime.trigger('drag', defaultGesture);
+      expect(pubsubz.publish.calls.length).toEqual(0);
     });
   });
 });

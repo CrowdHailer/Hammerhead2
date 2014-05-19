@@ -9,11 +9,14 @@
     function touchHandler(event){
       if (event.target.ownerSVGElement === element) {
         pubsubz.publish('hammerhead', {x:1});
+        active = true;
       }
     }
 
     function dragHandler(event){
-      pubsubz.publish('drag', {args: 2});
+      if (active) {
+        pubsubz.publish('drag', {args: 2});
+      }
     }
 
     function kill(){
