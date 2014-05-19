@@ -1,0 +1,28 @@
+describe('controller', function(){
+  var hammertime, testSVG, testPath, preventDefault;
+  beforeEach(function(){
+    hammertime = Hammer(document);
+    preventDefault = function(){};
+    svgString = '<svg id="test" width="500" viewBox="0 0 2000 1000"><path id="test-path"></path></svg>';
+    document.body.innerHTML += svgString;
+    testSVG = document.getElementById('test');
+    testPath = document.getElementById('test-path');
+  });
+
+  afterEach(function(){
+    testSVG.parentElement.removeChild(testSVG);
+  });
+
+  xdescribe('Setup SVG element', function(){
+
+  });
+
+  describe('event beginning broadcast', function(){
+    it('should publish a start event on touchdown', function(){
+      spyOn(pubsubz, 'publish');
+      Hammerhead.Controller(testSVG, {hammertime: hammertime});
+      hammertime.trigger('touch', {target: testPath, preventDefault: preventDefault});
+      expect(pubsubz.publish).toHaveBeenCalledWith('hammerhead', {x: 1});
+    });
+  });
+});
