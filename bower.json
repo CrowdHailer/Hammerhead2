@@ -15,6 +15,7 @@
   ],
   "dependencies": {
     "hammerjs": "1.0.10",
-    "cuminjs": "CrowdHailer/cuminjs"
+    "cuminjs": "CrowdHailer/cuminjs",
+    "pubsubz": "addyosmani/pubsubz"
   }
 }
