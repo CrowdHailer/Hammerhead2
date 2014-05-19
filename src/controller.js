@@ -2,10 +2,12 @@
   function create(element, options){
     var hammertime = options.hammertime;
 
-    hammertime.on('gesture', touchHandler);
+    hammertime.on('touch', touchHandler);
 
-    function touchHandler(){
-      pubsubz.publish('hammerhead', {x:1});
+    function touchHandler(event){
+      if (event.target.ownerSVGElement === element) {
+        pubsubz.publish('hammerhead', {x:1});
+      }
     }
 
   }

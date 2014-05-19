@@ -18,11 +18,17 @@ describe('controller', function(){
   });
 
   describe('event beginning broadcast', function(){
-    it('should publish a start event on touchdown', function(){
-      spyOn(pubsubz, 'publish');
+    beforeEach(function(){
       Hammerhead.Controller(testSVG, {hammertime: hammertime});
+      spyOn(pubsubz, 'publish');
+    });
+    it('should publish a start event on touchdown', function(){
       hammertime.trigger('touch', {target: testPath, preventDefault: preventDefault});
       expect(pubsubz.publish).toHaveBeenCalledWith('hammerhead', {x: 1});
+    });
+    it('should not publish a start on wrong element', function(){
+      hammertime.trigger('touch', {target: 'not-element', preventDefault: preventDefault});
+      expect(pubsubz.publish).not.toHaveBeenCalled();
     });
   });
 });
