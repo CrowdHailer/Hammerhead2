@@ -29,20 +29,23 @@
     var trackDrag = function(event){
       if (event.type === 'drag') {
         pubsubz.publish('drag', null);
+      } else if (event.type === 'release') {
+        pubsubz.publish('end', null);
+        return watchTouch;
       }
     };
 
     var trackPinch = function(event){
       if (event.type === 'pinch') {
         pubsubz.publish('pinch', null);
+      } else if (event.type === 'release') {
+        pubsubz.publish('end', null);
+        return watchTouch;
       }
     };
 
-
-
     var gestureHandler = function(event){
-      var nextHandler = currentHandler(event);
-      currentHandler = nextHandler || currentHandler;
+      currentHandler = currentHandler(event) || currentHandler;
     };
 
     hammertime.on('touch drag pinch release', gestureHandler);

@@ -96,6 +96,14 @@ describe('controller', function(){
       hammertime.trigger('drag', defaultGesture);
       expect(pubsubz.publish.calls.length).toEqual(0);
     });
+    it('should not drag after a release event', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('release', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'drag', 'end']));
+    });
   });
 describe('pinch publishing', function(){
     beforeEach(function(){
@@ -128,6 +136,14 @@ describe('pinch publishing', function(){
     it('should not publish pinch events after no touch', function(){
       hammertime.trigger('pinch', defaultGesture);
       expect(pubsubz.publish.calls.length).toEqual(0);
+    });
+    it('should not pinch after a release event', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      hammertime.trigger('release', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'pinch', 'end']));
     });
   });
 });
