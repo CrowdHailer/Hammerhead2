@@ -20,6 +20,9 @@
       } else if (event.type === 'pinch') {
         pubsubz.publish('pinch', null);
         return trackPinch;
+      } else if (event.type === 'release') {
+        pubsubz.publish('end', null);
+        return watchTouch;
       }
     };
 
@@ -42,11 +45,11 @@
       currentHandler = nextHandler || currentHandler;
     };
 
-    hammertime.on('touch drag pinch', gestureHandler);
+    hammertime.on('touch drag pinch release', gestureHandler);
     currentHandler = watchTouch;
 
     function kill(){
-      hammertime.off('touch drag pinch', gestureHandler);
+      hammertime.off('touch drag pinch release', gestureHandler);
     }
 
     var instance = Object.create({});

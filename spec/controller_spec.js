@@ -49,6 +49,19 @@ describe('controller', function(){
       var calls = mapChannels(pubsubz.publish.calls);
       expect(calls[0]).toEqual('start');
     });
+    it('should publish start only once', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('touch', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls.length).toEqual(1);
+    });
+    it('should publish start after end', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('release', defaultGesture);
+      hammertime.trigger('touch', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'end', 'start']));
+    });
   });
 
   describe('drag publishing', function(){
