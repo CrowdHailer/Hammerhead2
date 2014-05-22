@@ -118,8 +118,10 @@
     pubsubz.subscribe('end', function(){
       console.log('end');
     });
-    pubsubz.subscribe('drag', function(){
-      console.log('drag');
+    pubsubz.subscribe('drag', function(gesture, other){
+      var dx = other.deltaX;
+      var dy = other.deltaY;
+      el.setAttribute('style', '-webkit-transform: translate(' + dx + 'px, ' + dy + 'px)');
     });
     pubsubz.subscribe('pinch', function(){
       console.log('pinch');
