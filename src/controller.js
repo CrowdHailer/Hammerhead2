@@ -7,7 +7,7 @@
     var watchTouch = function(event){
       if (event.type === 'touch') {
         if (event.target.ownerSVGElement === element) {
-          pubsubz.publish('start', null);
+          pubsubz.publish('start', event.gesture);
           return gestureStart;
         }
       }
@@ -15,31 +15,31 @@
 
     var gestureStart = function(event){
       if (event.type === 'drag') {
-        pubsubz.publish('drag', null);
+        pubsubz.publish('drag', event.gesture);
         return trackDrag;
       } else if (event.type === 'pinch') {
-        pubsubz.publish('pinch', null);
+        pubsubz.publish('pinch', event.gesture);
         return trackPinch;
       } else if (event.type === 'release') {
-        pubsubz.publish('end', null);
+        pubsubz.publish('end', event.gesture);
         return watchTouch;
       }
     };
 
     var trackDrag = function(event){
       if (event.type === 'drag') {
-        pubsubz.publish('drag', null);
+        pubsubz.publish('drag', event.gesture);
       } else if (event.type === 'release') {
-        pubsubz.publish('end', null);
+        pubsubz.publish('end', event.gesture);
         return watchTouch;
       }
     };
 
     var trackPinch = function(event){
       if (event.type === 'pinch') {
-        pubsubz.publish('pinch', null);
+        pubsubz.publish('pinch', event.gesture);
       } else if (event.type === 'release') {
-        pubsubz.publish('end', null);
+        pubsubz.publish('end', event.gesture);
         return watchTouch;
       }
     };
