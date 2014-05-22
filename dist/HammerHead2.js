@@ -68,7 +68,7 @@ Hammerhead = {};
   parent.Point = (create);
 }(Hammerhead));
 (function(parent){
-  Pt = parent.Point;
+  var Pt = parent.Point;
   function create(minimal, maximal){
     if (typeof minimal === 'string') { return createFromString(minimal); }
     return Object.freeze({minimal: minimal, maximal: maximal});

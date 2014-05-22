@@ -104,14 +104,14 @@
   <script type="text/javascript" src="../bower_components/pubsubz/pubsubz.js"></script>
   <script type="text/javascript" src="../bower_components/hammerjs/hammer.min.js"></script>
   <script type="text/javascript" src="../bower_components/hammerjs/plugins/hammer.fakemultitouch.js"></script>
-  <script type="text/javascript" src="../bower_components/cuminjs/dist/cuminjs.min.js"></script>
-  <script type="text/javascript" src="../src/prefix.js"></script>
-  <script type="text/javascript" src="../src/controller.js"></script>
+  <script type="text/javascript" src="../bower_components/cuminjs/dist/cuminjs.js"></script>
+  <script type="text/javascript" src="../dist/HammerHead2.js"></script>
 
   <script>
     hammertime = Hammer(document);
     var el = document.getElementById('the-pear');
     var bosh = Hammerhead.Controller(el, {hammertime: hammertime});
+    var agile = Hammerhead.AgileView(el);
     pubsubz.subscribe('start', function(){
       console.log('start');
     });
@@ -122,6 +122,7 @@
       var dx = other.deltaX;
       var dy = other.deltaY;
       el.setAttribute('style', '-webkit-transform: translate(' + dx + 'px, ' + dy + 'px)');
+
     });
     pubsubz.subscribe('pinch', function(){
       console.log('pinch');
