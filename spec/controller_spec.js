@@ -1,3 +1,8 @@
+_.expose('merge map');
+var mapChannels = map(function(value){
+  return value.args[0];
+});
+
 describe('controller', function(){
   var hammertime, testSVG, testPath, preventDefault, defaultGesture;
   beforeEach(function(){
@@ -29,12 +34,20 @@ describe('controller', function(){
     });
     it('should publish a start event on touchdown', function(){
       hammertime.trigger('touch', defaultGesture);
-      expect(pubsubz.publish).toHaveBeenCalled();
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls[0]).toEqual('start');
     });
     it('should not publish a start on wrong element', function(){
-      defaultGesture.target = 'not-element';
-      hammertime.trigger('touch', defaultGesture);
+      var gesture = merge({target: 'not-element'})(defaultGesture);
+      hammertime.trigger('touch', gesture);
       expect(pubsubz.publish).not.toHaveBeenCalled();
+    });
+    it('should keep watching after a touch on wrong element', function(){
+      var gesture = merge({target: 'not-element'})(defaultGesture);
+      hammertime.trigger('touch', gesture);
+      hammertime.trigger('touch', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls[0]).toEqual('start');
     });
   });
 
@@ -49,7 +62,8 @@ describe('controller', function(){
     it('should publish drag events after valid touchdown', function(){
       hammertime.trigger('touch', defaultGesture);
       hammertime.trigger('drag', defaultGesture);
-      expect(pubsubz.publish.calls.length).toEqual(2);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'drag']));
     });
     it('should not publish drag events after no touchdown', function(){
       hammertime.trigger('drag', defaultGesture);

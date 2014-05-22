@@ -1,27 +1,36 @@
 (function(parent){
+
   function create(element, options){
+    var currentHandler;
     var hammertime = options.hammertime;
-    var active;
 
-    hammertime.on('touch', touchHandler);
-    hammertime.on('drag', dragHandler);
-
-    function touchHandler(event){
-      if (event.target.ownerSVGElement === element) {
-        pubsubz.publish('hammerhead', {x:1});
-        active = true;
+    var touchHandler = function(event){
+      if (event.type === 'touch') {
+        if (event.target.ownerSVGElement === element) {
+          pubsubz.publish('start', null);
+          return dragHandler;
+        }
       }
-    }
+    };
 
-    function dragHandler(event){
-      if (active) {
-        pubsubz.publish('drag', {args: 2});
+    var dragHandler = function boo(event){
+      if (event.type === 'drag') {
+        pubsubz.publish('drag', null);
       }
-    }
+    };
+
+    var gestureHandler = function(event){
+      var nextHandler = currentHandler(event);
+      currentHandler = nextHandler || currentHandler;
+    };
+
+    hammertime.on('touch drag', gestureHandler);
+    currentHandler = touchHandler;
+
+
 
     function kill(){
-      hammertime.off('touch', touchHandler);
-      hammertime.off('drag', dragHandler);
+      hammertime.off('touch drag', gestureHandler);
     }
 
     var instance = Object.create({});
