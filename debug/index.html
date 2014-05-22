@@ -129,8 +129,9 @@
       agile.drag(pt);
 
     });
-    pubsubz.subscribe('pinch', function(){
-      console.log('pinch');
+    pubsubz.subscribe('pinch', function(item, gesture){
+      el.setAttribute('style', '-webkit-transform: scale(' + gesture.scale + ')');
+      agile.zoom(gesture.scale, {x: 55, y: 80});
     });
     Hammer.plugins.fakeMultitouch();
     // Hammer.plugins.showTouches();
