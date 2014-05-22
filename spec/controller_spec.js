@@ -32,7 +32,7 @@ describe('controller', function(){
     afterEach(function(){
       controller.kill();
     });
-    it('should publish a start event on touchdown', function(){
+    it('should publish a start event on touch', function(){
       hammertime.trigger('touch', defaultGesture);
       var calls = mapChannels(pubsubz.publish.calls);
       expect(calls[0]).toEqual('start');
@@ -59,14 +59,61 @@ describe('controller', function(){
     afterEach(function(){
       controller.kill();
     });
-    it('should publish drag events after valid touchdown', function(){
+    it('should publish drag events after valid touch', function(){
       hammertime.trigger('touch', defaultGesture);
       hammertime.trigger('drag', defaultGesture);
       var calls = mapChannels(pubsubz.publish.calls);
       expect(calls).toEqual(Object.freeze(['start', 'drag']));
     });
-    it('should not publish drag events after no touchdown', function(){
+    it('should publish multiple drag events after valid touch', function(){
+      hammertime.trigger('touch', defaultGesture);
       hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'drag', 'drag']));
+    });
+    it('should not publish zoom events after touch and drag', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'drag']));
+    });
+    it('should not publish drag events after no touch', function(){
+      hammertime.trigger('drag', defaultGesture);
+      expect(pubsubz.publish.calls.length).toEqual(0);
+    });
+  });
+describe('pinch publishing', function(){
+    beforeEach(function(){
+      controller = Hammerhead.Controller(testSVG, {hammertime: hammertime});
+      spyOn(pubsubz, 'publish');
+    });
+    afterEach(function(){
+      controller.kill();
+    });
+    it('should publish pinch events after valid touch', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'pinch']));
+    });
+    it('should publish multiple pinch events after valid touch', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'pinch', 'pinch']));
+    });
+    it('should not publish zoom events after touch and pinch', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      var calls = mapChannels(pubsubz.publish.calls);
+      expect(calls).toEqual(Object.freeze(['start', 'pinch']));
+    });
+    it('should not publish pinch events after no touch', function(){
+      hammertime.trigger('pinch', defaultGesture);
       expect(pubsubz.publish.calls.length).toEqual(0);
     });
   });

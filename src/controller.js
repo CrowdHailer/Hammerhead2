@@ -4,33 +4,49 @@
     var currentHandler;
     var hammertime = options.hammertime;
 
-    var touchHandler = function(event){
+    var watchTouch = function(event){
       if (event.type === 'touch') {
         if (event.target.ownerSVGElement === element) {
           pubsubz.publish('start', null);
-          return dragHandler;
+          return gestureStart;
         }
       }
     };
 
-    var dragHandler = function boo(event){
+    var gestureStart = function(event){
+      if (event.type === 'drag') {
+        pubsubz.publish('drag', null);
+        return trackDrag;
+      } else if (event.type === 'pinch') {
+        pubsubz.publish('pinch', null);
+        return trackPinch;
+      }
+    };
+
+    var trackDrag = function(event){
       if (event.type === 'drag') {
         pubsubz.publish('drag', null);
       }
     };
+
+    var trackPinch = function(event){
+      if (event.type === 'pinch') {
+        pubsubz.publish('pinch', null);
+      }
+    };
+
+
 
     var gestureHandler = function(event){
       var nextHandler = currentHandler(event);
       currentHandler = nextHandler || currentHandler;
     };
 
-    hammertime.on('touch drag', gestureHandler);
-    currentHandler = touchHandler;
-
-
+    hammertime.on('touch drag pinch', gestureHandler);
+    currentHandler = watchTouch;
 
     function kill(){
-      hammertime.off('touch drag', gestureHandler);
+      hammertime.off('touch drag pinch', gestureHandler);
     }
 
     var instance = Object.create({});
