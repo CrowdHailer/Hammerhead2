@@ -125,13 +125,13 @@
       var dx = other.deltaX;
       var dy = other.deltaY;
       el.setAttribute('style', '-webkit-transform: translate(' + dx + 'px, ' + dy + 'px)');
-      pt = Hammerhead.Point(other.deltaX, other.deltaY);
+      pt = Hammerhead.Point(other);
       agile.drag(pt);
 
     });
     pubsubz.subscribe('pinch', function(item, gesture){
       el.setAttribute('style', '-webkit-transform: scale(' + gesture.scale + ')');
-      agile.zoom(gesture.scale, {x: 55, y: 80});
+      agile.zoom(gesture.scale);
     });
     Hammer.plugins.fakeMultitouch();
     // Hammer.plugins.showTouches();
