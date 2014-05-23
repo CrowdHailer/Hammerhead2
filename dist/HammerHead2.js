@@ -1,8 +1,30 @@
 Hammerhead = {};
 
 (function(parent){
+  "use strict";
   function create(x, y){
+    if (isObj(x)) {
+      if (x.x) {
+        return createFromCoordinate(x);
+      } else if (x.pageX) {
+        return createFromPagePoint(x);
+      } else if (x.deltaX) {
+        return createFromDisplacementVector(x);
+      }
+    }
     return Object.freeze({x: x || 0, y: y || 0});
+  }
+
+  function createFromCoordinate(point){
+    return create(point.x, point.y);
+  }
+
+  function createFromPagePoint(pagePoint){
+    return create(pagePoint.pageX, pagePoint.pageY);
+  }
+
+  function createFromDisplacementVector(pagePoint){
+    return create(pagePoint.deltaX, pagePoint.deltaY);
   }
 
   function add(p){
@@ -55,6 +77,9 @@ Hammerhead = {};
   }
 
   var methodsToExtend = _.extend({
+    createFromCoordinate: createFromCoordinate,
+    createFromPagePoint: createFromPagePoint,
+    createFromDisplacementVector: createFromDisplacementVector,
     add: add,
     subtract: subtract,
     negate: negate,
@@ -65,7 +90,7 @@ Hammerhead = {};
   });
 
   methodsToExtend(create);
-  parent.Point = (create);
+  parent.Point = create;
 }(Hammerhead));
 (function(parent){
   var Pt = parent.Point;

@@ -7,6 +7,42 @@ describe('Point', function(){
       expect(pt.y).toEqual(3);
     });
 
+    it('specifically from a coordinate object', function(){
+      pt = Pt.createFromCoordinate({x: 4, y: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
+    it('generally from a coordinate object', function(){
+      pt = Pt({x: 4, y: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
+    it('specifically from a page point', function(){
+      pt = Pt.createFromPagePoint({pageX: 4, pageY: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
+    it('generally from a page point', function(){
+      pt = Pt({pageX: 4, pageY: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
+    it('specifically from a displacement vector', function(){
+      pt = Pt.createFromDisplacementVector({deltaX: 4, deltaY: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
+    it('generally from a displacement vector', function(){
+      pt = Pt({deltaX: 4, deltaY: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
     it('should be imutable', function(){
       pt = Pt(2, 3);
       pt.x = 5;
