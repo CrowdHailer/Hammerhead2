@@ -11,7 +11,8 @@ module.exports = function(grunt) {
           'src/point.js',
           'src/viewbox.js',
           'src/agile.js',
-          'src/controller.js'
+          'src/controller.js',
+          'src/main.js'
         ],
         dest: 'dist/<%= pkg.name %>.js'
       }

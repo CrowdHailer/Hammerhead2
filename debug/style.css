@@ -16,6 +16,7 @@ body, html {
 svg {
   height: 100%; /* Includes to stop Opera and firefox extending offscreen*/
   width: 100%; /*Necessary to center the svg image area horizontally*/
+  /*margin: -50%;*/
   cursor: move;
   touch-action: none;
   -ms-touch-action: none;
