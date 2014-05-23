@@ -19,6 +19,12 @@ describe('Point', function(){
       expect(pt.y).toEqual(5);
     });
 
+    it('specifically from a displacement vector', function(){
+      pt = Pt.createFromDisplacementVector({deltaX: 4, deltaY: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
     it('should be imutable', function(){
       pt = Pt(2, 3);
       pt.x = 5;

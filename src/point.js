@@ -11,6 +11,10 @@
     return create(pagePoint.pageX, pagePoint.pageY);
   }
 
+  function createFromDisplacementVector(pagePoint){
+    return create(pagePoint.deltaX, pagePoint.deltaY);
+  }
+
   function add(p){
     return function(q){
       return create(p.x + q.x, p.y + q.y);
@@ -63,6 +67,7 @@
   var methodsToExtend = _.extend({
     createFromCoordinate: createFromCoordinate,
     createFromPagePoint: createFromPagePoint,
+    createFromDisplacementVector: createFromDisplacementVector,
     add: add,
     subtract: subtract,
     negate: negate,
