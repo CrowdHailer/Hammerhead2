@@ -1,4 +1,5 @@
 (function(parent){
+  "use strict";
   function create(x, y){
     if (isObj(x)) {
       if (x.x) {
