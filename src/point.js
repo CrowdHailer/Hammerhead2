@@ -3,6 +3,10 @@
     return Object.freeze({x: x || 0, y: y || 0});
   }
 
+  function createFromPoint(point){
+    return create(point.x, point.y);
+  }
+
   function add(p){
     return function(q){
       return create(p.x + q.x, p.y + q.y);
@@ -53,6 +57,7 @@
   }
 
   var methodsToExtend = _.extend({
+    createFromPoint: createFromPoint,
     add: add,
     subtract: subtract,
     negate: negate,
@@ -63,5 +68,5 @@
   });
 
   methodsToExtend(create);
-  parent.Point = (create);
+  parent.Point = create;
 }(Hammerhead));

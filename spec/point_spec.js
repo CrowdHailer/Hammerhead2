@@ -7,6 +7,12 @@ describe('Point', function(){
       expect(pt.y).toEqual(3);
     });
 
+    it('from a coordinate object', function(){
+      pt = Pt.createFromPoint({x: 4, y: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
     it('should be imutable', function(){
       pt = Pt(2, 3);
       pt.x = 5;
