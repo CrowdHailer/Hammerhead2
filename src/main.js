@@ -10,13 +10,13 @@
     pubsubz.subscribe('end', function(){
       agile.fix();
       var newString = Hammerhead.ViewBox.attrString(agile.getCurrent());
-      el.setAttribute('style', '');
+      el.setAttribute('style', '-webkit-transform: translate(0px, 0px)');
       el.setAttribute('viewBox', newString);
     });
     pubsubz.subscribe('drag', function(gesture, other){
       var dx = other.deltaX;
       var dy = other.deltaY;
-      el.setAttribute('style', '-webkit-transform: translate(' + dx + 'px, ' + dy + 'px)');
+      el.setAttribute('style', '-webkit-backface-visibility: hidden; -webkit-transform-origin: 50% 50%; cursor: move; transition: none; -webkit-transition: none; -webkit-transform: translate(' + dx + 'px, ' + dy + 'px)');
       pt = Hammerhead.Point(other);
       agile.drag(pt);
 
