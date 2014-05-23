@@ -17,7 +17,7 @@ describe('agile SVG', function(){
     screenCenter = Hammerhead.Point(0, 0.5);
   });
 
-  describe('itialisation', function(){
+  describe('initialisation', function(){
     it('should have a current position', function(){
       expect(VB.attrString(agile.getCurrent())).toEqual('0 1 8 6');
     });
@@ -38,6 +38,11 @@ describe('agile SVG', function(){
       agile.scale(2, center).fix();
       expect(VB.attrString(agile.getCurrent())).toEqual('0 1 4 3');
     });
+
+    it('should scale to center if not given one', function(){
+      agile.scale(2).fix();
+      expect(VB.attrString(agile.getCurrent())).toEqual('2 2.5 4 3');
+    });
   });
 
   describe('manipulations in screen units', function(){
@@ -49,6 +54,11 @@ describe('agile SVG', function(){
     it('should zoom in screen units', function(){
       agile.zoom(2, screenCenter).fix();
       expect(VB.attrString(agile.getCurrent())).toEqual('0 1 4 3');
+    });
+
+    it('should zoom to center if not given one', function(){
+      agile.zoom(2).fix();
+      expect(VB.attrString(agile.getCurrent())).toEqual('2 2.5 4 3');
     });
   });
   // displace distort 

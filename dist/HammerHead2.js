@@ -176,7 +176,10 @@ Hammerhead = {};
       return this.translate(delta);
     },
     zoom: function(scale, screenCenter){
-      var center = this.mapTo()(screenCenter);
+      var center;
+      if (screenCenter) {
+        center = this.mapTo()(screenCenter);
+      }
       return this.scale(scale, center);
     },
     mapTo: function(){
