@@ -1,5 +1,14 @@
 (function(parent){
   function create(x, y){
+    if (isObj(x)) {
+      if (x.x) {
+        return createFromCoordinate(x);
+      } else if (x.pageX) {
+        return createFromPagePoint(x);
+      } else if (x.deltaX) {
+        return createFromDisplacementVector(x);
+      }
+    }
     return Object.freeze({x: x || 0, y: y || 0});
   }
 
