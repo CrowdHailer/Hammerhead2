@@ -7,8 +7,14 @@ describe('Point', function(){
       expect(pt.y).toEqual(3);
     });
 
-    it('from a coordinate object', function(){
-      pt = Pt.createFromPoint({x: 4, y: 5});
+    it('specifically from a coordinate object', function(){
+      pt = Pt.createFromCoordinate({x: 4, y: 5});
+      expect(pt.x).toEqual(4);
+      expect(pt.y).toEqual(5);
+    });
+
+    it('specifically from a page point', function(){
+      pt = Pt.createFromPagePoint({pageX: 4, pageY: 5});
       expect(pt.x).toEqual(4);
       expect(pt.y).toEqual(5);
     });

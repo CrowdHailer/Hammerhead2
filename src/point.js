@@ -3,8 +3,12 @@
     return Object.freeze({x: x || 0, y: y || 0});
   }
 
-  function createFromPoint(point){
+  function createFromCoordinate(point){
     return create(point.x, point.y);
+  }
+
+  function createFromPagePoint(pagePoint){
+    return create(pagePoint.pageX, pagePoint.pageY);
   }
 
   function add(p){
@@ -57,7 +61,8 @@
   }
 
   var methodsToExtend = _.extend({
-    createFromPoint: createFromPoint,
+    createFromCoordinate: createFromCoordinate,
+    createFromPagePoint: createFromPagePoint,
     add: add,
     subtract: subtract,
     negate: negate,
