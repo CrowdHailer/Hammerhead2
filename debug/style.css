@@ -14,9 +14,6 @@ body, html {
   user-select: none;
 }
 svg {
-  height: 200%; /* Includes to stop Opera and firefox extending offscreen*/
-  width: 200%; /*Necessary to center the svg image area horizontally*/
-  margin: -50%;
   cursor: move;
   touch-action: none;
   -ms-touch-action: none;
