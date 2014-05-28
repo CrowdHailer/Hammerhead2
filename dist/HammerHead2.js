@@ -186,7 +186,7 @@ Hammerhead = {};
       return Pt.matrixTransform(this.getScreenCTM().inverse());
     },
     scaleTo: function(){
-      return Pt.matrixTransform(_.foundation({e: 0, f: 0})(this.getScreenCTM().inverse()));
+      return Pt.matrixTransform(_.foundation(this.getScreenCTM().inverse())({e: 0, f: 0}));
     }
   };
   function create(element, options){
@@ -365,7 +365,7 @@ _.debounce = function(func, wait, immediate) {
       agile.fix();
       var newString = Hammerhead.ViewBox.attrString(agile.getCurrent());
       $el.css('-webkit-transform', 'translate(0px, 0px)');
-      console.log(newString);
+      // console.log(newString);
       $el.attr('viewBox', newString);
     });
 
@@ -380,7 +380,7 @@ _.debounce = function(func, wait, immediate) {
     });
 
     pubsubz.subscribe('pinch', function(item, gesture){
-      $el.css('style', '-webkit-transform: scale(' + gesture.scale + ')');
+      $el.css('-webkit-transform', 'scale(' + gesture.scale + ')');
       agile.zoom(gesture.scale);
     });
   }

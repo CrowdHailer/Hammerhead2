@@ -89,7 +89,6 @@ _.debounce = function(func, wait, immediate) {
       agile.fix();
       var newString = Hammerhead.ViewBox.attrString(agile.getCurrent());
       $el.css('-webkit-transform', 'translate(0px, 0px)');
-      console.log(newString);
       $el.attr('viewBox', newString);
     });
 
@@ -99,12 +98,10 @@ _.debounce = function(func, wait, immediate) {
       $el.css('-webkit-transform', 'translate(' + dx + 'px, ' + dy + 'px)');
       pt = Hammerhead.Point(other);
       agile.drag(pt);
-      // console.log(dx, dy);
-      // console.log(Hammerhead.ViewBox.attrString(agile.getTemporary()));
     });
 
     pubsubz.subscribe('pinch', function(item, gesture){
-      $el.css('style', '-webkit-transform: scale(' + gesture.scale + ')');
+      $el.css('-webkit-transform', 'scale(' + gesture.scale + ')');
       agile.zoom(gesture.scale);
     });
   }
