@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "hammerjs": "1.0.10",
-    "cumin": "0.4.0",
+    "cumin": "0.5.0",
     "pubsubz": "addyosmani/pubsubz",
     "zepto": "~1.1.3"
   }
