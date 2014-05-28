@@ -313,10 +313,14 @@ _.debounce = function(func, wait, immediate) {
     var $window = $(window);
 
     var publishResize = _.debounce(function(event){
-      console.log(event);
+      pubsubz.publish('resize');
     }, 400);
     $window.on('resize', function(event){
       publishResize(event);
+    });
+
+    pubsubz.subscribe('resize', function(){
+      console.log('resize');
     });
 
     hammertime = Hammer(document);
