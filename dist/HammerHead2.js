@@ -314,7 +314,6 @@ _.debounce = function(func, wait, immediate) {
   var hammertime = Hammer(document);
 
   var publishResize = _.debounce(function(event){
-    console.log('huzzah');
     pubsubz.publish('resize');
   }, 400);
 
@@ -335,16 +334,18 @@ _.debounce = function(func, wait, immediate) {
 
     var updateOverspill = setOverspill($el);
 
-    // Initial resize
+    // Initial styling
     updateOverspill();
+    $el.css({
+      '-webkit-transform': 'translate(0px, 0px)',
+      'transform': 'translate(0px, 0px)',
+      '-webkit-backface-visibility': 'hidden',
+      '-webkit-transform-origin': '50% 50%'
+    });
+
 
     // Watch resize -  should be singleton object
     $window.on('resize', function(event){
-      console.log('a');
-      publishResize(event);
-    });// Watch resize -  should be singleton object
-    $window.on('resize', function(event){
-      console.log('b');
       publishResize(event);
     });
 
@@ -368,7 +369,7 @@ _.debounce = function(func, wait, immediate) {
     pubsubz.subscribe('drag', function(gesture, other){
       var dx = other.deltaX;
       var dy = other.deltaY;
-      $el.css('style', '-webkit-backface-visibility: hidden; -webkit-transform-origin: 50% 50%; cursor: move; transition: none; -webkit-transition: none; -webkit-transform: translate(' + dx + 'px, ' + dy + 'px)');
+      $el.css('-webkit-transform', 'translate(' + dx + 'px, ' + dy + 'px)');
       pt = Hammerhead.Point(other);
       agile.drag(pt);
 
