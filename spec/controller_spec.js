@@ -1,4 +1,4 @@
-_.expose('merge map');
+_.expose('map');
 var mapChannels = map(function(value){
   return value.args[0];
 });
@@ -38,12 +38,12 @@ describe('controller', function(){
       expect(calls[0]).toEqual('start');
     });
     it('should not publish a start on wrong element', function(){
-      var gesture = merge({target: 'not-element'})(defaultGesture);
+      var gesture = _.foundation(defaultGesture)({target: 'not-element'});
       hammertime.trigger('touch', gesture);
       expect(pubsubz.publish).not.toHaveBeenCalled();
     });
     it('should keep watching after a touch on wrong element', function(){
-      var gesture = merge({target: 'not-element'})(defaultGesture);
+      var gesture = _.foundation(defaultGesture)({target: 'not-element'});
       hammertime.trigger('touch', gesture);
       hammertime.trigger('touch', defaultGesture);
       var calls = mapChannels(pubsubz.publish.calls);

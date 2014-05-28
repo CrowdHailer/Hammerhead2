@@ -27,7 +27,7 @@
       return Pt.matrixTransform(this.getScreenCTM().inverse());
     },
     scaleTo: function(){
-      return Pt.matrixTransform(_.merge({e: 0, f: 0})(this.getScreenCTM().inverse()));
+      return Pt.matrixTransform(_.foundation({e: 0, f: 0})(this.getScreenCTM().inverse()));
     }
   };
   function create(element, options){
