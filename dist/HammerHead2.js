@@ -279,6 +279,13 @@ Hammerhead = {};
     var el = document.getElementById(elementId);
     var bosh = Hammerhead.Controller(el, {hammertime: hammertime});
     var agile = Hammerhead.AgileView(el);
+
+    var $el = $('#' + elementId);
+    var $parent = $el.parent();
+    var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
+    $el.css('margin', marginString);
+    console.log(marginString);
+
     pubsubz.subscribe('start', function(){
       console.log('start');
     });
