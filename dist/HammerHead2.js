@@ -284,6 +284,8 @@ Hammerhead = {};
     var $parent = $el.parent();
     var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
     $el.css('margin', marginString);
+    $el.width($parent.width() * 2);
+    $el.height($parent.height() * 2);
     console.log(marginString);
 
     pubsubz.subscribe('start', function(){
