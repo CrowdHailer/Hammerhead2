@@ -196,6 +196,7 @@ Hammerhead = {};
     var instance = Object.create(prototype);
     _.extend({
       getCurrent: function(){ return current; },
+      getTemporary: function(){ return temporary; },
       setTemporary: function(value){ temporary = value; },
       fix: function(){ current = temporary; },
       getScreenCTM: function(){ return element.getScreenCTM(); }
@@ -334,6 +335,9 @@ _.debounce = function(func, wait, immediate) {
 
     var updateOverspill = setOverspill($el);
 
+    Hammerhead.Controller(el, {hammertime: hammertime});
+    var agile = Hammerhead.AgileView(el);
+
     // Initial styling
     updateOverspill();
     $el.css({
@@ -342,7 +346,6 @@ _.debounce = function(func, wait, immediate) {
       '-webkit-backface-visibility': 'hidden',
       '-webkit-transform-origin': '50% 50%'
     });
-
 
     // Watch resize -  should be singleton object
     $window.on('resize', function(event){
@@ -354,26 +357,28 @@ _.debounce = function(func, wait, immediate) {
       updateOverspill();
     });
 
-    var bosh = Hammerhead.Controller(el, {hammertime: hammertime});
-    var agile = Hammerhead.AgileView(el);
-
     pubsubz.subscribe('start', function(){
       console.log('start');
     });
+
     pubsubz.subscribe('end', function(){
       agile.fix();
       var newString = Hammerhead.ViewBox.attrString(agile.getCurrent());
       $el.css('-webkit-transform', 'translate(0px, 0px)');
+      console.log(newString);
       $el.attr('viewBox', newString);
     });
+
     pubsubz.subscribe('drag', function(gesture, other){
       var dx = other.deltaX;
       var dy = other.deltaY;
       $el.css('-webkit-transform', 'translate(' + dx + 'px, ' + dy + 'px)');
       pt = Hammerhead.Point(other);
       agile.drag(pt);
-
+      // console.log(dx, dy);
+      // console.log(Hammerhead.ViewBox.attrString(agile.getTemporary()));
     });
+
     pubsubz.subscribe('pinch', function(item, gesture){
       $el.css('style', '-webkit-transform: scale(' + gesture.scale + ')');
       agile.zoom(gesture.scale);

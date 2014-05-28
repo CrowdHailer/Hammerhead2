@@ -37,6 +37,7 @@
     var instance = Object.create(prototype);
     _.extend({
       getCurrent: function(){ return current; },
+      getTemporary: function(){ return temporary; },
       setTemporary: function(value){ temporary = value; },
       fix: function(){ current = temporary; },
       getScreenCTM: function(){ return element.getScreenCTM(); }
