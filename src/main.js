@@ -37,6 +37,8 @@ _.debounce = function(func, wait, immediate) {
   function create(elementId){
     var $window = $(window);
 
+    // Watch resize
+
     var publishResize = _.debounce(function(event){
       pubsubz.publish('resize');
     }, 400);
@@ -45,8 +47,22 @@ _.debounce = function(func, wait, immediate) {
     });
 
     pubsubz.subscribe('resize', function(){
-      console.log('resize');
+      updateOverspill()
     });
+
+    // Deliver resize
+
+    function setOverspill($element){
+      $parent = $element.parent();
+      return function(){
+        var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
+        $element.css('margin', marginString);
+        $element.width($parent.width() * 2);
+        $element.height($parent.height() * 2);
+            console.log(marginString);
+
+      };
+    }
 
     hammertime = Hammer(document);
     var el = document.getElementById(elementId);
@@ -54,12 +70,14 @@ _.debounce = function(func, wait, immediate) {
     var agile = Hammerhead.AgileView(el);
 
     var $el = $('#' + elementId);
-    var $parent = $el.parent();
-    var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
-    $el.css('margin', marginString);
-    $el.width($parent.width() * 2);
-    $el.height($parent.height() * 2);
-    console.log(marginString);
+    var updateOverspill = setOverspill($el);
+    updateOverspill();
+
+    // var $parent = $el.parent();
+    // var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
+    // $el.css('margin', marginString);
+    // $el.width($parent.width() * 2);
+    // $el.height($parent.height() * 2);
 
     pubsubz.subscribe('start', function(){
       console.log('start');
