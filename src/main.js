@@ -43,10 +43,11 @@ _.debounce = function(func, wait, immediate) {
   function setOverspill($element){
     $parent = $element.parent();
     return function(){
-      var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
-      $element.css('margin', marginString);
-      $element.width($parent.width() * 2);
-      $element.height($parent.height() * 2);
+      var height = $parent.height();
+      var width = $parent.width();
+      $element.css('margin', -height/2 + ' ' + -width/2);
+      $element.width(width * 2);
+      $element.height(height * 2);
     };
   }
 
@@ -55,7 +56,7 @@ _.debounce = function(func, wait, immediate) {
 
     var updateOverspill = setOverspill($el);
     updateOverspill();
-    
+
     // Watch resize
     $window.on('resize', function(event){
       publishResize(event);
