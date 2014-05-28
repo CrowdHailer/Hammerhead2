@@ -309,50 +309,49 @@ _.debounce = function(func, wait, immediate) {
 };
 
 (function(parent){
+  var $window = $(window);
+
+  var publishResize = _.debounce(function(event){
+    pubsubz.publish('resize');
+  }, 400);
+
+  function setOverspill($element){
+    $parent = $element.parent();
+    return function(){
+      var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
+      $element.css('margin', marginString);
+      $element.width($parent.width() * 2);
+      $element.height($parent.height() * 2);
+    };
+  }
+
   function create(elementId){
-    var $window = $(window);
+    var $el = $('#' + elementId);
 
+    var updateOverspill = setOverspill($el);
+    updateOverspill();
+    
     // Watch resize
-
-    var publishResize = _.debounce(function(event){
-      pubsubz.publish('resize');
-    }, 400);
     $window.on('resize', function(event){
       publishResize(event);
     });
 
+    // Deliver resize
     pubsubz.subscribe('resize', function(){
-      updateOverspill()
+      updateOverspill();
     });
 
-    // Deliver resize
 
-    function setOverspill($element){
-      $parent = $element.parent();
-      return function(){
-        var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
-        $element.css('margin', marginString);
-        $element.width($parent.width() * 2);
-        $element.height($parent.height() * 2);
-            console.log(marginString);
-
-      };
-    }
+   
 
     hammertime = Hammer(document);
     var el = document.getElementById(elementId);
     var bosh = Hammerhead.Controller(el, {hammertime: hammertime});
     var agile = Hammerhead.AgileView(el);
 
-    var $el = $('#' + elementId);
-    var updateOverspill = setOverspill($el);
-    updateOverspill();
+    
+    
 
-    // var $parent = $el.parent();
-    // var marginString = -$parent.height()/2 + ' ' + -$parent.width()/2;
-    // $el.css('margin', marginString);
-    // $el.width($parent.width() * 2);
-    // $el.height($parent.height() * 2);
 
     pubsubz.subscribe('start', function(){
       console.log('start');
