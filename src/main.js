@@ -68,7 +68,9 @@ _.debounce = function(func, wait, immediate) {
       '-webkit-transform': 'translate(0px, 0px)',
       'transform': 'translate(0px, 0px)',
       '-webkit-backface-visibility': 'hidden',
-      '-webkit-transform-origin': '50% 50%'
+      '-webkit-transform-origin': '50% 50%',
+      '-ms-transform-origin': '50% 50%',
+      'transform-origin': '50% 50%'
     });
 
     // Watch resize -  should be singleton object
@@ -89,6 +91,8 @@ _.debounce = function(func, wait, immediate) {
       agile.fix();
       var newString = Hammerhead.ViewBox.attrString(agile.getCurrent());
       $el.css('-webkit-transform', 'translate(0px, 0px)');
+      $el.css('-ms-transform', 'translate(0px, 0px)');
+      $el.css('transform', 'translate(0px, 0px)');
       $el.attr('viewBox', newString);
     });
 
@@ -96,12 +100,16 @@ _.debounce = function(func, wait, immediate) {
       var dx = other.deltaX;
       var dy = other.deltaY;
       $el.css('-webkit-transform', 'translate(' + dx + 'px, ' + dy + 'px)');
+      $el.css('-ms-transform', 'translate(' + dx + 'px, ' + dy + 'px)');
+      $el.css('transform', 'translate(' + dx + 'px, ' + dy + 'px)');
       pt = Hammerhead.Point(other);
       agile.drag(pt);
     });
 
     pubsubz.subscribe('pinch', function(item, gesture){
       $el.css('-webkit-transform', 'scale(' + gesture.scale + ')');
+      $el.css('-ms-transform', 'scale(' + gesture.scale + ')');
+      $el.css('transform', 'scale(' + gesture.scale + ')');
       agile.zoom(gesture.scale);
     });
   }
