@@ -311,7 +311,10 @@ _.debounce = function(func, wait, immediate) {
 (function(parent){
   var $window = $(window);
 
+  var hammertime = Hammer(document);
+
   var publishResize = _.debounce(function(event){
+    console.log('huzzah');
     pubsubz.publish('resize');
   }, 400);
 
@@ -328,12 +331,20 @@ _.debounce = function(func, wait, immediate) {
 
   function create(elementId){
     var $el = $('#' + elementId);
+    var el = $el[0];
 
     var updateOverspill = setOverspill($el);
+
+    // Initial resize
     updateOverspill();
 
-    // Watch resize
+    // Watch resize -  should be singleton object
     $window.on('resize', function(event){
+      console.log('a');
+      publishResize(event);
+    });// Watch resize -  should be singleton object
+    $window.on('resize', function(event){
+      console.log('b');
       publishResize(event);
     });
 
@@ -342,17 +353,8 @@ _.debounce = function(func, wait, immediate) {
       updateOverspill();
     });
 
-
-   
-
-    hammertime = Hammer(document);
-    var el = document.getElementById(elementId);
     var bosh = Hammerhead.Controller(el, {hammertime: hammertime});
     var agile = Hammerhead.AgileView(el);
-
-    
-    
-
 
     pubsubz.subscribe('start', function(){
       console.log('start');
