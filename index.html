@@ -116,6 +116,7 @@
     var alertStart = tower.publish('start');
     var alertDrag = tower.publish('drag');
     var alertPinch = tower.publish('pinch');
+    var alertEnd = tower.publish('end');
 
     var starElement = $('svg')[0];
 
@@ -127,6 +128,7 @@
       if (event.target.ownerSVGElement === starElement) {
         this.drag = handleDrag;
         this.pinch = handlePinch;
+        this.release = endHandler;
         alertStart(starElement);
         return this;
       }
@@ -144,13 +146,20 @@
       return this;
     }
 
-    hammertime.on('touch drag pinch', function(event){
+    function endHandler(event){
+      this.drag = false;
+      this.pinch = false;
+      alertEnd({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
+      return this;
+    }
+
+    hammertime.on('touch drag pinch release', function(event){
       event.gesture.preventDefault();
       // console.log(event.type);
-
       if(handlers[event.type]) {
         handlers = handlers[event.type].call(handlers, event);
       }
+      console.log(handlers);
     });
 
     // hammertime.on('drag', function(event){
@@ -173,6 +182,10 @@
     });
 
     tower.subscribe('pinch')(function(data, topic){
+      if(pinchLog) {console.log(topic, data);}
+    });
+
+    tower.subscribe('end')(function(data, topic){
       if(pinchLog) {console.log(topic, data);}
     });
 
