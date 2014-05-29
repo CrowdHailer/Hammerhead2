@@ -28,7 +28,11 @@
 
     function unsubscribe(topic){
       return function(uid){
-        delete channels[topic][uid];
+        if (uid) {
+          delete channels[topic][uid];
+        } else {
+          channels[topic] = {};
+        }
       };
     }
 

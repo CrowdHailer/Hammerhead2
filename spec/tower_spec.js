@@ -50,6 +50,15 @@ describe('tower', function(){
     expect(dummy).not.toHaveBeenCalled();
   });
 
+  it('should be able to clear a topic/channel', function(){
+    tower.subscribe('channel1')(dummy);
+    tower.subscribe('channel1')(dummy2);
+    tower.unsubscribe('channel1')();
+    expect(tower.publish('channel1')({x: 1})).toBe(false);
+    expect(dummy).not.toHaveBeenCalled();
+    expect(dummy2).not.toHaveBeenCalled();
+  });
+
   it('should publish events to only the correct channel', function(){
     tower.subscribe('channel1')(dummy);
     tower.subscribe('channel2')(dummy2);
