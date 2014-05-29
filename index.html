@@ -232,6 +232,24 @@
 
     console.log( interpolate('(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(createSVGMatrixfromScale(3)));
 
+
+    ////////////////////////////////////////////////
+
+    var $svg = $('svg');
+
+    var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
+
+    var identityMatrix = createSVGMatrixfromScale(1);
+
+    $svg.css({
+      '-webkit-transform': matrixAsCss(identityMatrix),
+      'transform': matrixAsCss(identityMatrix),
+      '-webkit-backface-visibility': 'hidden',
+      '-webkit-transform-origin': '50% 50%',
+      '-ms-transform-origin': '50% 50%',
+      'transform-origin': '50% 50%'
+    });
+
     // All debug code
     //////////////////////////////////////
     var startLog = dragLog = pinchLog = endLog = resizeLog = true;
