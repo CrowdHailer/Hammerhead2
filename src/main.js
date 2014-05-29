@@ -1,8 +1,6 @@
 (function(parent){
   var $window = $(window);
 
-  var hammertime = Hammer(document);
-
   var publishResize = _.debounce(function(event){
     pubsubz.publish('resize');
   }, 400);
@@ -18,13 +16,15 @@
     };
   }
 
-  function create(elementId){
+  function create(elementId, options){
     var $el = $('#' + elementId);
     var el = $el[0];
 
+    console.log('started with options ', options);
+
     var updateOverspill = setOverspill($el);
 
-    Hammerhead.Controller(el, {hammertime: hammertime});
+    Hammerhead.Controller(el, {hammertime: options.hammertime});
     var agile = Hammerhead.AgileView(el);
 
     // Initial styling
