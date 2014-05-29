@@ -29,6 +29,7 @@
     var trackDrag = function(event){
       if (event.type === 'drag') {
         pubsubz.publish('drag', event.gesture);
+        return trackDrag;
       } else if (event.type === 'release') {
         pubsubz.publish('end', event.gesture);
         return watchTouch;
@@ -38,6 +39,7 @@
     var trackPinch = function(event){
       if (event.type === 'pinch') {
         pubsubz.publish('pinch', event.gesture);
+        return trackPinch;
       } else if (event.type === 'release') {
         pubsubz.publish('end', event.gesture);
         return watchTouch;
