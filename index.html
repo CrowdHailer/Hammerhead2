@@ -202,6 +202,22 @@
 
     tower.subscribe('resize')(resizeReaction);
 
+    ///////////////////////////////////////////
+
+    var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg')
+
+    function createSVGMatrixfromScale(n){
+      return darkSVG.createSVGMatrix().scale(n);
+    }
+
+    function createSVGMatrixfromTranslation(x, y){
+      return darkSVG.createSVGMatrix().translate(x, y);
+    }
+
+    console.log(createSVGMatrixfromTranslation(30, 200));
+
+    console.log(createSVGMatrixfromScale(3));
+
     // All debug code
     //////////////////////////////////////
     var startLog = dragLog = pinchLog = endLog = resizeLog = true;
