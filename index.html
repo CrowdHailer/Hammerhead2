@@ -313,7 +313,14 @@
       aniFrame = requestAnimationFrame( render );
     }
 
-    aniFrame = requestAnimationFrame( render );
+
+    function beginAnimation(){
+      aniFrame = requestAnimationFrame( render );
+    }
+
+    function decistAnimation(){
+      cancelAnimationFrame(aniFrame);
+    }
 
 
     // All debug code
