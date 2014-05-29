@@ -5,18 +5,20 @@
 
   function init(){
     var channels = {};
+    var uid = 0;
 
-    function subscribe(channel){
+    function subscribe(topic){
       return function(reaction){
-        channels[channel] ? channels[channel].push(reaction) : channels[channel] = [reaction];
+        var channel = channels[topic] = channels[topic] || {};
+        channel[uid++] = reaction;
       };
     }
 
-    function publish(channel){
+    function publish(topic){
       return function(content){
         _.each(function(action){
           action(content);
-        })(channels[channel]);
+        })(channels[topic]);
       };
     }
 
