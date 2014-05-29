@@ -1,0 +1,38 @@
+{
+  "name": "cumin",
+  "version": "0.5.0",
+  "homepage": "https://github.com/CrowdHailer/cuminjs",
+  "authors": [
+    "Peter <peterhsaxton@gmail.com>"
+  ],
+  "description": "Library of functional utilities that maximises combination possibilities",
+  "main": "dist/cumin.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "functional",
+    "utility",
+    "curried",
+    "collections",
+    "lists",
+    "arrays",
+    "objects"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "spec"
+  ],
+  "_release": "0.5.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.0",
+    "commit": "e66e5d25eda16cdf332adbbec7f068ccbd1698bd"
+  },
+  "_source": "git://github.com/CrowdHailer/cuminjs.git",
+  "_target": "0.5.0",
+  "_originalSource": "cumin"
+}
