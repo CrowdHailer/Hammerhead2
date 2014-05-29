@@ -25,6 +25,12 @@ describe('tower', function(){
     expect(otherTower).toBe(tower);
   });
 
+  it('should return a unique identifier', function(){
+    var uid1 = tower.subscribe('channel1')(dummy);
+    var uid2 = tower.subscribe('channel2')(dummy2);
+    expect(uid2).not.toBe(uid1);
+  });
+
   it('should publish events to only the correct channel', function(){
     tower.subscribe('channel1')(dummy);
     tower.subscribe('channel2')(dummy2);

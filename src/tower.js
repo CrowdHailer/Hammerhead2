@@ -11,6 +11,7 @@
       return function(reaction){
         var channel = channels[topic] = channels[topic] || {};
         channel[uid++] = reaction;
+        return uid;
       };
     }
 
