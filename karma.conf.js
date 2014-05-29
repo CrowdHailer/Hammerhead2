@@ -9,11 +9,13 @@ module.exports = function(config) {
       'src/prefix.js',
       'src/point.js',
       'src/viewbox.js',
+      'src/tower.js',
       'src/agile.js',
       'src/controller.js',
       'spec/point_spec.js',
       'spec/viewbox_spec.js',
       'spec/agile_spec.js',
+      'spec/tower_spec.js',
       'spec/controller_spec.js'
     ],
     exclude: [
