@@ -109,12 +109,13 @@
 
   <script>
     hammertime = Hammer(document);
-    // Hammer.plugins.fakeMultitouch();
+    Hammer.plugins.fakeMultitouch();
     // Hammerhead.Create('the-pear');
     var tower = Tower.getTower();
 
     var alertStart = tower.publish('start');
     var alertDrag = tower.publish('drag');
+    var alertPinch = tower.publish('pinch');
 
     var starElement = $('svg')[0];
 
@@ -125,18 +126,27 @@
     function watchTouch(event){
       if (event.target.ownerSVGElement === starElement) {
         this.drag = handleDrag;
+        this.pinch = handlePinch;
         alertStart(starElement);
         return this;
       }
     }
 
     function handleDrag(event){
-      alertDrag(starElement);
+      this.pinch = false;
+      alertDrag({element: starElement, delta: {x: event.gesture.deltaX, y: event.gesture.deltaY}});
       return this;
     }
 
-    hammertime.on('touch drag', function(event){
+    function handlePinch(event){
+      this.drag = false;
+      alertPinch({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
+      return this;
+    }
+
+    hammertime.on('touch drag pinch', function(event){
       event.gesture.preventDefault();
+      // console.log(event.type);
 
       if(handlers[event.type]) {
         handlers = handlers[event.type].call(handlers, event);
@@ -162,16 +172,8 @@
       if(dragLog) {console.log(topic, data);}
     });
 
-    tower.subscribe('pinch', function(){
-      if(pinchLog) {console.log('pinch');}
-    });
-
-    tower.subscribe('end', function(){
-      if(endLog) {console.log('end');}
-    });
-
-    tower.subscribe('resize', function(){
-      if(resizeLog) {console.log('resize');}
+    tower.subscribe('pinch')(function(data, topic){
+      if(pinchLog) {console.log(topic, data);}
     });
 
     ////////////////////////////////////
