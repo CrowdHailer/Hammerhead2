@@ -48,10 +48,6 @@
       updateOverspill();
     });
 
-    pubsubz.subscribe('start', function(){
-      console.log('start');
-    });
-
     pubsubz.subscribe('end', function(){
       agile.fix();
       var newString = Hammerhead.ViewBox.attrString(agile.getCurrent());
