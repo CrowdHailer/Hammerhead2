@@ -109,31 +109,46 @@
 
   <script>
     hammertime = Hammer(document);
-    Hammer.plugins.fakeMultitouch();
-    Hammerhead.Create('the-pear');
+    // Hammer.plugins.fakeMultitouch();
+    // Hammerhead.Create('the-pear');
+    var tower = Tower.getTower();
+
+    var alertStart = tower.publish('start');
+    var alertDrag = tower.publish('drag');
+
+    hammertime.on('touch', function(event){
+      event.gesture.preventDefault();
+      alertStart(event.gesture);
+    });
+
+    hammertime.on('drag', function(event){
+      event.gesture.preventDefault();
+      alertDrag(event.gesture);
+    });
+
 
 
     // All debug code
     //////////////////////////////////////
     var startLog = dragLog = pinchLog = endLog = resizeLog = true;
 
-    pubsubz.subscribe('start', function(){
-      if(startLog) {console.log('start');}
+    tower.subscribe('start')(function(data, topic){
+      if(startLog) {console.log(topic, data);}
     });
 
-    pubsubz.subscribe('drag', function(){
-      if(dragLog) {console.log('drag');}
+    tower.subscribe('drag')(function(data, topic){
+      if(dragLog) {console.log(topic, data);}
     });
 
-    pubsubz.subscribe('pinch', function(){
+    tower.subscribe('pinch', function(){
       if(pinchLog) {console.log('pinch');}
     });
 
-    pubsubz.subscribe('end', function(){
+    tower.subscribe('end', function(){
       if(endLog) {console.log('end');}
     });
 
-    pubsubz.subscribe('resize', function(){
+    tower.subscribe('resize', function(){
       if(resizeLog) {console.log('resize');}
     });
 

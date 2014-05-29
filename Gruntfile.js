@@ -12,6 +12,7 @@ module.exports = function(grunt) {
           'src/viewbox.js',
           'src/agile.js',
           'src/pubsub.js',
+          'src/tower.js',
           'src/controller.js',
           'src/main.js'
         ],
