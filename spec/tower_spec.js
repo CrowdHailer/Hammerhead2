@@ -20,6 +20,18 @@ describe('tower', function(){
     expect(dummy2).toHaveBeenCalledWith({x: 1});
   });
 
+  it('should return true if it has published to any listeners', function(){
+    //option silent listeners
+    tower.subscribe('channel1')(dummy);
+    var response = tower.publish('channel1')({x: 1});
+    expect(response).toBe(true);
+  });
+
+  it('should respond false if there are no listeners', function(){
+    var response = tower.publish('channelEmpty')({x: 1});
+    expect(response).toBe(false);
+  });
+
   it('should create a singleton instance of tower', function(){
     var otherTower = Tower.getTower();
     expect(otherTower).toBe(tower);

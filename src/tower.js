@@ -17,9 +17,12 @@
 
     function publish(topic){
       return function(content){
-        _.each(function(action){
+        var response = false;
+        _.eachObject(function(action){
           action(content);
-        })(channels[topic]);
+          response = true;
+        })(channels[topic] || {});
+        return response;
       };
     }
 
