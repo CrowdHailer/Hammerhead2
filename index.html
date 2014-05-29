@@ -195,6 +195,13 @@
 
     updateOverspill();
 
+    var resizeReaction = _.debounce(400)(function(){
+      updateOverspill();
+      console.log('resize ah ha');
+    });
+
+    tower.subscribe('resize')(resizeReaction);
+
     // All debug code
     //////////////////////////////////////
     var startLog = dragLog = pinchLog = endLog = resizeLog = true;
