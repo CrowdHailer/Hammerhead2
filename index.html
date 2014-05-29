@@ -153,19 +153,18 @@
       return this;
     }
 
-    hammertime.on('touch drag pinch release', function(event){
+    function gestureHandler(event){
       event.gesture.preventDefault();
-      // console.log(event.type);
       if(handlers[event.type]) {
         handlers = handlers[event.type].call(handlers, event);
       }
-      console.log(handlers);
-    });
+    }
 
-    // hammertime.on('drag', function(event){
-    //   event.gesture.preventDefault();
-    //   alertDrag(event.gesture);
-    // });
+    hammertime.on('touch drag pinch release', gestureHandler);
+
+    function kill (){
+      hammertime.off('touch drag pinch release', gestureHandler);
+    }
 
 
 
