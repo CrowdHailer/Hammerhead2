@@ -301,6 +301,7 @@ Hammerhead = {};
     };
 
     var trackDrag = function(event){
+      console.log(event.type);
       if (event.type === 'drag') {
         pubsubz.publish('drag', event.gesture);
       } else if (event.type === 'release') {
@@ -323,6 +324,9 @@ Hammerhead = {};
     };
 
     hammertime.on('touch drag pinch release', gestureHandler);
+    hammertime.on('touch drag pinch release', function(event){
+      console.log('ruddy', event.type);
+    });
     currentHandler = watchTouch;
 
     function kill(){
@@ -343,8 +347,6 @@ Hammerhead = {};
 (function(parent){
   var $window = $(window);
 
-  var hammertime = Hammer(document);
-
   var publishResize = _.debounce(function(event){
     pubsubz.publish('resize');
   }, 400);
@@ -360,13 +362,15 @@ Hammerhead = {};
     };
   }
 
-  function create(elementId){
+  function create(elementId, options){
     var $el = $('#' + elementId);
     var el = $el[0];
 
+    console.log('started with options ', options);
+
     var updateOverspill = setOverspill($el);
 
-    Hammerhead.Controller(el, {hammertime: hammertime});
+    Hammerhead.Controller(el, {hammertime: options.hammertime});
     var agile = Hammerhead.AgileView(el);
 
     // Initial styling
