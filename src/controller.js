@@ -50,6 +50,9 @@
     };
 
     hammertime.on('touch drag pinch release', gestureHandler);
+    hammertime.on('touch drag pinch release', function(event){
+      console.log('ruddy', event.type);
+    });
     currentHandler = watchTouch;
 
     function kill(){
