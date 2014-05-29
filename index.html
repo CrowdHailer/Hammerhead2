@@ -171,6 +171,11 @@
     activate();
 
 
+    var alertResize = tower.publish('resize');
+
+    $(window).on('resize', function(){
+      alertResize('window resized');
+    });
 
     // All debug code
     //////////////////////////////////////
@@ -189,6 +194,10 @@
     });
 
     tower.subscribe('end')(function(data, topic){
+      if(pinchLog) {console.log(topic, data);}
+    });
+
+    tower.subscribe('resize')(function(data, topic){
       if(pinchLog) {console.log(topic, data);}
     });
 
