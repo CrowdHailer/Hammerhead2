@@ -160,11 +160,15 @@
       }
     }
 
-    hammertime.on('touch drag pinch release', gestureHandler);
+    function activate(){
+      hammertime.on('touch drag pinch release', gestureHandler);
+    }
 
-    function kill (){
+    function deactivate(){
       hammertime.off('touch drag pinch release', gestureHandler);
     }
+
+    activate();
 
 
 
