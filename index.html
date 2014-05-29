@@ -218,6 +218,18 @@
 
     console.log(createSVGMatrixfromScale(3));
 
+    /////////////////////////////////////////
+
+    function interpolate(s, args) {
+      var i = 0;
+      return s.replace(/%(?:\(([^)]+)\))?([%diouxXeEfFgGcrs])/g, function (match, v, t) {
+          if (t == "%") return "%";
+          return args[v || i++];
+      });
+    }
+
+    console.log( interpolate('(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)', createSVGMatrixfromScale(3)));
+
     // All debug code
     //////////////////////////////////////
     var startLog = dragLog = pinchLog = endLog = resizeLog = true;
