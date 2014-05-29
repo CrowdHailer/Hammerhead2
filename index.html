@@ -117,20 +117,30 @@
     var alertDrag = tower.publish('drag');
 
     var starElement = $('svg')[0];
+
+    var handlers = {
+      touch: watchTouch
+    };
+
+    function watchTouch(event){
+      if (event.target.ownerSVGElement === starElement) {
+        this.drag = handleDrag;
+        alertStart(starElement);
+        return this;
+      }
+    }
+
+    function handleDrag(event){
+      alertDrag(starElement);
+      return this;
+    }
+
     hammertime.on('touch drag', function(event){
       event.gesture.preventDefault();
 
-      function watchTouch(event){
-        if (event.target.ownerSVGElement === starElement) {
-          console.log('yes');
-        }
+      if(handlers[event.type]) {
+        handlers = handlers[event.type].call(handlers, event);
       }
-
-      handlers = {
-        touch: watchTouch
-      };
-
-      handlers[event.type] && handlers[event.type](event);
     });
 
     // hammertime.on('drag', function(event){
