@@ -19,7 +19,7 @@
       return function(content){
         var response = false;
         _.eachObject(function(action){
-          action(content);
+          action(content, topic);
           response = true;
         })(channels[topic] || {});
         return response;

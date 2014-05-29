@@ -9,15 +9,15 @@ describe('tower', function(){
   it('should publish events to the subscribed handler', function(){
     tower.subscribe('channel1')(dummy);
     tower.publish('channel1')({x: 1});
-    expect(dummy).toHaveBeenCalledWith({x: 1});
+    expect(dummy).toHaveBeenCalledWith({x: 1}, 'channel1');
   });
 
   it('should publish events to all the subscribed handlers', function(){
     tower.subscribe('channel1')(dummy);
     tower.subscribe('channel1')(dummy2);
     tower.publish('channel1')({x: 1});
-    expect(dummy).toHaveBeenCalledWith({x: 1});
-    expect(dummy2).toHaveBeenCalledWith({x: 1});
+    expect(dummy).toHaveBeenCalledWith({x: 1}, 'channel1');
+    expect(dummy2).toHaveBeenCalledWith({x: 1}, 'channel1');
   });
 
   it('should return true if it has published to any listeners', function(){
@@ -63,10 +63,10 @@ describe('tower', function(){
     tower.subscribe('channel1')(dummy);
     tower.subscribe('channel2')(dummy2);
     tower.publish('channel1')({x: 1});
-    expect(dummy).toHaveBeenCalledWith({x: 1});
-    expect(dummy2).not.toHaveBeenCalledWith({x: 1});
+    expect(dummy).toHaveBeenCalledWith({x: 1}, 'channel1');
+    expect(dummy2).not.toHaveBeenCalledWith({x: 1}, 'channel1');
     tower.publish('channel2')({x: 2});
-    expect(dummy).not.toHaveBeenCalledWith({x: 2});
-    expect(dummy2).toHaveBeenCalledWith({x: 2});
+    expect(dummy).not.toHaveBeenCalledWith({x: 2}, 'channel2');
+    expect(dummy2).toHaveBeenCalledWith({x: 2}, 'channel2');
   });
 });
