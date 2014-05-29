@@ -31,6 +31,13 @@ describe('tower', function(){
     expect(uid2).not.toBe(uid1);
   });
 
+  it('should be possible to unsubscribe with a uid and topic', function(){
+    var uid = tower.subscribe('channelX')(dummy);
+    tower.unsubscribe('channelX')(uid);
+    tower.publish('channelX')({x: 1});
+    expect(dummy).not.toHaveBeenCalled();
+  });
+
   it('should publish events to only the correct channel', function(){
     tower.subscribe('channel1')(dummy);
     tower.subscribe('channel2')(dummy2);

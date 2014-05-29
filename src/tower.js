@@ -5,12 +5,12 @@
 
   function init(){
     var channels = {};
-    var uid = 0;
+    var uid = -1;
 
     function subscribe(topic){
       return function(reaction){
         var channel = channels[topic] = channels[topic] || {};
-        channel[uid++] = reaction;
+        channel[++uid] = reaction;
         return uid;
       };
     }
@@ -23,8 +23,15 @@
       };
     }
 
+    function unsubscribe(topic){
+      return function(uid){
+        delete channels[topic][uid];
+      };
+    }
+
     return{
       subscribe: subscribe,
+      unsubscribe: unsubscribe,
       publish: publish
     };
   }
