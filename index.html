@@ -284,29 +284,35 @@
       'transform-origin': '50% 50%'
     });
 
+    var matrixString;
+
     tower.subscribe('drag')(function(data, topic){
       var dx = data.delta.x;
       var dy = data.delta.y;
       var matrix = createSVGMatrixfromTranslation(dx, dy);
-      var matrixString = matrixAsCss(matrix);
-      console.log(matrixString);
-      $svg.css({
-        '-webkit-transform': matrixString,
-        '-ms-transform': matrixString,
-        'transform': matrixString});
+      matrixString = matrixAsCss(matrix);
       pt = Hammerhead.Point(data.delta);
       // agile.drag(pt);
     });
 
     tower.subscribe('pinch')(function(data, topic){
       var matrix = createSVGMatrixfromScale(data.scale);
-      var matrixString = matrixAsCss(matrix);
+      matrixString = matrixAsCss(matrix);
+    });
+
+    ///////////////////////////
+
+    function render(){
       $svg.css({
         '-webkit-transform': matrixString,
         '-ms-transform': matrixString,
         'transform': matrixString
       });
-    });
+      requestAnimationFrame( render );
+    }
+
+    requestAnimationFrame( render );
+
 
     // All debug code
     //////////////////////////////////////
