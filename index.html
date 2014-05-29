@@ -322,6 +322,14 @@
       cancelAnimationFrame(aniFrame);
     }
 
+    tower.subscribe('start')(function(data, topic){
+      beginAnimation();
+    });
+
+    tower.subscribe('end')(function(data, topic){
+      decistAnimation();
+    });
+
 
     // All debug code
     //////////////////////////////////////
