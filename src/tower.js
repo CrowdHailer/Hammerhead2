@@ -8,13 +8,15 @@
 
     function subscribe(channel){
       return function(reaction){
-        channels[channel] = reaction;
+        channels[channel] ? channels[channel].push(reaction) : channels[channel] = [reaction];
       };
     }
 
     function publish(channel){
       return function(content){
-        channels[channel](content);
+        _.each(function(action){
+          action(content);
+        })(channels[channel]);
       };
     }
 
