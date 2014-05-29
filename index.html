@@ -116,15 +116,27 @@
     var alertStart = tower.publish('start');
     var alertDrag = tower.publish('drag');
 
-    hammertime.on('touch', function(event){
+    var starElement = $('svg')[0];
+    hammertime.on('touch drag', function(event){
       event.gesture.preventDefault();
-      alertStart(event.gesture);
+
+      function watchTouch(event){
+        if (event.target.ownerSVGElement === starElement) {
+          console.log('yes');
+        }
+      }
+
+      handlers = {
+        touch: watchTouch
+      };
+
+      handlers[event.type] && handlers[event.type](event);
     });
 
-    hammertime.on('drag', function(event){
-      event.gesture.preventDefault();
-      alertDrag(event.gesture);
-    });
+    // hammertime.on('drag', function(event){
+    //   event.gesture.preventDefault();
+    //   alertDrag(event.gesture);
+    // });
 
 
 
