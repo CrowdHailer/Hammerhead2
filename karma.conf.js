@@ -5,7 +5,7 @@ module.exports = function(config) {
     files: [
       'bower_components/hammerjs/hammer.js',
       'bower_components/cumin/dist/cumin.js',
-      'bower_components/pubsubz/pubsubz.js',
+      'src/pubsub.js',
       'src/prefix.js',
       'src/point.js',
       'src/viewbox.js',
