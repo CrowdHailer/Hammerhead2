@@ -15,8 +15,7 @@
     var tmp = darkSVG.createSVGPoint();
     tmp.x = x || 0;
     tmp.y = y || 0;
-    // Object.freeze(tmp);
-    return tmp;
+    return Object.freeze(tmp);
   }
 
   function createFromCoordinate(point){
