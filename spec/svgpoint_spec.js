@@ -101,7 +101,7 @@ describe('Point', function(){
       expect(Object.isFrozen(p3)).toBe(true);
     });
   });
-  xdescribe('comparison operations "curried"', function(){
+  describe('comparison operations "curried"', function(){
     var p1, p2, p3;
     it('should calculate BBox min', function(){
       p1 = Pt(4, 3);
