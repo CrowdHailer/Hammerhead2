@@ -1,6 +1,7 @@
-
 (function(parent){
   "use strict";
+
+  var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
   function create(x, y){
     if (isObj(x)) {
       if (x.x) {
@@ -11,7 +12,11 @@
         return createFromDisplacementVector(x);
       }
     }
-    return Object.freeze({x: x || 0, y: y || 0});
+    var tmp = darkSVG.createSVGPoint();
+    tmp.x = x || 0;
+    tmp.y = y || 0;
+    // Object.freeze(tmp);
+    return tmp;
   }
 
   function createFromCoordinate(point){
@@ -66,14 +71,6 @@
       return create(x, y);
     };
   }
-
-  var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-
-  var svgPoint = darkSVG.createSVGPoint();
-
-  var mt = svgPoint.matrixTransform;
-
-  console.log(svgPoint);
 
   function matrixTransform(m){
     return function(q){
