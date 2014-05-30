@@ -1,5 +1,9 @@
 (function(parent){
   "use strict";
+
+  var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+  var origin = darkSVG.createSVGPoint();
+
   function create(x, y){
     if (isObj(x)) {
       if (x.x) {
@@ -10,7 +14,10 @@
         return createFromDisplacementVector(x);
       }
     }
-    return Object.freeze({x: x || 0, y: y || 0});
+    var tmp = darkSVG.createSVGPoint();
+    tmp.x = x || 0;
+    tmp.y = y || 0;
+    return Object.freeze(tmp);
   }
 
   function createFromCoordinate(point){
@@ -66,25 +73,13 @@
     };
   }
 
-  var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-
-  var svgPoint = darkSVG.createSVGPoint();
-
-  var mt = svgPoint.matrixTransform;
-
-  console.log(svgPoint);
-
   function matrixTransform(m){
     return function(q){
-      var newp = mt.apply(svgPoint, [m]);
-      console.log(newp);
-    //   var x = m.a * q.x + m.c * q.y + m.e;
-    //   var y = m.b * q.x + m.d * q.y + m.f;
-    //   return create(x, y);
+      return Object.freeze(q.matrixTransform(m));
     };
   }
 
-  var methodsToExtend = _.extend({
+  parent.Point = _.extend({
     createFromCoordinate: createFromCoordinate,
     createFromPagePoint: createFromPagePoint,
     createFromDisplacementVector: createFromDisplacementVector,
@@ -95,8 +90,5 @@
     min: min,
     max: max,
     matrixTransform: matrixTransform
-  });
-
-  methodsToExtend(create);
-  parent.Point = create;
+  })(create);
 }(Hammerhead));
