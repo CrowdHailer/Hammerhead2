@@ -121,18 +121,23 @@ describe('Point', function(){
       expect(Object.isFrozen(p3)).toBe(true);
     });
   });
-  xdescribe('matrix operations "curried"', function(){
-    var m1, m2, pt, qt;
-    it('should scale by matrix', function(){
+  describe('matrix operations "curried"', function(){
+    var m, m1, pt, qt;
+    var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+    beforeEach(function(){
+      m = darkSVG.createSVGMatrix();
       pt = Pt(2, 3);
+    });
+    it('should scale by matrix', function(){
       m1 = {a: 2, b: 0, c: 0, d: 2, e: 0, f: 0};
-      qt = Pt.matrixTransform(m1)(pt);
+      _.extend(m1)(m);
+      qt = Pt.matrixTransform(m)(pt);
       expect(qt.x).toEqual(4);
       expect(qt.y).toEqual(6);
       expect(Object.isFrozen(qt)).toBe(true);
     });
 
-    it('should rotate by matrix', function(){
+    xit('should rotate by matrix', function(){
       pt = Pt(2, 3);
       m1 = {a: 0, b: 1, c: -1, d: 0, e: 0, f: 0};
       qt = Pt.matrixTransform(m1)(pt);
@@ -141,7 +146,7 @@ describe('Point', function(){
       expect(Object.isFrozen(qt)).toBe(true);
     });
 
-    it('should translate by matrix', function(){
+    xit('should translate by matrix', function(){
       pt = Pt(2, 3);
       m1 = {a: 1, b: 0, c: 0, d: 1, e: 10, f: 20};
       qt = Pt.matrixTransform(m1)(pt);

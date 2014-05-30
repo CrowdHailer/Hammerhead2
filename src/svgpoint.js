@@ -2,6 +2,8 @@
   "use strict";
 
   var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+  var origin = darkSVG.createSVGPoint();
+
   function create(x, y){
     if (isObj(x)) {
       if (x.x) {
@@ -73,11 +75,7 @@
 
   function matrixTransform(m){
     return function(q){
-      var newp = mt.apply(svgPoint, [m]);
-      console.log(newp);
-    //   var x = m.a * q.x + m.c * q.y + m.e;
-    //   var y = m.b * q.x + m.d * q.y + m.f;
-    //   return create(x, y);
+      return Object.freeze(q.matrixTransform(m));
     };
   }
 
