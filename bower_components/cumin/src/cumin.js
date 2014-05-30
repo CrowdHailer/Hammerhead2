@@ -233,6 +233,7 @@ var _ = (function(){
       eachObject(function(value, key){
         object[key] = value;
       })(extra);
+      return object;
     };
   }
 

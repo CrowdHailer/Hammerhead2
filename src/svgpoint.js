@@ -79,7 +79,7 @@
     };
   }
 
-  var methodsToExtend = _.extend({
+  parent.Point = _.extend({
     createFromCoordinate: createFromCoordinate,
     createFromPagePoint: createFromPagePoint,
     createFromDisplacementVector: createFromDisplacementVector,
@@ -90,8 +90,5 @@
     min: min,
     max: max,
     matrixTransform: matrixTransform
-  });
-
-  methodsToExtend(create);
-  parent.Point = create;
+  })(create);
 }(Hammerhead));
