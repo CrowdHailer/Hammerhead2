@@ -137,19 +137,19 @@ describe('Point', function(){
       expect(Object.isFrozen(qt)).toBe(true);
     });
 
-    xit('should rotate by matrix', function(){
-      pt = Pt(2, 3);
+    it('should rotate by matrix', function(){
       m1 = {a: 0, b: 1, c: -1, d: 0, e: 0, f: 0};
-      qt = Pt.matrixTransform(m1)(pt);
+      _.extend(m1)(m);
+      qt = Pt.matrixTransform(m)(pt);
       expect(qt.x).toEqual(-3);
       expect(qt.y).toEqual(2);
       expect(Object.isFrozen(qt)).toBe(true);
     });
 
-    xit('should translate by matrix', function(){
-      pt = Pt(2, 3);
+    it('should translate by matrix', function(){
       m1 = {a: 1, b: 0, c: 0, d: 1, e: 10, f: 20};
-      qt = Pt.matrixTransform(m1)(pt);
+      _.extend(m1)(m);
+      qt = Pt.matrixTransform(m)(pt);
       expect(qt.x).toEqual(12);
       expect(qt.y).toEqual(23);
       expect(Object.isFrozen(qt)).toBe(true);
