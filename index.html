@@ -336,26 +336,19 @@
     //////////////////////////////////////
     var startLog = dragLog = pinchLog = endLog = resizeLog = true;
 
-    tower.subscribe('start')(function(data, topic){
-      if(startLog) {console.log(topic, data);}
-    });
+    var allChannels = ['start', 'drag', 'pinch', 'end', 'resize'];
 
-    tower.subscribe('drag')(function(data, topic){
-      if(dragLog) {console.log(topic, data);}
-    });
+    function log (){
+      console.log.apply(console, arguments);
+    }
 
-    tower.subscribe('pinch')(function(data, topic){
-      if(pinchLog) {console.log(topic, data);}
-    });
+    var logChannel = function(channelSubscribe){
+      channelSubscribe(log);
+    };
 
-    tower.subscribe('end')(function(data, topic){
-      if(pinchLog) {console.log(topic, data);}
-    });
+    _.compose(_.map(logChannel), _.map(tower.subscribe))(allChannels);
 
-    tower.subscribe('resize')(function(data, topic){
-      if(pinchLog) {console.log(topic, data);}
-    });
-
+    // create log and log2 function
     ////////////////////////////////////
   </script>
 </body>
