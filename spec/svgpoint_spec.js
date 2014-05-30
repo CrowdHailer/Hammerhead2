@@ -150,18 +150,5 @@ describe('Point', function(){
       expect(Object.isFrozen(qt)).toBe(true);
     });
   });
-  describe('collected operations', function(){
-    it('should map points', function(){
 
-    });
-    it('NO TESTS - DEMO ONLY', function(){
-      var collection = [Pt(2, 3), Pt(0, 1), Pt(-2, 0)];
-      var double = Pt.scalar(2);
-      var scaledCollection = _.map(double)(collection);
-      console.log(scaledCollection);
-      var translate = Pt.add(Pt(0, 10));
-      var translatedCollection = _.map(translate)(collection);
-      console.log(translatedCollection);
-    });
-  });
 });
