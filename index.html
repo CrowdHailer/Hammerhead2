@@ -204,6 +204,37 @@
       };
     }(Tower.getTower()));
 
+    var managePosition = (function(tower){
+      var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+
+      function createSVGMatrixfromScale(n){
+        return darkSVG.createSVGMatrix().scale(n);
+      }
+
+      function createSVGMatrixfromTranslation(x, y){
+        return darkSVG.createSVGMatrix().translate(x, y);
+      }
+
+      var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
+
+      var identityMatrix = createSVGMatrixfromScale(1);
+
+      var listenStart = tower.subscribe('start');
+      var listenDrag = tower.subscribe('drag');
+      var listenPinch = tower.subscribe('pinch');
+      var listenEnd = tower.subscribe('end');
+
+      return function($element){
+        listenDrag(function(data){
+          console.log(data.element == $element[0]);
+          var string = matrixAsCss(createSVGMatrixfromTranslation(data.delta.x, data.delta.y));
+          console.log(string);
+        });
+
+      };
+
+    }(Tower.getTower()));
+
     hammertime = Hammer(document);
     Hammer.plugins.fakeMultitouch();
     // Hammerhead.Create('the-pear');
@@ -216,13 +247,14 @@
 
       broadcastElement($svg[0]);
 
+      managePosition($svg);
     }
 
     create('the-pear');
 
     ///////////////////////////////////////////
 
-    var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg')
+    var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
 
     function createSVGMatrixfromScale(n){
       return darkSVG.createSVGMatrix().scale(n);
