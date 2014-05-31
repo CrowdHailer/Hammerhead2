@@ -221,20 +221,6 @@
 
     /////////////////////////////////////////
 
-    function interpolate(s) {
-      var i = 0;
-      return function(args){
-        return s.replace(/%(?:\(([^)]+)\))?([%diouxXeEfFgGcrs])/g, function (match, v, t) {
-          if (t == "%") return "%";
-          return args[v || i++];
-        });
-      };
-    }
-
-    console.log( interpolate('(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(createSVGMatrixfromScale(3)));
-
-    ////////////////////////////////////////////////
-
     // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
  
