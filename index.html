@@ -150,7 +150,7 @@
           this.handlers.drag = handleDrag;
           this.handlers.pinch = handlePinch;
           this.handlers.release = endHandler;
-          alertStart(starElement);
+          alertStart(this.getElement());
           // console.log(this);
           return this;
         }
@@ -158,20 +158,20 @@
 
       function handleDrag(event){
         this.handlers.pinch = false;
-        alertDrag({element: starElement, delta: {x: event.gesture.deltaX, y: event.gesture.deltaY}});
+        alertDrag({element: this.getElement(), delta: {x: event.gesture.deltaX, y: event.gesture.deltaY}});
         return this;
       }
 
       function handlePinch(event){
         this.handlers.drag = false;
-        alertPinch({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
+        alertPinch({element: this.getElement(), center: event.gesture.center, scale: event.gesture.scale});
         return this;
       }
 
       function endHandler(event){
         this.handlers.drag = false;
         this.handlers.pinch = false;
-        alertEnd({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
+        alertEnd({element: this.getElement(), center: event.gesture.center, scale: event.gesture.scale});
         return this;
       }
 
@@ -220,14 +220,6 @@
 
     create('the-pear');
 
-    var starElement = $('svg')[0];
-
-    
-
-    
-
-    
-    
     ///////////////////////////////////////////
 
     var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg')
