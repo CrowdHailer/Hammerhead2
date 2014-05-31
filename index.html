@@ -126,6 +126,14 @@
 
       var tower = Belfry.getTower();
 
+      function WatchWindowResize(tower){
+        var alertResize = _.debounce(400)(tower.publish('resize'));
+
+        $(window).on('resize', function(){
+          alertResize();
+        });
+      }
+      WatchWindowResize(tower);
     }
 
     create('the-pear');
@@ -182,14 +190,6 @@
 
     activate();
 
-    /////////////////////////////////////////
-
-    var alertResize = tower.publish('resize');
-
-    $(window).on('resize', function(){
-      alertResize('window resized');
-    });
-
     /////////////////////////////
 
     function setOverspill($element){
@@ -209,7 +209,6 @@
 
     var resizeReaction = _.debounce(400)(function(){
       updateOverspill();
-      console.log('resize ah ha');
     });
 
     tower.subscribe('resize')(resizeReaction);
