@@ -109,239 +109,211 @@
   <script type="text/javascript" src="dist/HammerHead2.js"></script>
 
   <script>
+    var monitorOverflow = (function(tower){
+      function WatchWindowResize(tower){
+        // use with once function added to cumin
+        var alertResize = _.debounce(400)(tower.publish('resize'));
+
+        $(window).on('resize', function(){
+          alertResize();
+        });
+      }
+
+      function setOverspill($element){
+        $parent = $element.parent();
+        return function(){
+          var height = $parent.height();
+          var width = $parent.width();
+          $element.css('margin', -height/2 + ' ' + -width/2);
+          $element.width(width * 2);
+          $element.height(height * 2);
+        };
+      }
+
+      return function(element){ // options debounce time and overflow
+        WatchWindowResize(tower); //run once only
+        var updateOverspill = setOverspill($svg);
+        updateOverspill(); // run once to start;
+        tower.subscribe('resize')(updateOverspill);
+      };
+
+    }(Tower.getTower()));
+
+    var broadcastElement = (function(tower){
+      var alertStart = tower.publish('start');
+      var alertDrag = tower.publish('drag');
+      var alertPinch = tower.publish('pinch');
+      var alertEnd = tower.publish('end');
+
+      function watchTouch(event){
+        if (event.target.ownerSVGElement === this.getElement()) {
+          this.handlers.drag = handleDrag;
+          this.handlers.pinch = handlePinch;
+          this.handlers.release = endHandler;
+          alertStart(this.getElement());
+          // console.log(this);
+          return this;
+        }
+      }
+
+      function handleDrag(event){
+        this.handlers.pinch = false;
+        alertDrag({element: this.getElement(), delta: {x: event.gesture.deltaX, y: event.gesture.deltaY}});
+        return this;
+      }
+
+      function handlePinch(event){
+        this.handlers.drag = false;
+        alertPinch({element: this.getElement(), center: event.gesture.center, scale: event.gesture.scale});
+        return this;
+      }
+
+      function endHandler(event){
+        this.handlers.drag = false;
+        this.handlers.pinch = false;
+        alertEnd({element: this.getElement(), center: event.gesture.center, scale: event.gesture.scale});
+        return this;
+      }
+
+      return function(element){
+        var instance = Object.create({});
+        instance.getElement = function(){
+          return element;
+        };
+        instance.handlers = {
+          touch: watchTouch,
+        };
+
+        function gestureHandler(event){
+          event.gesture.preventDefault();
+          if(instance.handlers[event.type]) {
+            instance = instance.handlers[event.type].call(instance, event);
+          }
+        }
+
+        instance.activate = function activate(){
+          hammertime.on('touch drag pinch release', gestureHandler);
+        };
+
+        instance.deactivate = function deactivate(){
+          hammertime.off('touch drag pinch release', gestureHandler);
+        };
+
+        instance.activate();
+
+      };
+    }(Tower.getTower()));
+
+    var managePosition = (function(tower){
+      var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+
+      function createSVGMatrixfromScale(n){
+        return darkSVG.createSVGMatrix().scale(n);
+      }
+
+      function createSVGMatrixfromTranslation(x, y){
+        return darkSVG.createSVGMatrix().translate(x, y);
+      }
+
+      var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
+
+      var identityMatrix = createSVGMatrixfromScale(1);
+
+      var listenStart = tower.subscribe('start');
+      var listenDrag = tower.subscribe('drag');
+      var listenPinch = tower.subscribe('pinch');
+      var listenEnd = tower.subscribe('end');
+
+      return function($element){
+        var matrixString;
+        var agile = Hammerhead.AgileView($element[0]);
+
+        listenDrag(function(data){
+          var matrix = createSVGMatrixfromTranslation(data.delta.x, data.delta.y);
+          matrixString = matrixAsCss(matrix);
+          pt = Hammerhead.Point(data.delta);
+          agile.drag(pt);
+        });
+
+        listenPinch(function(data, topic){
+          var matrix = createSVGMatrixfromScale(data.scale);
+          matrixString = matrixAsCss(matrix);
+          pt = Hammerhead.Point(data.center);
+          agile.zoom(data.scale);
+        });
+
+        listenEnd(function(){
+          agile.fix();
+          var vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+          console.log(vbString);
+          matrixString =  matrixAsCss(identityMatrix);
+          $element.attr('viewBox', vbString);
+        });
+
+        var aniFrame;
+
+        function render(){
+          $element.css({
+            '-webkit-transform': matrixString,
+            '-ms-transform': matrixString,
+            'transform': matrixString
+          });
+          aniFrame = requestAnimationFrame( render );
+        }
+
+
+        function beginAnimation(){
+          aniFrame = requestAnimationFrame( render );
+        }
+
+        function decistAnimation(){
+          // cancelAnimationFrame(aniFrame);
+        }
+
+        tower.subscribe('start')(function(data, topic){
+          beginAnimation();
+        });
+
+        tower.subscribe('end')(function(data, topic){
+          decistAnimation();
+        });
+
+        $element.css({
+          '-webkit-transform': matrixAsCss(identityMatrix),
+          'transform': matrixAsCss(identityMatrix),
+          '-webkit-backface-visibility': 'hidden',
+          '-webkit-transform-origin': '50% 50%',
+          '-ms-transform-origin': '50% 50%',
+          'transform-origin': '50% 50%'
+        });
+
+      };
+
+    }(Tower.getTower()));
+
     hammertime = Hammer(document);
     Hammer.plugins.fakeMultitouch();
     // Hammerhead.Create('the-pear');
     var tower = Tower.getTower();
 
-    var alertStart = tower.publish('start');
-    var alertDrag = tower.publish('drag');
-    var alertPinch = tower.publish('pinch');
-    var alertEnd = tower.publish('end');
+    function create(id){
+      $svg = $('svg#'+id);
 
-    var starElement = $('svg')[0];
+      monitorOverflow($svg);
 
-    var handlers = {
-      touch: watchTouch
-    };
+      broadcastElement($svg[0]);
 
-    function watchTouch(event){
-      if (event.target.ownerSVGElement === starElement) {
-        this.drag = handleDrag;
-        this.pinch = handlePinch;
-        this.release = endHandler;
-        alertStart(starElement);
-        return this;
-      }
+      managePosition($svg);
     }
 
-    function handleDrag(event){
-      this.pinch = false;
-      alertDrag({element: starElement, delta: {x: event.gesture.deltaX, y: event.gesture.deltaY}});
-      return this;
-    }
-
-    function handlePinch(event){
-      this.drag = false;
-      alertPinch({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
-      return this;
-    }
-
-    function endHandler(event){
-      this.drag = false;
-      this.pinch = false;
-      alertEnd({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
-      return this;
-    }
-
-    function gestureHandler(event){
-      event.gesture.preventDefault();
-      if(handlers[event.type]) {
-        handlers = handlers[event.type].call(handlers, event);
-      }
-    }
-
-    function activate(){
-      hammertime.on('touch drag pinch release', gestureHandler);
-    }
-
-    function deactivate(){
-      hammertime.off('touch drag pinch release', gestureHandler);
-    }
-
-    activate();
-
-    /////////////////////////////////////////
-
-    var alertResize = tower.publish('resize');
-
-    $(window).on('resize', function(){
-      alertResize('window resized');
-    });
-
-    /////////////////////////////
-
-    function setOverspill($element){
-      $parent = $element.parent();
-      return function(){
-        var height = $parent.height();
-        var width = $parent.width();
-        $element.css('margin', -height/2 + ' ' + -width/2);
-        $element.width(width * 2);
-        $element.height(height * 2);
-      };
-    }
-
-    var updateOverspill = setOverspill($('svg'));
-
-    updateOverspill();
-
-    var resizeReaction = _.debounce(400)(function(){
-      updateOverspill();
-      console.log('resize ah ha');
-    });
-
-    tower.subscribe('resize')(resizeReaction);
-
-    ///////////////////////////////////////////
-
-    var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg')
-
-    function createSVGMatrixfromScale(n){
-      return darkSVG.createSVGMatrix().scale(n);
-    }
-
-    function createSVGMatrixfromTranslation(x, y){
-      return darkSVG.createSVGMatrix().translate(x, y);
-    }
-
-    console.log(createSVGMatrixfromTranslation(30, 200));
-
-    console.log(createSVGMatrixfromScale(3));
-
-    /////////////////////////////////////////
-
-    function interpolate(s) {
-      var i = 0;
-      return function(args){
-        return s.replace(/%(?:\(([^)]+)\))?([%diouxXeEfFgGcrs])/g, function (match, v, t) {
-          if (t == "%") return "%";
-          return args[v || i++];
-        });
-      };
-    }
-
-    console.log( interpolate('(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(createSVGMatrixfromScale(3)));
-
-    ////////////////////////////////////////////////
-
-    // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
- 
-// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
- 
-// MIT license
- 
-    (function() {
-        var lastTime = 0;
-        var vendors = ['ms', 'moz', 'webkit', 'o'];
-        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-            window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
-                                       || window[vendors[x]+'CancelRequestAnimationFrame'];
-        }
-     
-        if (!window.requestAnimationFrame)
-            window.requestAnimationFrame = function(callback, element) {
-                var currTime = new Date().getTime();
-                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-                var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
-                  timeToCall);
-                lastTime = currTime + timeToCall;
-                return id;
-            };
-     
-        if (!window.cancelAnimationFrame)
-            window.cancelAnimationFrame = function(id) {
-                clearTimeout(id);
-            };
-    }());
-
-
-    ////////////////////////////////////////////////
-
-    var $svg = $('svg');
-
-    var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
-
-    var identityMatrix = createSVGMatrixfromScale(1);
-
-    $svg.css({
-      '-webkit-transform': matrixAsCss(identityMatrix),
-      'transform': matrixAsCss(identityMatrix),
-      '-webkit-backface-visibility': 'hidden',
-      '-webkit-transform-origin': '50% 50%',
-      '-ms-transform-origin': '50% 50%',
-      'transform-origin': '50% 50%'
-    });
-
-    var matrixString;
-
-    tower.subscribe('drag')(function(data, topic){
-      var dx = data.delta.x;
-      var dy = data.delta.y;
-      var matrix = createSVGMatrixfromTranslation(dx, dy);
-      matrixString = matrixAsCss(matrix);
-      pt = Hammerhead.Point(data.delta);
-      // agile.drag(pt);
-    });
-
-    tower.subscribe('pinch')(function(data, topic){
-      var matrix = createSVGMatrixfromScale(data.scale);
-      matrixString = matrixAsCss(matrix);
-    });
-
-    ///////////////////////////
-
-    var aniFrame;
-
-    function render(){
-      $svg.css({
-        '-webkit-transform': matrixString,
-        '-ms-transform': matrixString,
-        'transform': matrixString
-      });
-      aniFrame = requestAnimationFrame( render );
-    }
-
-
-    function beginAnimation(){
-      aniFrame = requestAnimationFrame( render );
-    }
-
-    function decistAnimation(){
-      cancelAnimationFrame(aniFrame);
-    }
-
-    tower.subscribe('start')(function(data, topic){
-      beginAnimation();
-    });
-
-    tower.subscribe('end')(function(data, topic){
-      decistAnimation();
-    });
-
+    create('the-pear');
 
     // All debug code
-    //////////////////////////////////////
-    var startLog = dragLog = pinchLog = endLog = resizeLog = true;
 
     var allChannels = ['start', 'drag', 'pinch', 'end', 'resize'];
 
     _.map(_.compose(_.invoke(_.log), tower.subscribe))(allChannels);
 
-    // create log and log2 function
-    ////////////////////////////////////
   </script>
 </body>
 </html>
