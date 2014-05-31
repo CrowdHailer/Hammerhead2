@@ -127,6 +127,7 @@
       var tower = Belfry.getTower();
 
       function WatchWindowResize(tower){
+        // use with once function added to cumin
         var alertResize = _.debounce(400)(tower.publish('resize'));
 
         $(window).on('resize', function(){
@@ -134,6 +135,23 @@
         });
       }
       WatchWindowResize(tower);
+
+      function setOverspill($element){
+        $parent = $element.parent();
+        return function(){
+          var height = $parent.height();
+          var width = $parent.width();
+          $element.css('margin', -height/2 + ' ' + -width/2);
+          $element.width(width * 2);
+          $element.height(height * 2);
+        };
+      }
+
+      var updateOverspill = setOverspill($svg);
+
+      updateOverspill();
+
+      tower.subscribe('resize')(updateOverspill);
     }
 
     create('the-pear');
@@ -189,25 +207,6 @@
     }
 
     activate();
-
-    /////////////////////////////
-
-    function setOverspill($element){
-      $parent = $element.parent();
-      return function(){
-        var height = $parent.height();
-        var width = $parent.width();
-        $element.css('margin', -height/2 + ' ' + -width/2);
-        $element.width(width * 2);
-        $element.height(height * 2);
-      };
-    }
-
-    var updateOverspill = setOverspill($('svg'));
-
-    updateOverspill();
-
-    tower.subscribe('resize')(updateOverspill);
 
     ///////////////////////////////////////////
 
