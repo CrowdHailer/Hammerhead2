@@ -216,6 +216,25 @@ var _ = (function(){
 
 // Object 
 
+  function extend(extra){
+    // adds extra key vales to second passed object
+    return function(object){
+      eachObject(function(value, key){
+        object[key] = value;
+      })(extra);
+      return object;
+    };
+  }
+
+  function augment(object){
+    return function(extra){
+      eachObject(function(value, key){
+        object[key] = value;
+      })(extra);
+      return object;
+    };
+  }
+
   function foundation(object){
     // builds a new object from the properties of a foundation object and extention object.
     return function(extra){
@@ -227,15 +246,16 @@ var _ = (function(){
     };
   }
 
-  function extend(extra){
-    // adds extra key vales to second passed object
+  function overlay(extra){
+    // builds a new object from the properties of a foundation object and extention object.
     return function(object){
-      eachObject(function(value, key){
-        object[key] = value;
-      })(extra);
-      return object;
+      results = {};
+      each(eachObject(function(value, key){
+        results[key] = value;
+      }))(object || {}, extra || {});
+      return FROZEN? Object.freeze(results) : results;
     };
-  }
+  }  
 
 // Function operations
 
@@ -247,6 +267,13 @@ var _ = (function(){
         args = [func.apply(this, args)];
       })(funcs);
       return args[0];
+    };
+  }
+
+  function invoke(){
+    var args = arguments;
+    return function(func){
+      func.apply({}, args);
     };
   }
 
@@ -325,6 +352,14 @@ var _ = (function(){
   function refreeze(){
     FROZEN = true;
   }
+
+  function size(collection){
+    return collection.length || Object.keys(collection).length;
+  }
+
+  function log(){
+    console.log.apply(console, arguments);
+  }
   var _ =  {
     eachArray: eachArray,
     eachArrayRight: eachArrayRight,
@@ -352,9 +387,12 @@ var _ = (function(){
     cleave: cleave,
 
     extend: extend,
+    augment: augment,
     foundation: foundation,
+    overlay: overlay,
 
     compose: compose,
+    invoke: invoke,
     debounce: debounce,
     throttle: throttle,
     not: not,
@@ -368,6 +406,8 @@ var _ = (function(){
     expose: expose,
     defreeze: defreeze,
     refreeze: refreeze,
+    size: size,
+    log: log,
   };
   return _;
 }());
