@@ -333,15 +333,11 @@
 
 
     // All debug code
-    //////////////////////////////////////
-    var startLog = dragLog = pinchLog = endLog = resizeLog = true;
 
     var allChannels = ['start', 'drag', 'pinch', 'end', 'resize'];
 
     _.map(_.compose(_.invoke(_.log), tower.subscribe))(allChannels);
 
-    // create log and log2 function
-    ////////////////////////////////////
   </script>
 </body>
 </html>
