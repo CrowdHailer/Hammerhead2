@@ -109,6 +109,36 @@
   <script type="text/javascript" src="dist/HammerHead2.js"></script>
 
   <script>
+    var monitorOverflow = (function(tower){
+      function WatchWindowResize(tower){
+        // use with once function added to cumin
+        var alertResize = _.debounce(400)(tower.publish('resize'));
+
+        $(window).on('resize', function(){
+          alertResize();
+        });
+      }
+
+      function setOverspill($element){
+        $parent = $element.parent();
+        return function(){
+          var height = $parent.height();
+          var width = $parent.width();
+          $element.css('margin', -height/2 + ' ' + -width/2);
+          $element.width(width * 2);
+          $element.height(height * 2);
+        };
+      }
+
+      return function(element){
+        WatchWindowResize(tower);
+        var updateOverspill = setOverspill($svg);
+        updateOverspill(); // run once;
+        tower.subscribe('resize')(updateOverspill);
+      };
+
+    }(Tower.getTower()));
+
     hammertime = Hammer(document);
     Hammer.plugins.fakeMultitouch();
     // Hammerhead.Create('the-pear');
@@ -125,33 +155,7 @@
       $svg = $('svg#'+id);
 
       var tower = Belfry.getTower();
-
-      function WatchWindowResize(tower){
-        // use with once function added to cumin
-        var alertResize = _.debounce(400)(tower.publish('resize'));
-
-        $(window).on('resize', function(){
-          alertResize();
-        });
-      }
-      WatchWindowResize(tower);
-
-      function setOverspill($element){
-        $parent = $element.parent();
-        return function(){
-          var height = $parent.height();
-          var width = $parent.width();
-          $element.css('margin', -height/2 + ' ' + -width/2);
-          $element.width(width * 2);
-          $element.height(height * 2);
-        };
-      }
-
-      var updateOverspill = setOverspill($svg);
-
-      updateOverspill();
-
-      tower.subscribe('resize')(updateOverspill);
+      monitorOverflow($svg);      
     }
 
     create('the-pear');
