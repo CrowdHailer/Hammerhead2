@@ -338,15 +338,7 @@
 
     var allChannels = ['start', 'drag', 'pinch', 'end', 'resize'];
 
-    function log (){
-      console.log.apply(console, arguments);
-    }
-
-    var logChannel = function(channelSubscribe){
-      channelSubscribe(log);
-    };
-
-    _.compose(_.map(logChannel), _.map(tower.subscribe))(allChannels);
+    _.compose(_.map(_.invoke(_.log)), _.map(tower.subscribe))(allChannels);
 
     // create log and log2 function
     ////////////////////////////////////
