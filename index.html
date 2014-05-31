@@ -225,10 +225,55 @@
       var listenEnd = tower.subscribe('end');
 
       return function($element){
+        var matrixString;
         listenDrag(function(data){
-          console.log(data.element == $element[0]);
-          var string = matrixAsCss(createSVGMatrixfromTranslation(data.delta.x, data.delta.y));
-          console.log(string);
+          var dx = data.delta.x;
+          var dy = data.delta.y;
+          var matrix = createSVGMatrixfromTranslation(dx, dy);
+          matrixString = matrixAsCss(matrix);
+          pt = Hammerhead.Point(data.delta);
+        });
+
+        listenPinch(function(data, topic){
+          var matrix = createSVGMatrixfromScale(data.scale);
+          matrixString = matrixAsCss(matrix);
+        });
+
+        var aniFrame;
+
+        function render(){
+          $element.css({
+            '-webkit-transform': matrixString,
+            '-ms-transform': matrixString,
+            'transform': matrixString
+          });
+          aniFrame = requestAnimationFrame( render );
+        }
+
+
+        function beginAnimation(){
+          aniFrame = requestAnimationFrame( render );
+        }
+
+        function decistAnimation(){
+          cancelAnimationFrame(aniFrame);
+        }
+
+        tower.subscribe('start')(function(data, topic){
+          beginAnimation();
+        });
+
+        tower.subscribe('end')(function(data, topic){
+          decistAnimation();
+        });
+
+        $element.css({
+          '-webkit-transform': matrixAsCss(identityMatrix),
+          'transform': matrixAsCss(identityMatrix),
+          '-webkit-backface-visibility': 'hidden',
+          '-webkit-transform-origin': '50% 50%',
+          '-ms-transform-origin': '50% 50%',
+          'transform-origin': '50% 50%'
         });
 
       };
@@ -251,86 +296,6 @@
     }
 
     create('the-pear');
-
-    ///////////////////////////////////////////
-
-    var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-
-    function createSVGMatrixfromScale(n){
-      return darkSVG.createSVGMatrix().scale(n);
-    }
-
-    function createSVGMatrixfromTranslation(x, y){
-      return darkSVG.createSVGMatrix().translate(x, y);
-    }
-
-    // console.log(createSVGMatrixfromTranslation(30, 200));
-
-    // console.log(createSVGMatrixfromScale(3));
-
-    /////////////////////////////////////////
-
-    var $svg = $('svg');
-
-    var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
-
-    var identityMatrix = createSVGMatrixfromScale(1);
-
-    $svg.css({
-      '-webkit-transform': matrixAsCss(identityMatrix),
-      'transform': matrixAsCss(identityMatrix),
-      '-webkit-backface-visibility': 'hidden',
-      '-webkit-transform-origin': '50% 50%',
-      '-ms-transform-origin': '50% 50%',
-      'transform-origin': '50% 50%'
-    });
-
-    var matrixString;
-
-    tower.subscribe('drag')(function(data, topic){
-      var dx = data.delta.x;
-      var dy = data.delta.y;
-      var matrix = createSVGMatrixfromTranslation(dx, dy);
-      matrixString = matrixAsCss(matrix);
-      pt = Hammerhead.Point(data.delta);
-      // agile.drag(pt);
-    });
-
-    tower.subscribe('pinch')(function(data, topic){
-      var matrix = createSVGMatrixfromScale(data.scale);
-      matrixString = matrixAsCss(matrix);
-    });
-
-    ///////////////////////////
-
-    var aniFrame;
-
-    function render(){
-      $svg.css({
-        '-webkit-transform': matrixString,
-        '-ms-transform': matrixString,
-        'transform': matrixString
-      });
-      aniFrame = requestAnimationFrame( render );
-    }
-
-
-    function beginAnimation(){
-      aniFrame = requestAnimationFrame( render );
-    }
-
-    function decistAnimation(){
-      cancelAnimationFrame(aniFrame);
-    }
-
-    tower.subscribe('start')(function(data, topic){
-      beginAnimation();
-    });
-
-    tower.subscribe('end')(function(data, topic){
-      decistAnimation();
-    });
-
 
     // All debug code
 
