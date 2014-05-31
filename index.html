@@ -130,13 +130,75 @@
         };
       }
 
-      return function(element){
-        WatchWindowResize(tower);
+      return function(element){ // options debounce time and overflow
+        WatchWindowResize(tower); //run once only
         var updateOverspill = setOverspill($svg);
-        updateOverspill(); // run once;
+        updateOverspill(); // run once to start;
         tower.subscribe('resize')(updateOverspill);
       };
 
+    }(Tower.getTower()));
+
+    var broadcastElement = (function(tower){
+      var alertStart = tower.publish('start');
+      var alertDrag = tower.publish('drag');
+      var alertPinch = tower.publish('pinch');
+      var alertEnd = tower.publish('end');
+
+      return function(element){
+
+        function watchTouch(event){
+          if (event.target.ownerSVGElement === starElement) {
+            this.drag = handleDrag;
+            this.pinch = handlePinch;
+            this.release = endHandler;
+            alertStart(starElement);
+            return this;
+          }
+        }
+
+        function handleDrag(event){
+          this.pinch = false;
+          alertDrag({element: starElement, delta: {x: event.gesture.deltaX, y: event.gesture.deltaY}});
+          return this;
+        }
+
+        function handlePinch(event){
+          this.drag = false;
+          alertPinch({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
+          return this;
+        }
+
+        function endHandler(event){
+          this.drag = false;
+          this.pinch = false;
+          alertEnd({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
+          return this;
+        }
+
+        function gestureHandler(event){
+          event.gesture.preventDefault();
+          if(handlers[event.type]) {
+            handlers = handlers[event.type].call(handlers, event);
+          }
+        }
+
+        var handlers = {
+          touch: watchTouch
+        };
+
+        function activate(){
+          hammertime.on('touch drag pinch release', gestureHandler);
+        }
+
+        function deactivate(){
+          hammertime.off('touch drag pinch release', gestureHandler);
+        }
+
+        activate();
+
+
+      };
     }(Tower.getTower()));
 
     hammertime = Hammer(document);
@@ -144,74 +206,25 @@
     // Hammerhead.Create('the-pear');
     var tower = Tower.getTower();
 
-    var Belfry = Tower;
-
-    var alertStart = tower.publish('start');
-    var alertDrag = tower.publish('drag');
-    var alertPinch = tower.publish('pinch');
-    var alertEnd = tower.publish('end');
-
     function create(id){
       $svg = $('svg#'+id);
 
-      var tower = Belfry.getTower();
-      monitorOverflow($svg);      
+      monitorOverflow($svg);
+
+      broadcastElement($svg[0]);
+
     }
 
     create('the-pear');
 
     var starElement = $('svg')[0];
 
-    var handlers = {
-      touch: watchTouch
-    };
+    
 
-    function watchTouch(event){
-      if (event.target.ownerSVGElement === starElement) {
-        this.drag = handleDrag;
-        this.pinch = handlePinch;
-        this.release = endHandler;
-        alertStart(starElement);
-        return this;
-      }
-    }
+    
 
-    function handleDrag(event){
-      this.pinch = false;
-      alertDrag({element: starElement, delta: {x: event.gesture.deltaX, y: event.gesture.deltaY}});
-      return this;
-    }
-
-    function handlePinch(event){
-      this.drag = false;
-      alertPinch({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
-      return this;
-    }
-
-    function endHandler(event){
-      this.drag = false;
-      this.pinch = false;
-      alertEnd({element: starElement, center: event.gesture.center, scale: event.gesture.scale});
-      return this;
-    }
-
-    function gestureHandler(event){
-      event.gesture.preventDefault();
-      if(handlers[event.type]) {
-        handlers = handlers[event.type].call(handlers, event);
-      }
-    }
-
-    function activate(){
-      hammertime.on('touch drag pinch release', gestureHandler);
-    }
-
-    function deactivate(){
-      hammertime.off('touch drag pinch release', gestureHandler);
-    }
-
-    activate();
-
+    
+    
     ///////////////////////////////////////////
 
     var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg')
