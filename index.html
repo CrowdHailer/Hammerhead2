@@ -207,11 +207,7 @@
 
     updateOverspill();
 
-    var resizeReaction = _.debounce(400)(function(){
-      updateOverspill();
-    });
-
-    tower.subscribe('resize')(resizeReaction);
+    tower.subscribe('resize')(updateOverspill);
 
     ///////////////////////////////////////////
 
