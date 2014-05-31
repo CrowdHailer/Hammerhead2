@@ -226,17 +226,28 @@
 
       return function($element){
         var matrixString;
+        var agile = Hammerhead.AgileView($element[0]);
+
         listenDrag(function(data){
-          var dx = data.delta.x;
-          var dy = data.delta.y;
-          var matrix = createSVGMatrixfromTranslation(dx, dy);
+          var matrix = createSVGMatrixfromTranslation(data.delta.x, data.delta.y);
           matrixString = matrixAsCss(matrix);
           pt = Hammerhead.Point(data.delta);
+          agile.drag(pt);
         });
 
         listenPinch(function(data, topic){
           var matrix = createSVGMatrixfromScale(data.scale);
           matrixString = matrixAsCss(matrix);
+          pt = Hammerhead.Point(data.center);
+          agile.zoom(data.scale);
+        });
+
+        listenEnd(function(){
+          agile.fix();
+          var vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+          console.log(vbString);
+          matrixString =  matrixAsCss(identityMatrix);
+          $element.attr('viewBox', vbString);
         });
 
         var aniFrame;
@@ -256,7 +267,7 @@
         }
 
         function decistAnimation(){
-          cancelAnimationFrame(aniFrame);
+          // cancelAnimationFrame(aniFrame);
         }
 
         tower.subscribe('start')(function(data, topic){
