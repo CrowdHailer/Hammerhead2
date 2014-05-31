@@ -338,7 +338,7 @@
 
     var allChannels = ['start', 'drag', 'pinch', 'end', 'resize'];
 
-    _.compose(_.map(_.invoke(_.log)), _.map(tower.subscribe))(allChannels);
+    _.map(_.compose(_.invoke(_.log), tower.subscribe))(allChannels);
 
     // create log and log2 function
     ////////////////////////////////////
