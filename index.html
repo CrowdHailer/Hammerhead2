@@ -119,6 +119,17 @@
     var alertPinch = tower.publish('pinch');
     var alertEnd = tower.publish('end');
 
+    function create(id){
+      $svg = $('#'+id);
+      if (!$svg[0]) {
+        console.warn('no element');
+        return;
+      }
+      console.log($svg);
+    }
+
+    create('the-pear');
+
     var starElement = $('svg')[0];
 
     var handlers = {
