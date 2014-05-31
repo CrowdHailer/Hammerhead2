@@ -114,18 +114,18 @@
     // Hammerhead.Create('the-pear');
     var tower = Tower.getTower();
 
+    var Belfry = Tower;
+
     var alertStart = tower.publish('start');
     var alertDrag = tower.publish('drag');
     var alertPinch = tower.publish('pinch');
     var alertEnd = tower.publish('end');
 
     function create(id){
-      $svg = $('#'+id);
-      if (!$svg[0]) {
-        console.warn('no element');
-        return;
-      }
-      console.log($svg);
+      $svg = $('svg#'+id);
+
+      var tower = Belfry.getTower();
+
     }
 
     create('the-pear');
