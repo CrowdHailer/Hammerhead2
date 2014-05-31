@@ -106,6 +106,7 @@
   <script type="text/javascript" src="bower_components/hammerjs/hammer.min.js"></script>
   <script type="text/javascript" src="bower_components/hammerjs/plugins/hammer.fakemultitouch.js"></script>
   <script type="text/javascript" src="bower_components/cumin/dist/cumin.js"></script>
+  <script type="text/javascript" src="bower_components/belfry/dist/belfry.js"></script>
   <script type="text/javascript" src="dist/HammerHead2.js"></script>
 
   <script>
@@ -137,7 +138,7 @@
         tower.subscribe('resize')(updateOverspill);
       };
 
-    }(Tower.getTower()));
+    }(Belfry.getTower()));
 
     var broadcastElement = (function(tower){
       var alertStart = tower.publish('start');
@@ -202,7 +203,7 @@
         instance.activate();
 
       };
-    }(Tower.getTower()));
+    }(Belfry.getTower()));
 
     var managePosition = (function(tower){
       var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
@@ -289,12 +290,10 @@
 
       };
 
-    }(Tower.getTower()));
+    }(Belfry.getTower()));
 
     hammertime = Hammer(document);
     Hammer.plugins.fakeMultitouch();
-    // Hammerhead.Create('the-pear');
-    var tower = Tower.getTower();
 
     function create(id){
       $svg = $('svg#'+id);
