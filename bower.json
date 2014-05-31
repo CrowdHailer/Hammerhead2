@@ -16,6 +16,7 @@
   "dependencies": {
     "hammerjs": "1.0.10",
     "cumin": "0.6.1",
-    "zepto": "~1.1.3"
+    "zepto": "~1.1.3",
+    "belfry": "~0.1.0"
   }
 }
