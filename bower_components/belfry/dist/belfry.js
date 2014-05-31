@@ -43,7 +43,7 @@
     };
   }
 
-  global.Tower = {
+  global.Belfry = {
     getTower: function(){
       if (!instance) {
         instance = init();
