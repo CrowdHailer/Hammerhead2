@@ -13,7 +13,9 @@ describe('dispatch touch notifications', function(){
     tower = Belfry.getTower();
     dummy = jasmine.createSpy();
     defaultGesture = {target: testPath[0], preventDefault: preventDefault};
+    var allChannels = ['start', 'drag', 'pinch', 'end'];
 
+    _.map(_.compose(_.invoke(dummy), tower.subscribe))(allChannels);
     // hammerhead instance
     emitter = Hammerhead.touchDispatch(testSVG);
   });
@@ -21,18 +23,24 @@ describe('dispatch touch notifications', function(){
   afterEach(function(){
     testSVG.remove();
     emitter.deactivate();
+    // lots of dummies subscribe each new instance so works but might be nice to clean
   });
 
   it('should call start on touch event over path', function(){
-    tower.subscribe('start')(dummy);
     hammertime.trigger('touch', defaultGesture);
     expect(dummy).toHaveBeenCalledWith($('svg#test')[0], 'start');
   });
 
-  it('should not call start misses target', function(){
-    tower.subscribe('start')(dummy);
+  it('should not call start if misses target', function(){
     var gesture = _.foundation(defaultGesture)({target: 'not-element'});
     hammertime.trigger('touch', gesture);
+    expect(dummy).not.toHaveBeenCalled();
+  });
+
+  it('should not call drag pinch or end before start', function(){
+    hammertime.trigger('drag', defaultGesture);
+    hammertime.trigger('pinch', defaultGesture);
+    hammertime.trigger('release', defaultGesture);
     expect(dummy).not.toHaveBeenCalled();
   });
 });
