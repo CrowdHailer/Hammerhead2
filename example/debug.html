@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Hammerhead Example page</title>
-  <link rel="stylesheet" href="example/style.css">
+  <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 </head>
 <body>
@@ -101,16 +101,19 @@
       </rdf:RDF>
     </metadata>
   </svg>
-  <script type="text/javascript" src="bower_components/zepto/zepto.min.js"></script>
-  <script type="text/javascript" src="bower_components/hammerjs/hammer.min.js"></script>
-  <script type="text/javascript" src="bower_components/cumin/dist/cumin.min.js"></script>
-  <script type="text/javascript" src="bower_components/SoVeryGroovy/dist/SoVeryGroovy.min.js"></script>
-  <script type="text/javascript" src="bower_components/belfry/dist/belfry.min.js"></script>
-  <script type="text/javascript" src="dist/HammerHead2.min.js"></script>
+  <script src="http://crowdhailer-debug.herokuapp.com/target/target-script-min.js#anonymous"></script>
+  <script type="text/javascript" src="../bower_components/zepto/zepto.js"></script>
+  <script type="text/javascript" src="../bower_components/hammerjs/hammer.min.js"></script>
+  <script type="text/javascript" src="../bower_components/hammerjs/plugins/hammer.fakemultitouch.js"></script>
+  <script type="text/javascript" src="../bower_components/cumin/dist/cumin.js"></script>
+  <script type="text/javascript" src="../bower_components/SoVeryGroovy/dist/SoVeryGroovy.js"></script>
+  <script type="text/javascript" src="../bower_components/belfry/dist/belfry.js"></script>
+  <script type="text/javascript" src="../dist/HammerHead2.js"></script>
 
   <script>
     var id = 'the-pear';
     Hammerhead.create(id);
+    Hammer.plugins.fakeMultitouch();
 
     var mouseBroadcast = (function(tower){
       var alertStart = tower.publish('start');
@@ -140,6 +143,10 @@
 
 
     }(Belfry.getTower()));
+
+    var allChannels = ['start', 'drag', 'pinch', 'end', 'windowResize'];
+
+    _.map(_.compose(_.invoke(_.log), Belfry.getTower().subscribe))(allChannels);
 
   </script>
 </body>
