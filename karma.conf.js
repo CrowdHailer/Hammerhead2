@@ -3,16 +3,17 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['jasmine'],
     files: [
+      'bower_components/zepto/zepto.js',
       'bower_components/hammerjs/hammer.js',
       'bower_components/cumin/dist/cumin.js',
       'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
       'src/prefix.js',
       'src/viewbox.js',
       'src/agile.js',
-      'src/controller.js',
+      'src/init.js',
       'spec/viewbox_spec.js',
       'spec/agile_spec.js',
-      // 'spec/controller_spec.js'
+      'spec/init_spec.js'
     ],
     exclude: [
       'bower_components/hammer.fakemultitouch.js',
