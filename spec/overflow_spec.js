@@ -1,15 +1,16 @@
 describe('managing overflow padding of active elements', function(){
-  xit('should subscribe to the tower', function(){
-    var tower = Belfry.getTower();
-    spyOn(tower, 'publish');
-    Hammerhead.regulateOverflow();
-    expect(tower.publish).toHaveBeenCalledWith('windowResize');
+  var testString = '<div id="outer"><div id="inner"></div><div>';
+  document.body.innerHTML += testString;
+  $('#outer').width(200).height(100);
+
+  it('should set a elements margin outside the parent', function(){
+    Hammerhead.regulateOverflow($('#inner'));
+    expect($('#inner').width()).toEqual(400);
+    expect($('#inner').height()).toEqual(200);
   });
-  xit('should set a elements margin outside the parent', function(){
-    var spy = jasmine.createSpy();
-    spy.parent = function(){};
-    spyOn(spy, 'parent');
-    Hammerhead.regulateOverflow(spy);
-    expect(spy.parent).toHaveBeenCalled();
+  it('should update overflow on tower announcement', function(){
+    $('#outer').width(300).height(100);
+    Belfry.getTower().publish('windowResize')();
+    expect($('#inner').width()).toEqual(600);
   });
 });
