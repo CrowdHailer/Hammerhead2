@@ -26,7 +26,7 @@ describe('ViewBox', function(){
     });
   });
 
-  xdescribe('geometry', function(){
+  describe('geometry', function(){
     beforeEach(function(){
       viewBox = VB(p1, p2);
     });
@@ -42,7 +42,7 @@ describe('ViewBox', function(){
     });
   });
 
-  xdescribe('transformations "of content"', function(){
+  describe('transformations "of content"', function(){
     beforeEach(function(){
       viewBox = VB(p1, p2);
     });
