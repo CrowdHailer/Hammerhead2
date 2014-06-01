@@ -7,7 +7,7 @@ describe('agile SVG', function(){
       setAttribute: function(){},
       getScreenCTM: function(){}
     };
-    var inverse = function(){ return {a: 2, b: 0, c: 0, d: 2, e: 0, f: 0}; };
+    var inverse = function(){ return SVGroovy.Matrix.scaling(2); };
     spyOn(element, 'getAttribute').andReturn('0 1 8 6');
     spyOn(element, 'setAttribute');
     spyOn(element, 'getScreenCTM').andReturn({inverse: inverse});
@@ -45,7 +45,7 @@ describe('agile SVG', function(){
     });
   });
 
-  xdescribe('manipulations in screen units', function(){
+  describe('manipulations in screen units', function(){
     it('should drag in screen units', function(){
       agile.drag(delta).fix();
       expect(VB.attrString(agile.getCurrent())).toEqual('-2 -1 8 6');
