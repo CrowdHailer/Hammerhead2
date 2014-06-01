@@ -10,6 +10,7 @@ module.exports = function(config) {
       'src/prefix.js',
       'src/viewbox.js',
       'src/agile.js',
+      'src/overflow.js',
       'src/init.js',
       'spec/viewbox_spec.js',
       'spec/agile_spec.js',

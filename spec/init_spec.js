@@ -9,5 +9,11 @@ describe('initialisation process', function(){
     var created = Hammerhead.create('name');
     expect(created).toBe(false);
   });
-
+  it('initialise components when element found', function(){
+    var element = {id: 'svg'};
+    spyOn(window, '$').andReturn([element]);
+    spyOn(Hammerhead, 'regulateOverflow');
+    var created = Hammerhead.create('name');
+    expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith([element]);
+  });
 });
