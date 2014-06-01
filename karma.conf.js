@@ -6,6 +6,7 @@ module.exports = function(config) {
       'bower_components/zepto/zepto.js',
       'bower_components/hammerjs/hammer.js',
       'bower_components/cumin/dist/cumin.js',
+      'bower_components/belfry/dist/belfry.js',
       'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
       'src/prefix.js',
       'src/viewbox.js',
@@ -14,6 +15,7 @@ module.exports = function(config) {
       'src/init.js',
       'spec/viewbox_spec.js',
       'spec/agile_spec.js',
+      'spec/overflow_spec.js',
       'spec/init_spec.js'
     ],
     exclude: [
