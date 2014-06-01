@@ -787,31 +787,41 @@ var Hammerhead = {};
 
   function watchTouch(event){
     if (event.target.ownerSVGElement === this.getElement()) {
+      this.handlers.touch = false;
       this.handlers.drag = handleDrag;
       this.handlers.pinch = handlePinch;
       this.handlers.release = endHandler;
       alertStart(this.getElement());
-      return this;
     }
     return this;
   }
 
   function handleDrag(event){
     this.handlers.pinch = false;
-    alertDrag({element: this.getElement(), delta: {x: event.gesture.deltaX, y: event.gesture.deltaY}});
+    alertDrag({
+      element: this.getElement(),
+      delta: SVGroovy.Point(event.gesture)
+    });
     return this;
   }
 
   function handlePinch(event){
     this.handlers.drag = false;
-    alertPinch({element: this.getElement(), center: event.gesture.center, scale: event.gesture.scale});
+    alertPinch({
+      element: this.getElement(),
+      center: SVGroovy.Point(event.gesture.center),
+      scale: event.gesture.scale
+    });
     return this;
   }
 
   function endHandler(event){
+    this.handlers.touch = watchTouch;
     this.handlers.drag = false;
     this.handlers.pinch = false;
-    alertEnd({element: this.getElement(), center: event.gesture.center, scale: event.gesture.scale});
+    alertEnd({
+      element: this.getElement()
+    });
     return this;
   }
 
@@ -842,6 +852,7 @@ var Hammerhead = {};
     };
 
     instance.activate();
+    return instance;
 
   };
 }(Hammerhead));
