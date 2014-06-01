@@ -12,15 +12,15 @@ module.exports = function(config) {
       'src/viewbox.js',
       'src/agile.js',
       'src/overflow.js',
+      'src/touch.js',
       'src/init.js',
       'spec/viewbox_spec.js',
       'spec/agile_spec.js',
       'spec/overflow_spec.js',
+      'spec/touch_spec.js',
       'spec/init_spec.js'
     ],
     exclude: [
-      'bower_components/hammer.fakemultitouch.js',
-      'bower_components/hammer.showtouches.js'
     ],
     reporters: ['spec'],
     port: 9876,

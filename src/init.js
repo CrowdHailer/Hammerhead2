@@ -7,6 +7,7 @@
     }
 
     parent.regulateOverflow($svg);
+    parent.touchDispatch($svg);
   }
   parent.create = init;
 }(Hammerhead));
