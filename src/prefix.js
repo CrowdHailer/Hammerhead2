@@ -37,4 +37,6 @@ function interpolate(s) {
     };
 }());
 
-Hammerhead = {};
+var hammertime = Hammer(document);
+
+var Hammerhead = {};
