@@ -8,7 +8,6 @@ module.exports = function(config) {
       'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
       'src/prefix.js',
       'src/viewbox.js',
-      'src/tower.js',
       'src/agile.js',
       'src/controller.js',
       // 'spec/viewbox_spec.js',
