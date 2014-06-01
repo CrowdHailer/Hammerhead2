@@ -13,11 +13,13 @@ module.exports = function(config) {
       'src/agile.js',
       'src/overflow.js',
       'src/touch.js',
+      'src/positionhandler.js',
       'src/init.js',
       'spec/viewbox_spec.js',
       'spec/agile_spec.js',
       'spec/overflow_spec.js',
       'spec/touch_spec.js',
+      'spec/positionhandler_spec.js',
       'spec/init_spec.js'
     ],
     exclude: [
