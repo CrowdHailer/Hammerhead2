@@ -63,6 +63,7 @@
     };
 
     instance.activate();
+    return instance;
 
   };
 }(Hammerhead));
