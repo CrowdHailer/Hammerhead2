@@ -1,6 +1,6 @@
 (function(parent){
   var VB = parent.ViewBox;
-  var Pt = parent.Point;
+  var Pt = SVGroovy.Point;
   prototype = {
     translate: function(delta){
       var newViewBox = VB.translate(delta)(this.getCurrent());
@@ -27,7 +27,10 @@
       return Pt.matrixTransform(this.getScreenCTM().inverse());
     },
     scaleTo: function(){
-      return Pt.matrixTransform(_.foundation(this.getScreenCTM().inverse())({e: 0, f: 0}));
+      var inverseCTM = this.getScreenCTM().inverse();
+      inverseCTM.e = 0;
+      inverseCTM.f = 0;
+      return Pt.matrixTransform(inverseCTM);
     }
   };
   function create(element, options){

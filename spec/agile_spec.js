@@ -7,14 +7,14 @@ describe('agile SVG', function(){
       setAttribute: function(){},
       getScreenCTM: function(){}
     };
-    var inverse = function(){ return {a: 2, b: 0, c: 0, d: 2, e: 0, f: 0}; };
+    var inverse = function(){ return SVGroovy.Matrix.scaling(2); };
     spyOn(element, 'getAttribute').andReturn('0 1 8 6');
     spyOn(element, 'setAttribute');
     spyOn(element, 'getScreenCTM').andReturn({inverse: inverse});
     agile = Hammerhead.AgileView(element, {throttleDelay: 0, conditions: function(){ return true; }});
-    delta = Hammerhead.Point(1, 1);
-    center = Hammerhead.Point(0, 1);
-    screenCenter = Hammerhead.Point(0, 0.5);
+    delta = SVGroovy.Point(1, 1);
+    center = SVGroovy.Point(0, 1);
+    screenCenter = SVGroovy.Point(0, 0.5);
   });
 
   describe('initialisation', function(){

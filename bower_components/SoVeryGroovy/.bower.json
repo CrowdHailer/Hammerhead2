@@ -1,0 +1,28 @@
+{
+  "name": "SoVeryGroovy",
+  "version": "0.1.1",
+  "authors": [
+    "Peter <peterhsaxton@gmail.com>"
+  ],
+  "description": "\"Convenient API for generating SVG components",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "spec"
+  ],
+  "dependencies": {
+    "cumin": "0.6.1"
+  },
+  "homepage": "https://github.com/CrowdHailer/SoVeryGroovy",
+  "_release": "0.1.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.1",
+    "commit": "73527a464bdb783d8bf2a293447d7887e7de7ddf"
+  },
+  "_source": "git://github.com/CrowdHailer/SoVeryGroovy.git",
+  "_target": "0.1.1",
+  "_originalSource": "SoVeryGroovy"
+}
