@@ -857,42 +857,44 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
+  tower = Belfry.getTower();
+
   var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
-  var identityMatrix = SVGroovy.Matrix();
-  tower = Belfry.getTower();
+  var Mx = SVGroovy.Matrix;
+  var identityMatrix = Mx();
 
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
   var listenEnd = tower.subscribe('end');
+
   parent.managePosition = function($element){
-    var matrixString;
+    var aniFrame, continueAnimate, matrixString;
     var agile = Hammerhead.AgileView($element[0]);
 
+    listenStart(function(){
+      continueAnimate = true;
+      beginAnimation();
+    });
+
     listenDrag(function(data){
-      var matrix = SVGroovy.Matrix.translating(data.delta.x, data.delta.y);
-      matrixString = matrixAsCss(matrix);
-      pt = SVGroovy.Point(data.delta);
-      agile.drag(pt);
+      matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
+      agile.drag(SVGroovy.Point(data.delta));
     });
 
     listenPinch(function(data, topic){
-      var matrix = SVGroovy.Matrix.scaling(data.scale);
-      matrixString = matrixAsCss(matrix);
-      pt = SVGroovy.Point(data.center);
+      matrixString = matrixAsCss(Mx.scaling(data.scale));
       agile.zoom(data.scale);
     });
 
     listenEnd(function(){
       agile.fix();
       var vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
-      console.log(vbString);
       matrixString =  matrixAsCss(identityMatrix);
       $element.attr('viewBox', vbString);
+      continueAnimate = false;
     });
-
-    var aniFrame;
 
     function render(){
       $element.css({
@@ -900,25 +902,14 @@ var Hammerhead = {};
         '-ms-transform': matrixString,
         'transform': matrixString
       });
-      aniFrame = requestAnimationFrame( render );
+      if (continueAnimate) {
+        aniFrame = requestAnimationFrame( render );
+      }
     }
-
 
     function beginAnimation(){
       aniFrame = requestAnimationFrame( render );
     }
-
-    function decistAnimation(){
-      // cancelAnimationFrame(aniFrame);
-    }
-
-    tower.subscribe('start')(function(data, topic){
-      beginAnimation();
-    });
-
-    tower.subscribe('end')(function(data, topic){
-      decistAnimation();
-    });
 
     $element.css({
       '-webkit-transform': matrixAsCss(identityMatrix),
