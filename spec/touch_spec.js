@@ -78,5 +78,14 @@ describe('dispatch touch notifications', function(){
       expect(dummy.calls.length).toEqual(3);
       expect(dummy.mostRecentCall.args).toEqual([testSVG[0], 'start']);
     });
+
+    it('should not accept any further drag or pinch after release', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('release', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      expect(dummy.calls.length).toEqual(2);
+      expect(dummy.mostRecentCall.args[1]).toEqual('end');
+    });
   });
 });
