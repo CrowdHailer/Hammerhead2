@@ -1,6 +1,6 @@
 (function(parent){
   var VB = parent.ViewBox;
-  var Pt = parent.Point;
+  var Pt = SVGroovy.Point;
   prototype = {
     translate: function(delta){
       var newViewBox = VB.translate(delta)(this.getCurrent());
