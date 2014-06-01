@@ -43,4 +43,12 @@ describe('dispatch touch notifications', function(){
     hammertime.trigger('release', defaultGesture);
     expect(dummy).not.toHaveBeenCalled();
   });
+
+  it('should keep watch after incorrect start events', function(){
+    hammertime.trigger('drag', defaultGesture);
+    var gesture = _.foundation(defaultGesture)({target: 'not-element'});
+    hammertime.trigger('touch', gesture);
+    hammertime.trigger('touch', defaultGesture);
+    expect(dummy).toHaveBeenCalledWith($('svg#test')[0], 'start');
+  });
 });
