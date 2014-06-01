@@ -67,6 +67,7 @@ describe('dispatch touch notifications', function(){
       hammertime.trigger('pinch', defaultGesture);
       expect(dummy.calls.length).toEqual(4);
     });
+    
     it('should not call a pinches during a drag event', function(){
       hammertime.trigger('touch', defaultGesture);
       hammertime.trigger('drag', defaultGesture);
