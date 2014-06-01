@@ -106,39 +106,42 @@
   <script type="text/javascript" src="bower_components/hammerjs/hammer.min.js"></script>
   <script type="text/javascript" src="bower_components/hammerjs/plugins/hammer.fakemultitouch.js"></script>
   <script type="text/javascript" src="bower_components/cumin/dist/cumin.js"></script>
+  <script type="text/javascript" src="bower_components/SoVeryGroovy/dist/SoVeryGroovy.js"></script>
   <script type="text/javascript" src="bower_components/belfry/dist/belfry.js"></script>
   <script type="text/javascript" src="dist/HammerHead2.js"></script>
 
   <script>
-    var monitorOverflow = (function(tower){
-      function WatchWindowResize(tower){
-        // use with once function added to cumin
-        var alertResize = _.debounce(400)(tower.publish('resize'));
+    var id = 'the-pear';
+    Hammerhead.create(id);
+    // var monitorOverflow = (function(tower){
+    //   function WatchWindowResize(tower){
+    //     // use with once function added to cumin
+    //     var alertResize = _.debounce(400)(tower.publish('resize'));
 
-        $(window).on('resize', function(){
-          alertResize();
-        });
-      }
+    //     $(window).on('resize', function(){
+    //       alertResize();
+    //     });
+    //   }
 
-      function setOverspill($element){
-        $parent = $element.parent();
-        return function(){
-          var height = $parent.height();
-          var width = $parent.width();
-          $element.css('margin', -height/2 + ' ' + -width/2);
-          $element.width(width * 2);
-          $element.height(height * 2);
-        };
-      }
+    //   function setOverspill($element){
+    //     $parent = $element.parent();
+    //     return function(){
+    //       var height = $parent.height();
+    //       var width = $parent.width();
+    //       $element.css('margin', -height/2 + ' ' + -width/2);
+    //       $element.width(width * 2);
+    //       $element.height(height * 2);
+    //     };
+    //   }
 
-      return function(element){ // options debounce time and overflow
-        WatchWindowResize(tower); //run once only
-        var updateOverspill = setOverspill($svg);
-        updateOverspill(); // run once to start;
-        tower.subscribe('resize')(updateOverspill);
-      };
+    //   return function(element){ // options debounce time and overflow
+    //     WatchWindowResize(tower); //run once only
+    //     var updateOverspill = setOverspill($svg);
+    //     updateOverspill(); // run once to start;
+    //     tower.subscribe('resize')(updateOverspill);
+    //   };
 
-    }(Belfry.getTower()));
+    // }(Belfry.getTower()));
 
     var broadcastElement = (function(tower){
       var alertStart = tower.publish('start');
@@ -324,22 +327,22 @@
     hammertime = Hammer(document);
     Hammer.plugins.fakeMultitouch();
 
-    function create(id){
-      $svg = $('svg#'+id);
+    // function create(id){
+    //   $svg = $('svg#'+id);
 
-      monitorOverflow($svg);
+    //   // monitorOverflow($svg);
 
-      broadcastElement($svg[0]);
-      mouseBroadcast($svg);
+    //   broadcastElement($svg[0]);
+    //   mouseBroadcast($svg);
 
-      managePosition($svg);
-    }
+    //   managePosition($svg);
+    // }
 
-    create('the-pear');
+    // create('the-pear');
 
     // All debug code
 
-    var allChannels = ['start', 'drag', 'pinch', 'end', 'resize'];
+    var allChannels = ['start', 'drag', 'pinch', 'end', 'windowResize'];
 
     _.map(_.compose(_.invoke(_.log), Belfry.getTower().subscribe))(allChannels);
 

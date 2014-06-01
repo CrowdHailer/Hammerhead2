@@ -40,99 +40,7 @@ function interpolate(s) {
 Hammerhead = {};
 
 (function(parent){
-  "use strict";
-  function create(x, y){
-    if (isObj(x)) {
-      if (x.x) {
-        return createFromCoordinate(x);
-      } else if (x.pageX) {
-        return createFromPagePoint(x);
-      } else if (x.deltaX) {
-        return createFromDisplacementVector(x);
-      }
-    }
-    return Object.freeze({x: x || 0, y: y || 0});
-  }
-
-  function createFromCoordinate(point){
-    return create(point.x, point.y);
-  }
-
-  function createFromPagePoint(pagePoint){
-    return create(pagePoint.pageX, pagePoint.pageY);
-  }
-
-  function createFromDisplacementVector(pagePoint){
-    return create(pagePoint.deltaX, pagePoint.deltaY);
-  }
-
-  function add(p){
-    return function(q){
-      return create(p.x + q.x, p.y + q.y);
-    };
-  }
-
-  function subtract(p){
-    return function(q){
-      return create(p.x - q.x, p.y - q.y);
-    };
-  }
-
-  function negate(p){
-    return function(q){
-      q = q || create();
-      return create(q.x - p.x, q.y - p.y);
-    };
-  }
-
-  function scalar(a){
-    return function(q){
-      return create(a * q.x, a * q.y);
-    };
-  }
-
-  function min(p){
-    return function(q){
-      var x = (p.x < q.x)? p.x : q.x;
-      var y = (p.y < q.y)? p.y : q.y;
-      return create(x, y);
-    };
-  }
-
-  function max(p){
-    return function(q){
-      var x = (p.x > q.x)? p.x : q.x;
-      var y = (p.y > q.y)? p.y : q.y;
-      return create(x, y);
-    };
-  }
-
-  function matrixTransform(m){
-    return function(q){
-      var x = m.a * q.x + m.c * q.y + m.e;
-      var y = m.b * q.x + m.d * q.y + m.f;
-      return create(x, y);
-    };
-  }
-
-  var methodsToExtend = _.extend({
-    createFromCoordinate: createFromCoordinate,
-    createFromPagePoint: createFromPagePoint,
-    createFromDisplacementVector: createFromDisplacementVector,
-    add: add,
-    subtract: subtract,
-    negate: negate,
-    scalar: scalar,
-    min: min,
-    max: max,
-    matrixTransform: matrixTransform
-  });
-
-  methodsToExtend(create);
-  parent.Point = create;
-}(Hammerhead));
-(function(parent){
-  var Pt = parent.Point;
+  var Pt = SVGroovy.Point;
   function create(minimal, maximal){
     if (typeof minimal === 'string') { return createFromString(minimal); }
     return Object.freeze({minimal: minimal, maximal: maximal});
@@ -198,7 +106,7 @@ Hammerhead = {};
 }(Hammerhead));
 (function(parent){
   var VB = parent.ViewBox;
-  var Pt = parent.Point;
+  var Pt = SVGroovy.Point;
   prototype = {
     translate: function(delta){
       var newViewBox = VB.translate(delta)(this.getCurrent());
@@ -225,7 +133,10 @@ Hammerhead = {};
       return Pt.matrixTransform(this.getScreenCTM().inverse());
     },
     scaleTo: function(){
-      return Pt.matrixTransform(_.foundation(this.getScreenCTM().inverse())({e: 0, f: 0}));
+      var inverseCTM = this.getScreenCTM().inverse();
+      inverseCTM.e = 0;
+      inverseCTM.f = 0;
+      return Pt.matrixTransform(inverseCTM);
     }
   };
   function create(element, options){
@@ -245,152 +156,10 @@ Hammerhead = {};
 
   parent.AgileView = create;
 }(Hammerhead));
-/*!
-* Pub/Sub implementation
-* http://addyosmani.com/
-* Licensed under the GPL
-* http://jsfiddle.net/LxPrq/
-*/
-
-
-;(function ( window, doc, undef ) {
-
-    var topics = {},
-        subUid = -1,
-        pubsubz ={};
-
-    pubsubz.publish = function ( topic, args ) {
-
-        if (!topics[topic]) {
-            return false;
-        }
-
-        var subscribers = topics[topic],
-            len = subscribers ? subscribers.length : 0;
-
-        while (len--) {
-            subscribers[len].func(topic, args);
-        }
-
-        return true;
-
-    };
-
-    pubsubz.subscribe = function ( topic, func ) {
-
-        if (!topics[topic]) {
-            topics[topic] = [];
-        }
-
-        var token = (++subUid).toString();
-        topics[topic].push({
-            token: token,
-            func: func
-        });
-        return token;
-    };
-
-    pubsubz.unsubscribe = function ( token ) {
-        for (var m in topics) {
-            if (topics[m]) {
-                for (var i = 0, j = topics[m].length; i < j; i++) {
-                    if (topics[m][i].token === token) {
-                        topics[m].splice(i, 1);
-                        return token;
-                    }
-                }
-            }
-        }
-        return false;
-    };
-
-    getPubSubz = function(){
-        return pubsubz;
-    };
-
-    window.pubsubz = getPubSubz();
-
-}( this, this.document ));
 (function(parent){
+  var tower = Belfry.getTower();
 
-  function create(element, options){
-    var currentHandler;
-    var hammertime = options.hammertime;
-
-    var watchTouch = function(event){
-      if (event.type === 'touch') {
-        if (event.target.ownerSVGElement === element) {
-          pubsubz.publish('start', event.gesture);
-          return gestureStart;
-        }
-      }
-    };
-
-    var gestureStart = function(event){
-      if (event.type === 'drag') {
-        pubsubz.publish('drag', event.gesture);
-        return trackDrag;
-      } else if (event.type === 'pinch') {
-        pubsubz.publish('pinch', event.gesture);
-        return trackPinch;
-      } else if (event.type === 'release') {
-        pubsubz.publish('end', event.gesture);
-        return watchTouch;
-      }
-    };
-
-    var trackDrag = function(event){
-      console.log(event.type);
-      if (event.type === 'drag') {
-        pubsubz.publish('drag', event.gesture);
-      } else if (event.type === 'release') {
-        pubsubz.publish('end', event.gesture);
-        return watchTouch;
-      }
-    };
-
-    var trackPinch = function(event){
-      if (event.type === 'pinch') {
-        pubsubz.publish('pinch', event.gesture);
-      } else if (event.type === 'release') {
-        pubsubz.publish('end', event.gesture);
-        return watchTouch;
-      }
-    };
-
-    var gestureHandler = function(event){
-      currentHandler = currentHandler(event) || currentHandler;
-    };
-
-    hammertime.on('touch drag pinch release', gestureHandler);
-    hammertime.on('touch drag pinch release', function(event){
-      console.log('ruddy', event.type);
-    });
-    currentHandler = watchTouch;
-
-    function kill(){
-      hammertime.off('touch drag pinch release', gestureHandler);
-    }
-
-    var instance = Object.create({});
-    _.extend({
-      kill: kill
-    })(instance);
-    return instance;
-
-  }
-
-  parent.Controller = create;
-}(Hammerhead));
-
-(function(parent){
-  var $window = $(window);
-
-  var publishResize = _.debounce(function(event){
-    pubsubz.publish('resize');
-  }, 400);
-
-  function setOverspill($element){
+  function createOverflowUpdater($element){
     $parent = $element.parent();
     return function(){
       var height = $parent.height();
@@ -401,63 +170,29 @@ Hammerhead = {};
     };
   }
 
-  function create(elementId, options){
-    var $el = $('#' + elementId);
-    var el = $el[0];
+  var publishResize = _.debounce(200)(tower.publish('windowResize'));
 
-    console.log('started with options ', options);
+  $(window).on('resize', function(){
+    publishResize();
+  });
 
-    var updateOverspill = setOverspill($el);
+  parent.regulateOverflow = function(element){
+    var updateOverflow = createOverflowUpdater(element);
+    
+    updateOverflow();
+    tower.subscribe('windowResize')(updateOverflow);
+  };
+}(Hammerhead));
+(function(parent){
+  function init(svgId){
+    console.log('initialising');
+    $svg = $('svg#' + svgId);
 
-    Hammerhead.Controller(el, {hammertime: options.hammertime});
-    var agile = Hammerhead.AgileView(el);
+    if (!$svg[0]) {
+      return false;
+    }
 
-    // Initial styling
-    updateOverspill();
-    $el.css({
-      '-webkit-transform': 'translate(0px, 0px)',
-      'transform': 'translate(0px, 0px)',
-      '-webkit-backface-visibility': 'hidden',
-      '-webkit-transform-origin': '50% 50%',
-      '-ms-transform-origin': '50% 50%',
-      'transform-origin': '50% 50%'
-    });
-
-    // Watch resize -  should be singleton object
-    $window.on('resize', function(event){
-      publishResize(event);
-    });
-
-    // Deliver resize
-    pubsubz.subscribe('resize', function(){
-      updateOverspill();
-    });
-
-    pubsubz.subscribe('end', function(){
-      agile.fix();
-      var newString = Hammerhead.ViewBox.attrString(agile.getCurrent());
-      $el.css('-webkit-transform', 'translate(0px, 0px)');
-      $el.css('-ms-transform', 'translate(0px, 0px)');
-      $el.css('transform', 'translate(0px, 0px)');
-      $el.attr('viewBox', newString);
-    });
-
-    pubsubz.subscribe('drag', function(gesture, other){
-      var dx = other.deltaX;
-      var dy = other.deltaY;
-      $el.css('-webkit-transform', 'translate(' + dx + 'px, ' + dy + 'px)');
-      $el.css('-ms-transform', 'translate(' + dx + 'px, ' + dy + 'px)');
-      $el.css('transform', 'translate(' + dx + 'px, ' + dy + 'px)');
-      pt = Hammerhead.Point(other);
-      agile.drag(pt);
-    });
-
-    pubsubz.subscribe('pinch', function(item, gesture){
-      $el.css('-webkit-transform', 'scale(' + gesture.scale + ')');
-      $el.css('-ms-transform', 'scale(' + gesture.scale + ')');
-      $el.css('transform', 'scale(' + gesture.scale + ')');
-      agile.zoom(gesture.scale);
-    });
+    parent.regulateOverflow($svg);
   }
-  parent.Create = create;
+  parent.create = init;
 }(Hammerhead));

@@ -1,5 +1,6 @@
 (function(parent){
   function init(svgId){
+    console.log('initialising');
     $svg = $('svg#' + svgId);
 
     if (!$svg[0]) {

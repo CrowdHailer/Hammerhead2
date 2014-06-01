@@ -11,14 +11,17 @@
       $element.height(height * 2);
     };
   }
+
+  var publishResize = _.debounce(200)(tower.publish('windowResize'));
+
+  $(window).on('resize', function(){
+    publishResize();
+  });
+
   parent.regulateOverflow = function(element){
-
-    $(window).on('resize', function(){
-      _.debounce(400)(tower.publish('windowResize'));
-    });
-
     var updateOverflow = createOverflowUpdater(element);
+    
     updateOverflow();
-    tower.subscribe('resize')(updateOverflow);
+    tower.subscribe('windowResize')(updateOverflow);
   };
 }(Hammerhead));
