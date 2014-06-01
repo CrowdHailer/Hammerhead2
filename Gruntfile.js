@@ -16,6 +16,21 @@ module.exports = function(grunt) {
           'src/init.js',
         ],
         dest: 'dist/<%= pkg.name %>.js'
+      },
+      fullfat: {
+        src: [
+          'bower_components/cumin/dist/cumin.js',
+          'bower_components/belfry/dist/belfry.js',
+          'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
+          'src/prefix.js',
+          'src/viewbox.js',
+          'src/agile.js',
+          'src/overflow.js',
+          'src/touch.js',
+          'src/positionhandler.js',
+          'src/init.js',
+        ],
+        dest: 'fullfat/<%= pkg.name %>.js'
       }
     },
     uglify: {
@@ -25,6 +40,11 @@ module.exports = function(grunt) {
       dist: {
         files: {
           'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+        }
+      },
+      fullfat: {
+        files: {
+          'fullfat/<%= pkg.name %>.min.js': ['<%= concat.fullfat.dest %>']
         }
       }
     },
