@@ -70,4 +70,13 @@ describe('dispatch touch notifications', function(){
       expect(dummy.calls.length).toEqual(4);
     });
   });
+  describe('end event handling', function(){
+    it('should be ready to accept new start event after release event', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('release', defaultGesture);
+      hammertime.trigger('touch', defaultGesture);
+      expect(dummy.calls.length).toEqual(3);
+      expect(dummy.mostRecentCall.args).toEqual([testSVG[0], 'start']);
+    });
+  });
 });
