@@ -31,6 +31,12 @@ describe('dispatch touch notifications', function(){
       expect(dummy).toHaveBeenCalledWith($('svg#test')[0], 'start');
     });
 
+    it('should only call start once', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('touch', defaultGesture);
+      expect(dummy.calls.length).toEqual(1);
+    });
+
     it('should not call start if misses target', function(){
       var gesture = _.foundation(defaultGesture)({target: 'not-element'});
       hammertime.trigger('touch', gesture);

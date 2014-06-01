@@ -8,6 +8,7 @@
 
   function watchTouch(event){
     if (event.target.ownerSVGElement === this.getElement()) {
+      this.handlers.touch = false;
       this.handlers.drag = handleDrag;
       this.handlers.pinch = handlePinch;
       this.handlers.release = endHandler;
@@ -30,6 +31,7 @@
   }
 
   function endHandler(event){
+    this.handlers.touch = watchTouch;
     this.handlers.drag = false;
     this.handlers.pinch = false;
     alertEnd({element: this.getElement(), center: event.gesture.center, scale: event.gesture.scale});
