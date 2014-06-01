@@ -5,7 +5,7 @@ describe('managing overflow padding of active elements', function(){
     Hammerhead.regulateOverflow();
     expect(tower.publish).toHaveBeenCalledWith('windowResize');
   });
-  it('should set a elements margin outside the parent', function(){
+  xit('should set a elements margin outside the parent', function(){
     var spy = jasmine.createSpy();
     spy.parent = function(){};
     spyOn(spy, 'parent');
