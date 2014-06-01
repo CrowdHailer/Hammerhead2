@@ -25,30 +25,49 @@ describe('dispatch touch notifications', function(){
     emitter.deactivate();
     // lots of dummies subscribe each new instance so works but might be nice to clean
   });
+  describe('start circumstances', function(){
+    it('should call start on touch event over path', function(){
+      hammertime.trigger('touch', defaultGesture);
+      expect(dummy).toHaveBeenCalledWith($('svg#test')[0], 'start');
+    });
 
-  it('should call start on touch event over path', function(){
-    hammertime.trigger('touch', defaultGesture);
-    expect(dummy).toHaveBeenCalledWith($('svg#test')[0], 'start');
+    it('should not call start if misses target', function(){
+      var gesture = _.foundation(defaultGesture)({target: 'not-element'});
+      hammertime.trigger('touch', gesture);
+      expect(dummy).not.toHaveBeenCalled();
+    });
+
+    it('should not call drag pinch or end before start', function(){
+      hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      hammertime.trigger('release', defaultGesture);
+      expect(dummy).not.toHaveBeenCalled();
+    });
+
+    it('should keep watch after incorrect start events', function(){
+      hammertime.trigger('drag', defaultGesture);
+      var gesture = _.foundation(defaultGesture)({target: 'not-element'});
+      hammertime.trigger('touch', gesture);
+      hammertime.trigger('touch', defaultGesture);
+      expect(dummy).toHaveBeenCalledWith($('svg#test')[0], 'start');
+    });
   });
-
-  it('should not call start if misses target', function(){
-    var gesture = _.foundation(defaultGesture)({target: 'not-element'});
-    hammertime.trigger('touch', gesture);
-    expect(dummy).not.toHaveBeenCalled();
-  });
-
-  it('should not call drag pinch or end before start', function(){
-    hammertime.trigger('drag', defaultGesture);
-    hammertime.trigger('pinch', defaultGesture);
-    hammertime.trigger('release', defaultGesture);
-    expect(dummy).not.toHaveBeenCalled();
-  });
-
-  it('should keep watch after incorrect start events', function(){
-    hammertime.trigger('drag', defaultGesture);
-    var gesture = _.foundation(defaultGesture)({target: 'not-element'});
-    hammertime.trigger('touch', gesture);
-    hammertime.trigger('touch', defaultGesture);
-    expect(dummy).toHaveBeenCalledWith($('svg#test')[0], 'start');
+  describe('manipulations', function(){
+    it('should not call any drags during a pinch event', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      expect(dummy.calls.length).toEqual(4);
+    });
+    it('should not call a pinches during a drag event', function(){
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      expect(dummy.calls.length).toEqual(4);
+    });
   });
 });
