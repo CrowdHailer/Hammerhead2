@@ -1,5 +1,5 @@
 (function(parent){
-  tower = Belfry.getTower();
+  var tower = Belfry.getTower();
 
   var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
