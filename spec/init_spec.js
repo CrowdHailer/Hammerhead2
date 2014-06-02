@@ -15,9 +15,11 @@ describe('initialisation process', function(){
     spyOn(Hammerhead, 'regulateOverflow');
     spyOn(Hammerhead, 'touchDispatch');
     spyOn(Hammerhead, 'managePosition');
+    spyOn(Hammerhead, 'mousewheelDispatch');
     var created = Hammerhead.create('name');
     expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith([element]);
     expect(Hammerhead.touchDispatch).toHaveBeenCalledWith([element]);
     expect(Hammerhead.managePosition).toHaveBeenCalledWith([element]);
+    expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith([element]);
   });
 });

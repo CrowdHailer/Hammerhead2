@@ -19,7 +19,7 @@
         alertStart('wheel');
       }
       scroll += event.wheelDelta;
-      alertPinch({element: $element[0], scale: Math.pow(1.2,scroll/720)});
+      alertPinch({element: $element[0], scale: Math.pow(2,scroll/6000)});
       finishScrolling();
     });
   };

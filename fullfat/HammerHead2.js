@@ -857,7 +857,7 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
-  tower = Belfry.getTower();
+  var tower = Belfry.getTower();
 
   var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
@@ -879,6 +879,7 @@ var Hammerhead = {};
     });
 
     listenDrag(function(data){
+      // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
       agile.drag(SVGroovy.Point(data.delta));
     });
@@ -933,6 +934,7 @@ var Hammerhead = {};
     parent.regulateOverflow($svg);
     parent.touchDispatch($svg);
     parent.managePosition($svg);
+    parent.mousewheelDispatch($svg);
   }
   parent.create = init;
 }(Hammerhead));

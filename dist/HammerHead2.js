@@ -265,7 +265,7 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
-  tower = Belfry.getTower();
+  var tower = Belfry.getTower();
 
   var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
@@ -287,6 +287,7 @@ var Hammerhead = {};
     });
 
     listenDrag(function(data){
+      // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
       agile.drag(SVGroovy.Point(data.delta));
     });
@@ -331,6 +332,33 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
+  var tower = Belfry.getTower();
+
+  var alertStart = tower.publish('start');
+  var alertDrag = tower.publish('drag');
+  var alertPinch = tower.publish('pinch');
+  var alertEnd = tower.publish('end');
+
+  var scrolling = false;
+  var scroll = 0;
+  var finishScrolling = _.debounce(200)(function(){
+    alertEnd('wheel');
+    scrolling = false;
+  });
+  parent.mousewheelDispatch = function($element){
+    $(document).on('mousewheel', function(event){
+      if (!scrolling) {
+        scrolling = true;
+        alertStart('wheel');
+      }
+      scroll += event.wheelDelta;
+      alertPinch({element: $element[0], scale: Math.pow(2,scroll/6000)});
+      finishScrolling();
+    });
+  };
+
+}(Hammerhead));
+(function(parent){
   function init(svgId){
     $svg = $('svg#' + svgId);
 
@@ -341,6 +369,7 @@ var Hammerhead = {};
     parent.regulateOverflow($svg);
     parent.touchDispatch($svg);
     parent.managePosition($svg);
+    parent.mousewheelDispatch($svg);
   }
   parent.create = init;
 }(Hammerhead));

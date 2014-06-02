@@ -21,7 +21,7 @@ module.exports = function(config) {
       'spec/overflow_spec.js',
       'spec/touch_spec.js',
       'spec/positionhandler_spec.js',
-      'spec/positionhandler_spec.js',
+      'spec/mousewheel_spec.js',
       'spec/init_spec.js'
     ],
     exclude: [
