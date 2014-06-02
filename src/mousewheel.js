@@ -18,6 +18,7 @@
         scrolling = true;
         alertStart('wheel');
       }
+      // return if outside 0.5 2 fire end and restart with high res.
       scroll += event.wheelDelta;
       alertPinch({element: $element[0], scale: Math.pow(2,scroll/6000)});
       finishScrolling();
