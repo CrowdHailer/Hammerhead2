@@ -329,6 +329,15 @@ var Hammerhead = {};
       'transform-origin': '50% 50%'
     });
 
+    var elWidth = $element.width();
+    var elHeigh = $element.height();
+    var ctmScale = $element[0].getScreenCTM().a;
+    var boxWidth = $element.attr('viewBox').split(' ')[2];
+    var boxHeight = $element.attr('viewBox').split(' ')[3];
+    console.log(elWidth, elHeigh, ctmScale, boxWidth, boxHeight);
+    console.log(boxWidth* ctmScale, elWidth);
+    console.log(boxHeight* ctmScale, elHeigh);
+
   };
 }(Hammerhead));
 (function(parent){
