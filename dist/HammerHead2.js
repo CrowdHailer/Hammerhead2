@@ -327,12 +327,11 @@ var Hammerhead = {};
       matrixString = matrixAsCss(Mx.scaling(data.scale));
       agile.zoom(data.scale);
     });
-
+    var vbString;
     listenEnd(function(){
       agile.fix();
-      var vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+      vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
       matrixString =  matrixAsCss(identityMatrix);
-      $element.attr('viewBox', vbString);
       continueAnimate = false;
     });
 
@@ -342,6 +341,7 @@ var Hammerhead = {};
         '-ms-transform': matrixString,
         'transform': matrixString
       });
+      $element.attr('viewBox', vbString);
       if (continueAnimate) {
         aniFrame = requestAnimationFrame( render );
       }
