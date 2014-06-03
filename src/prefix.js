@@ -2,8 +2,9 @@
 
 function limitDecPlaces(dp){
   dp = dp || 0;
+  var factor = Math.pow(10, dp);
   return function(num){
-    return Math.round(num);
+    return Math.round(num * factor) / factor;
   };
 }
 
