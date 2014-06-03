@@ -7,4 +7,8 @@ describe('checking when possible polyfills', function(){
     expect(limitDecPlaces(2)(3.243)).toEqual(3.24);
     expect(limitDecPlaces(2)(3.747)).toEqual(3.75);
   });
+  it('should deal with edgecases well', function(){
+    expect(limitDecPlaces(2)(1.005)).toEqual(1.01);
+    expect(limitDecPlaces(2)(1.994)).toEqual(1.99);
+  });
 });
