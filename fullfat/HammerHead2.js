@@ -769,7 +769,7 @@ var Hammerhead = {};
     return function(){
       var height = $parent.height();
       var width = $parent.width();
-      $element.css('margin', -height/2 + ' ' + -width/2);
+      $element.css('margin', interpolate('-%(height)spx -%(width)spx')({height: height/2, width: width/2}));
       $element.width(width * 2);
       $element.height(height * 2);
     };
@@ -902,7 +902,6 @@ var Hammerhead = {};
     var agile = Hammerhead.AgileView($element[0]);
 
     listenStart(function(){
-      continueAnimate = true;
       beginAnimation();
     });
 
@@ -911,7 +910,6 @@ var Hammerhead = {};
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
       var translation = Pt(data.delta);
       var fixedTranslation = Pt.scalar(properFix)(translation);
-      console.log(translation, fixedTranslation);
       agile.drag(fixedTranslation);
     });
 
@@ -919,13 +917,18 @@ var Hammerhead = {};
       matrixString = matrixAsCss(Mx.scaling(data.scale));
       agile.zoom(data.scale);
     });
-    var vbString, vbChange;
+
     listenEnd(function(){
       agile.fix();
       vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
-      vbChange = true;
       matrixString =  matrixAsCss(identityMatrix);
-      continueAnimate = false;
+      cancelAnimationFrame(aniFrame);
+      $element.attr('viewBox', vbString);
+      $element.css({
+        '-webkit-transform': matrixString,
+        '-ms-transform': matrixString,
+        'transform': matrixString
+      });
     });
 
     function render(){
@@ -934,13 +937,7 @@ var Hammerhead = {};
         '-ms-transform': matrixString,
         'transform': matrixString
       });
-      if (vbString) {
-        vbChange = false;
-        $element.attr('viewBox', vbString);
-      }
-      if (continueAnimate) {
-        aniFrame = requestAnimationFrame( render );
-      }
+      aniFrame = requestAnimationFrame( render );
     }
 
     function beginAnimation(){
