@@ -922,13 +922,17 @@ var Hammerhead = {};
     });
 
     var elWidth = $element.width();
-    var elHeigh = $element.height();
+    var elHeight = $element.height();
     var ctmScale = $element[0].getScreenCTM().a;
     var boxWidth = $element.attr('viewBox').split(' ')[2];
     var boxHeight = $element.attr('viewBox').split(' ')[3];
-    console.log(elWidth, elHeigh, ctmScale, boxWidth, boxHeight);
+    console.log(elWidth, elHeight, ctmScale, boxWidth, boxHeight);
     console.log(boxWidth* ctmScale, elWidth);
-    console.log(boxHeight* ctmScale, elHeigh);
+    console.log(boxHeight* ctmScale, elHeight);
+    var widthRatio = elWidth/(boxWidth* ctmScale);
+    var heightRatio = elHeight/(boxHeight * ctmScale);
+    var properFix = widthRatio < heightRatio ? widthRatio : heightRatio;
+    alert(properFix, screen.devicePixelRatio);
 
   };
 }(Hammerhead));
