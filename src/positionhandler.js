@@ -50,12 +50,12 @@
       matrixString = matrixAsCss(Mx.scaling(data.scale));
       agile.zoom(data.scale);
     });
-
+    var vbString, vbChange;
     listenEnd(function(){
       agile.fix();
-      var vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+      vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+      vbChange = true;
       matrixString =  matrixAsCss(identityMatrix);
-      $element.attr('viewBox', vbString);
       continueAnimate = false;
     });
 
@@ -65,6 +65,10 @@
         '-ms-transform': matrixString,
         'transform': matrixString
       });
+      if (vbString) {
+        vbChange = false;
+        $element.attr('viewBox', vbString);
+      }
       if (continueAnimate) {
         aniFrame = requestAnimationFrame( render );
       }
