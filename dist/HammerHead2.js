@@ -302,9 +302,7 @@ var Hammerhead = {};
     var widthRatio = (boxWidth* ctmScale) / elWidth;
     var heightRatio = (boxHeight * ctmScale) / elHeight;
     var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-    console.log(elHeight, elWidth)
     properFix = limitDecPlaces(1)(properFix);
-    console.log(properFix, screen.devicePixelRatio);
 
     ////////////////////////////
 
@@ -319,9 +317,10 @@ var Hammerhead = {};
     listenDrag(function(data){
       // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      console.log(properFix)
-      console.log('booch', Pt.scalar(properFix)(Pt(data.delta)))
-      agile.drag(Pt(data.delta));
+      var translation = Pt(data.delta);
+      var fixedTranslation = Pt.scalar(properFix)(translation);
+      console.log(translation, fixedTranslation);
+      agile.drag(fixedTranslation);
     });
 
     listenPinch(function(data, topic){
