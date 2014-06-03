@@ -1,3 +1,14 @@
+// Rounding decimals
+
+function limitDecPlaces(dp){
+  dp = dp || 0;
+  var factor = Math.pow(10, dp);
+  var bump = Math.pow(0.1, dp + 1); // needed for case 2 d.p on 1.005
+  return function(num){
+    return Math.round(num * factor + bump) / factor;
+  };
+}
+
 // String interpolations
 
 function interpolate(s) {
@@ -272,12 +283,31 @@ var Hammerhead = {};
   var Mx = SVGroovy.Matrix;
   var identityMatrix = Mx();
 
+  var Pt = SVGroovy.Point;
+
+
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
   var listenEnd = tower.subscribe('end');
 
   parent.managePosition = function($element){
+    // windows FIX
+    var elWidth = $element.width();
+    var elHeight = $element.height();
+    var ctmScale = $element[0].getScreenCTM().a;
+    var boxWidth = $element.attr('viewBox').split(' ')[2];
+    var boxHeight = $element.attr('viewBox').split(' ')[3];
+
+    var widthRatio = (boxWidth* ctmScale) / elWidth;
+    var heightRatio = (boxHeight * ctmScale) / elHeight;
+    var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
+    console.log(elHeight, elWidth)
+    properFix = limitDecPlaces(1)(properFix);
+    console.log(properFix, screen.devicePixelRatio);
+
+    ////////////////////////////
+
     var aniFrame, continueAnimate, matrixString;
     var agile = Hammerhead.AgileView($element[0]);
 
@@ -289,7 +319,9 @@ var Hammerhead = {};
     listenDrag(function(data){
       // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      agile.drag(SVGroovy.Point(data.delta));
+      console.log(properFix)
+      console.log('booch', Pt.scalar(properFix)(Pt(data.delta)))
+      agile.drag(Pt(data.delta));
     });
 
     listenPinch(function(data, topic){
@@ -329,18 +361,6 @@ var Hammerhead = {};
       'transform-origin': '50% 50%'
     });
 
-    var elWidth = $element.width();
-    var elHeight = $element.height();
-    var ctmScale = $element[0].getScreenCTM().a;
-    var boxWidth = $element.attr('viewBox').split(' ')[2];
-    var boxHeight = $element.attr('viewBox').split(' ')[3];
-    console.log(elWidth, elHeight, ctmScale, boxWidth, boxHeight);
-    console.log(boxWidth* ctmScale, elWidth);
-    console.log(boxHeight* ctmScale, elHeight);
-    var widthRatio = elWidth/(boxWidth* ctmScale);
-    var heightRatio = elHeight/(boxHeight * ctmScale);
-    var properFix = widthRatio < heightRatio ? widthRatio : heightRatio;
-    alert(properFix, screen.devicePixelRatio);
 
   };
 }(Hammerhead));

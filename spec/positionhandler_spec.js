@@ -16,7 +16,7 @@ describe('responding to tower broadcasts', function(){
   afterEach(function(){
     testSVG.remove();
   });
-  it('should fail', function(){
+  it('long example', function(){
     expect(testSVG.attr('viewBox')).toEqual('0 0 2000 1000');
     tower.publish('start')(testSVG[0]);
     tower.publish('drag')({
