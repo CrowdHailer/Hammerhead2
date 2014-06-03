@@ -1,3 +1,12 @@
+// Rounding decimals
+
+function limitDecPlaces(dp){
+  dp = dp || 0;
+  return function(num){
+    return Math.round(num);
+  };
+}
+
 // String interpolations
 
 function interpolate(s) {
