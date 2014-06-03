@@ -590,6 +590,17 @@ var SVGroovy = {};
     return create().translate(x, y);
   };
 }(SVGroovy));
+// Rounding decimals
+
+function limitDecPlaces(dp){
+  dp = dp || 0;
+  var factor = Math.pow(10, dp);
+  var bump = Math.pow(0.1, dp + 1); // needed for case 2 d.p on 1.005
+  return function(num){
+    return Math.round(num * factor + bump) / factor;
+  };
+}
+
 // String interpolations
 
 function interpolate(s) {
@@ -864,12 +875,29 @@ var Hammerhead = {};
   var Mx = SVGroovy.Matrix;
   var identityMatrix = Mx();
 
+  var Pt = SVGroovy.Point;
+
+
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
   var listenEnd = tower.subscribe('end');
 
   parent.managePosition = function($element){
+    // windows FIX
+    var elWidth = $element.width();
+    var elHeight = $element.height();
+    var ctmScale = $element[0].getScreenCTM().a;
+    var boxWidth = $element.attr('viewBox').split(' ')[2];
+    var boxHeight = $element.attr('viewBox').split(' ')[3];
+
+    var widthRatio = (boxWidth* ctmScale) / elWidth;
+    var heightRatio = (boxHeight * ctmScale) / elHeight;
+    var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
+    properFix = limitDecPlaces(1)(properFix);
+
+    ////////////////////////////
+
     var aniFrame, continueAnimate, matrixString;
     var agile = Hammerhead.AgileView($element[0]);
 
@@ -881,19 +909,22 @@ var Hammerhead = {};
     listenDrag(function(data){
       // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      agile.drag(SVGroovy.Point(data.delta));
+      var translation = Pt(data.delta);
+      var fixedTranslation = Pt.scalar(properFix)(translation);
+      console.log(translation, fixedTranslation);
+      agile.drag(fixedTranslation);
     });
 
     listenPinch(function(data, topic){
       matrixString = matrixAsCss(Mx.scaling(data.scale));
       agile.zoom(data.scale);
     });
-
+    var vbString, vbChange;
     listenEnd(function(){
       agile.fix();
-      var vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+      vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+      vbChange = true;
       matrixString =  matrixAsCss(identityMatrix);
-      $element.attr('viewBox', vbString);
       continueAnimate = false;
     });
 
@@ -903,6 +934,10 @@ var Hammerhead = {};
         '-ms-transform': matrixString,
         'transform': matrixString
       });
+      if (vbString) {
+        vbChange = false;
+        $element.attr('viewBox', vbString);
+      }
       if (continueAnimate) {
         aniFrame = requestAnimationFrame( render );
       }
@@ -920,6 +955,7 @@ var Hammerhead = {};
       '-ms-transform-origin': '50% 50%',
       'transform-origin': '50% 50%'
     });
+
 
   };
 }(Hammerhead));
