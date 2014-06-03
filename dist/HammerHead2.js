@@ -306,7 +306,7 @@ var Hammerhead = {};
 
     ////////////////////////////
 
-    var aniFrame, continueAnimate, matrixString;
+    var aniFrame, matrixString;
     var agile = Hammerhead.AgileView($element[0]);
 
     listenStart(function(){
@@ -331,11 +331,13 @@ var Hammerhead = {};
       vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
       matrixString =  matrixAsCss(identityMatrix);
       cancelAnimationFrame(aniFrame);
-      $element.attr('viewBox', vbString);
-      $element.css({
-        '-webkit-transform': matrixString,
-        '-ms-transform': matrixString,
-        'transform': matrixString
+      requestAnimationFrame(function(){
+        $element.attr('viewBox', vbString);
+        $element.css({
+          '-webkit-transform': matrixString,
+          '-ms-transform': matrixString,
+          'transform': matrixString
+        });
       });
     });
 
