@@ -370,25 +370,47 @@ var Hammerhead = {};
   var tower = Belfry.getTower();
 
   var alertStart = tower.publish('start');
-  var alertDrag = tower.publish('drag');
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-  var scrolling = false;
-  var scroll = 0;
-  var finishScrolling = _.debounce(200)(function(){
-    alertEnd('wheel');
-    scrolling = false;
+
+  function checkSVGTarget(svg){
+    return function(target){
+      return (target.ownerSVGElement || target) === svg;
+    };
+  }
+
+  var standardOptions = _.foundation({
+    sensitivity: 0.1
   });
-  parent.mousewheelDispatch = function($element){
+
+  parent.mousewheelDispatch = function($element, options){
+    options = standardOptions(options);
+    
+    var SVGElement = $element[0], scale;
+    var onTarget = checkSVGTarget(SVGElement);
+    var factor = 1 + options.sensitivity;
+
+    var finishScrolling = _.debounce(200)(function(){
+      alertEnd('wheel');
+      scale = null;
+    });
+
     $(document).on('mousewheel', function(event){
-      if (!scrolling) {
-        scrolling = true;
+      if (!scale) {
+        if (!onTarget(event.target)) return;
+
+        scale = 1;
         alertStart('wheel');
       }
-      // return if outside 0.5 2 fire end and restart with high res.
-      scroll += event.wheelDelta;
-      alertPinch({element: $element[0], scale: Math.pow(2,scroll/6000)});
+
+      if (event.wheelDelta > 0) {
+        scale *= factor;
+      } else{
+        scale /= factor;
+      }
+
+      alertPinch({element: SVGElement, scale: scale});
       finishScrolling();
     });
   };
