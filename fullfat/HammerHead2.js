@@ -936,7 +936,7 @@ var Hammerhead = {};
         var svgTrans = scaleTo(fixedTranslation);
         viewBox = VB.translate(svgTrans)(viewBox);
       } else{
-        var scale = Math.max(Math.min(data.scale, maxScale), minScale);
+        var scale = Math.max(Math.min(thisScale, maxScale), minScale);
         viewBoxZoom *= scale;
         viewBox = VB.zoom(scale)()(viewBox);
       }
