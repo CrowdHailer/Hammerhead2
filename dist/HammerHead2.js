@@ -251,7 +251,9 @@ var Hammerhead = {};
     this.handlers.drag = false;
     this.handlers.pinch = false;
     alertEnd({
-      element: this.getElement()
+      element: this.getElement(),
+      delta: SVGroovy.Point(event.gesture),
+      scale: event.gesture.scale
     });
     return this;
   }
@@ -291,6 +293,7 @@ var Hammerhead = {};
   var tower = Belfry.getTower(),
     Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
+    VB = parent.ViewBox,
     identityMatrix = Mx(),
     matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
@@ -311,7 +314,8 @@ var Hammerhead = {};
     var properFix = missingCTM($element); // windows FIX
 
     var aniFrame, matrixString;
-    var agile = Hammerhead.AgileView($element[0]);
+    var viewBox = VB($element.attr('viewBox'));
+    // var agile = Hammerhead.AgileView($element[0]);
 
     listenStart(function(){
       beginAnimation();
@@ -320,19 +324,32 @@ var Hammerhead = {};
     listenDrag(function(data){
       // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      var translation = Pt(data.delta);
-      var fixedTranslation = Pt.scalar(properFix)(translation);
-      agile.drag(fixedTranslation);
+      // var translation = Pt(data.delta);
+      // var fixedTranslation = Pt.scalar(properFix)(translation);
+      // agile.drag(fixedTranslation);
     });
 
-    listenPinch(function(data, topic){
+    listenPinch(function(data){
       matrixString = matrixAsCss(Mx.scaling(data.scale));
-      agile.zoom(data.scale);
+      // agile.zoom(data.scale);
     });
 
-    listenEnd(function(){
-      agile.fix();
-      vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+    listenEnd(function(data){
+      console.log(data);
+      if (data.scale ===1) {
+        var fixedTranslation = Pt.scalar(properFix)(data.delta);
+        var inverseCTM = $element[0].getScreenCTM().inverse();
+        inverseCTM.e = 0;
+        inverseCTM.f = 0;
+        var scaleTo = Pt.matrixTransform(inverseCTM);
+        var svgTrans = scaleTo(fixedTranslation);
+        viewBox = VB.translate(svgTrans)(viewBox);
+      } else{
+        viewBox = VB.zoom(data.scale)()(viewBox);
+      }
+      console.log(viewBox);
+      // agile.fix();
+      vbString = VB.attrString(viewBox);
       matrixString =  matrixAsCss(identityMatrix);
       cancelAnimationFrame(aniFrame);
       requestAnimationFrame(function(){

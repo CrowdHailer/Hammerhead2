@@ -40,7 +40,9 @@
     this.handlers.drag = false;
     this.handlers.pinch = false;
     alertEnd({
-      element: this.getElement()
+      element: this.getElement(),
+      delta: SVGroovy.Point(event.gesture),
+      scale: event.gesture.scale
     });
     return this;
   }
