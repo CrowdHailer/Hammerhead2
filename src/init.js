@@ -1,4 +1,8 @@
 (function(parent){
+  var mousewheelSettings = _.dot({
+    sensitivity: 'mousewheelSensitivity'
+  });
+
   function init(svgId, options){
     $svg = $('svg#' + svgId);
 
@@ -8,14 +12,10 @@
 
     options = options || {};
 
-    mousewheelOptions = _.dot({
-      sensitivity: 'mousewheelSensitivity'
-    })(options);
-
     parent.regulateOverflow($svg);
     parent.touchDispatch($svg);
     parent.managePosition($svg);
-    parent.mousewheelDispatch($svg, mousewheelOptions);
+    parent.mousewheelDispatch($svg, mousewheelSettings(options));
   }
   parent.create = init;
 }(Hammerhead));
