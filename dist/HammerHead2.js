@@ -273,15 +273,11 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower();
-
-  var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
-
-  var Mx = SVGroovy.Matrix;
-  var identityMatrix = Mx();
-
-  var Pt = SVGroovy.Point;
-
+  var tower = Belfry.getTower(),
+    Pt = SVGroovy.Point,
+    Mx = SVGroovy.Matrix,
+    identityMatrix = Mx(),
+    matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
