@@ -1,5 +1,5 @@
 (function(parent){
-  var tower = Belfry.getTower(), scrolling, scroll;
+  var tower = Belfry.getTower(), scale;
 
   var alertStart = tower.publish('start');
   var alertDrag = tower.publish('drag');
@@ -8,22 +8,21 @@
 
   var finishScrolling = _.debounce(200)(function(){
     alertEnd('wheel');
-    scrolling = false;
+    scale = null;
   });
   parent.mousewheelDispatch = function($element){
     $(document).on('mousewheel', function(event){
-      if (!scrolling) {
-        scrolling = true;
-        scroll = 1;
+      if (!scale) {
+        scale = 1;
         console.log((event.target.ownerSVGElement || event.target) === $element[0] );
         alertStart('wheel');
       }
       if (event.wheelDelta > 0) {
-        scroll *= 1.1;
+        scale *= 1.1;
       } else{
-        scroll /= 1.1;
+        scale /= 1.1;
       }
-      alertPinch({element: $element[0], scale: scroll});
+      alertPinch({element: $element[0], scale: scale});
       finishScrolling();
     });
   };
