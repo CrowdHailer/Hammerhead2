@@ -233,8 +233,11 @@ var _ = (function(){
   }
 
   function within(array){
+    if (arguments.length > 1) {
+      array = argsToList(arguments);
+    }
     return function(item){
-      return array.indexOf(item) != -1;
+      return array.indexOf(item) !== -1;
     };
   }
 
@@ -262,7 +265,7 @@ var _ = (function(){
   function foundation(object){
     // builds a new object from the properties of a foundation object and extention object.
     return function(extra){
-      results = {};
+      var results = {};
       each(eachObject(function(value, key){
         results[key] = value;
       }))(object || {}, extra || {});
@@ -273,7 +276,7 @@ var _ = (function(){
   function overlay(extra){
     // builds a new object from the properties of a foundation object and extention object.
     return function(object){
-      results = {};
+      var results = {};
       each(eachObject(function(value, key){
         results[key] = value;
       }))(object || {}, extra || {});
@@ -388,6 +391,12 @@ var _ = (function(){
     console.log.apply(console, arguments);
   }
 
+  function position(func){
+    return function(item, position){
+      return func(position);
+    };
+  }
+
   function equals(a){
     return function(b){
       return a === b;
@@ -442,6 +451,7 @@ var _ = (function(){
     refreeze: refreeze,
     size: size,
     log: log,
+    position: position,
     equals: equals,
   };
   return _;

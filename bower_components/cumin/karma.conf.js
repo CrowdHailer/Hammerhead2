@@ -5,6 +5,7 @@ module.exports = function(config) {
     files: [
       'src/helpers.js',
       'src/cumin.js',
+      'src/math.js',
       'src/compositions.js',
       'spec/setup.js',
       'spec/cumin_spec.js',
@@ -12,6 +13,7 @@ module.exports = function(config) {
       'spec/array_spec.js',
       'spec/function_spec.js',
       'spec/utilities_spec.js',
+      'spec/math_spec.js',
       'spec/compositions_spec.js',
       'spec/examples_spec.js'
     ],
