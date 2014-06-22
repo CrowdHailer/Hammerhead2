@@ -1,9 +1,9 @@
 (function(parent){
   var tower = Belfry.getTower();
 
-  var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
-
   var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
+  var managePositionSettings = _.pick('maxZoom');
+  var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   function init(svgId, options){
     $svg = $('svg#' + svgId);
@@ -16,7 +16,7 @@
 
     parent.regulateOverflow($svg, overflowSettings(options));
     parent.touchDispatch($svg);
-    parent.managePosition($svg);
+    parent.managePosition($svg, managePositionSettings(options));
     parent.mousewheelDispatch($svg, mousewheelSettings(options));
 
     return {

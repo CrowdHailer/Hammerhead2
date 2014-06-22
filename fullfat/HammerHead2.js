@@ -879,6 +879,11 @@ var Hammerhead = {};
     identityMatrix = Mx(),
     matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
+
+  var buildConfig = _.foundation({
+    maxZoom: 2,
+  });
+
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
@@ -892,14 +897,18 @@ var Hammerhead = {};
     };
   };
 
-  parent.managePosition = function($element){
+  parent.managePosition = function($element, options){
+    var config = buildConfig(options);
     var properFix = missingCTM($element); // windows FIX
 
     var animationLoop, matrixString;
     var HOME = viewBox = VB($element.attr('viewBox'));
+    var viewBoxZoom = 1;
+    var maxScale = config.maxZoom;
 
     listenStart(function(){
       beginAnimation();
+      maxScale = config.maxZoom/viewBoxZoom;
     });
 
     listenDrag(function(data){
@@ -907,7 +916,8 @@ var Hammerhead = {};
     });
 
     listenPinch(function(data){
-      matrixString = matrixAsCss(Mx.scaling(data.scale));
+      var scale = Math.min(data.scale, maxScale);
+      matrixString = matrixAsCss(Mx.scaling(scale));
     });
 
     listenEnd(function(data){
@@ -920,7 +930,9 @@ var Hammerhead = {};
         var svgTrans = scaleTo(fixedTranslation);
         viewBox = VB.translate(svgTrans)(viewBox);
       } else{
-        viewBox = VB.zoom(data.scale)()(viewBox);
+        var scale = Math.min(data.scale, maxScale);
+        viewBoxZoom *= scale;
+        viewBox = VB.zoom(scale)()(viewBox);
       }
       vbString = VB.attrString(viewBox);
       matrixString =  matrixAsCss(identityMatrix);
@@ -1007,9 +1019,9 @@ var Hammerhead = {};
 (function(parent){
   var tower = Belfry.getTower();
 
-  var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
-
   var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
+  var managePositionSettings = _.pick('maxZoom');
+  var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   function init(svgId, options){
     $svg = $('svg#' + svgId);
@@ -1022,7 +1034,7 @@ var Hammerhead = {};
 
     parent.regulateOverflow($svg, overflowSettings(options));
     parent.touchDispatch($svg);
-    parent.managePosition($svg);
+    parent.managePosition($svg, managePositionSettings(options));
     parent.mousewheelDispatch($svg, mousewheelSettings(options));
 
     return {

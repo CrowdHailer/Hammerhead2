@@ -115,8 +115,11 @@
   <script>
     var id = 'the-pear';
     var active = Hammerhead.create(id, {
-      // mousewheelSensitivity: 0.2,
       // overflowSurplus: 0.8,
+      // resizeDelay: 200,
+      // maxZoom: 4
+      // mousewheelSensitivity: 0.2,
+      // mousewheelDelay: 200,
     });
 
     ////////////////////////////////////////////
@@ -124,9 +127,9 @@
     ////////////////////////////////////////////
     Hammer.plugins.fakeMultitouch();
 
-    var allChannels = ['start', 'drag', 'pinch', 'end', 'windowResize'];
+    // var allChannels = ['start', 'drag', 'pinch', 'end', 'windowResize'];
 
-    _.map(_.compose(_.invoke(_.log), Belfry.getTower().subscribe))(allChannels);
+    // _.map(_.compose(_.invoke(_.log), Belfry.getTower().subscribe))(allChannels);
 
   </script>
 </body>
