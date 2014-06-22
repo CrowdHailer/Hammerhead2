@@ -20,6 +20,6 @@ describe('initialisation process', function(){
     expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith([element]);
     expect(Hammerhead.touchDispatch).toHaveBeenCalledWith([element]);
     expect(Hammerhead.managePosition).toHaveBeenCalledWith([element]);
-    expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith([element]);
+    expect(Hammerhead.mousewheelDispatch).toHaveBeenCalled();
   });
 });
