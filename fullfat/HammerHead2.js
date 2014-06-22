@@ -756,58 +756,6 @@ var Hammerhead = {};
   parent.ViewBox = create;
 }(Hammerhead));
 (function(parent){
-  var VB = parent.ViewBox;
-  var Pt = SVGroovy.Point;
-  prototype = {
-    translate: function(delta){
-      var newViewBox = VB.translate(delta)(this.getCurrent());
-      this.setTemporary(newViewBox);
-      return this;
-    },
-    scale: function(magnification, center){
-      var newViewBox = VB.zoom(magnification)(center)(this.getCurrent());
-      this.setTemporary(newViewBox);
-      return this;
-    },
-    drag: function(screenDelta){
-      var delta = this.scaleTo()(screenDelta);
-      return this.translate(delta);
-    },
-    zoom: function(scale, screenCenter){
-      var center;
-      if (screenCenter) {
-        center = this.mapTo()(screenCenter);
-      }
-      return this.scale(scale, center);
-    },
-    mapTo: function(){
-      return Pt.matrixTransform(this.getScreenCTM().inverse());
-    },
-    scaleTo: function(){
-      var inverseCTM = this.getScreenCTM().inverse();
-      inverseCTM.e = 0;
-      inverseCTM.f = 0;
-      return Pt.matrixTransform(inverseCTM);
-    }
-  };
-  function create(element, options){
-    var temporary, current, HOME;
-    current = temporary = HOME =  parent.ViewBox(element.getAttribute('viewBox'));
-
-    var instance = Object.create(prototype);
-    _.extend({
-      getCurrent: function(){ return current; },
-      getTemporary: function(){ return temporary; },
-      setTemporary: function(value){ temporary = value; },
-      fix: function(){ current = temporary; },
-      getScreenCTM: function(){ return element.getScreenCTM(); }
-    })(instance);
-    return instance;
-  }
-
-  parent.AgileView = create;
-}(Hammerhead));
-(function(parent){
   var tower = Belfry.getTower();
 
   var buildConfig = _.foundation({
