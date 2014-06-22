@@ -18,7 +18,7 @@ describe('managing overflow padding of active elements', function(){
   // warning does not clear channels so test order matters
   it('should set a elements margin outside the parent dependant on configuration', function(){
   $('#outer').width(200).height(100);
-    Hammerhead.regulateOverflow($('#inner'), {surplus: 0.2});
+    Hammerhead.regulateOverflow($('#inner'), {overflowSurplus: 0.2});
     expect($('#inner').width()).toEqual(280);
     expect($('#inner').height()).toEqual(140);
     expect($('#inner').css('margin')).toEqual('-20px -40px');

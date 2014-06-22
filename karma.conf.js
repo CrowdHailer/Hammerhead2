@@ -6,6 +6,8 @@ module.exports = function(config) {
       'bower_components/zepto/zepto.js',
       'bower_components/hammerjs/hammer.js',
       'bower_components/cumin/dist/cumin.js',
+      'bower_components/cumin/dist/math.min.js',
+      'bower_components/cumin/dist/compositions.min.js',
       'bower_components/belfry/dist/belfry.js',
       'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
       'src/prefix.js',

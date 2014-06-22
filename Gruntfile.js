@@ -22,6 +22,7 @@ module.exports = function(grunt) {
         src: [
           'bower_components/cumin/dist/cumin.js',
           'bower_components/cumin/dist/math.min.js',
+          'bower_components/cumin/dist/compositions.min.js',
           'bower_components/belfry/dist/belfry.js',
           'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
           'src/prefix.js',

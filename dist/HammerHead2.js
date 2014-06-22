@@ -162,7 +162,7 @@ var Hammerhead = {};
   var tower = Belfry.getTower();
 
   var buildConfig = _.foundation({
-    surplus: 0.5
+    overflowSurplus: 0.5
   });
 
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
@@ -170,7 +170,7 @@ var Hammerhead = {};
   function createOverflowUpdater($element, options){
     var config = buildConfig(options);
 
-    var surplus = config.surplus;
+    var surplus = config.overflowSurplus;
     var factor = 2 * surplus + 1;
     var $parent = $element.parent();
 
@@ -381,7 +381,7 @@ var Hammerhead = {};
   }
 
   var standardOptions = _.foundation({
-    sensitivity: 0.1
+    mousewheelSensitivity: 0.1
   });
 
   parent.mousewheelDispatch = function($element, options){
@@ -389,7 +389,7 @@ var Hammerhead = {};
     
     var SVGElement = $element[0], scale;
     var onTarget = checkSVGTarget(SVGElement);
-    var factor = 1 + options.sensitivity;
+    var factor = 1 + options.mousewheelSensitivity;
 
     var finishScrolling = _.debounce(200)(function(){
       alertEnd('wheel');
@@ -417,13 +417,9 @@ var Hammerhead = {};
 
 }(Hammerhead));
 (function(parent){
-  var mousewheelSettings = _.dot({
-    sensitivity: 'mousewheelSensitivity'
-  });
+  var mousewheelSettings = _.pick('mousewheelSensitivity');
 
-  var overflowSettings = _.dot({
-    surplus: 'overflowSurplus'
-  });
+  var overflowSettings = _.pick('overflowSurplus');
 
   function init(svgId, options){
     $svg = $('svg#' + svgId);

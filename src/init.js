@@ -1,11 +1,7 @@
 (function(parent){
-  var mousewheelSettings = _.dot({
-    sensitivity: 'mousewheelSensitivity'
-  });
+  var mousewheelSettings = _.pick('mousewheelSensitivity');
 
-  var overflowSettings = _.dot({
-    surplus: 'overflowSurplus'
-  });
+  var overflowSettings = _.pick('overflowSurplus');
 
   function init(svgId, options){
     $svg = $('svg#' + svgId);

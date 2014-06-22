@@ -13,7 +13,7 @@
   }
 
   var standardOptions = _.foundation({
-    sensitivity: 0.1
+    mousewheelSensitivity: 0.1
   });
 
   parent.mousewheelDispatch = function($element, options){
@@ -21,7 +21,7 @@
     
     var SVGElement = $element[0], scale;
     var onTarget = checkSVGTarget(SVGElement);
-    var factor = 1 + options.sensitivity;
+    var factor = 1 + options.mousewheelSensitivity;
 
     var finishScrolling = _.debounce(200)(function(){
       alertEnd('wheel');
