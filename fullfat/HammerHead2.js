@@ -901,7 +901,7 @@ var Hammerhead = {};
     var config = buildConfig(options);
     var properFix = missingCTM($element); // windows FIX
 
-    var animationLoop, matrixString;
+    var animationLoop, matrixString, vbString;
     var HOME = viewBox = VB($element.attr('viewBox'));
     var viewBoxZoom = 1;
     var maxScale = config.maxZoom;
@@ -936,7 +936,7 @@ var Hammerhead = {};
         viewBoxZoom *= scale;
         viewBox = VB.zoom(scale)()(viewBox);
       }
-      vbString = VB.attrString(viewBox);
+      vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
       matrixString =  matrixAsCss(identityMatrix);
       cancelAnimationFrame(animationLoop);
       requestAnimationFrame(function(){
@@ -961,6 +961,8 @@ var Hammerhead = {};
         '-ms-transform-origin': '50% 50%',
         'transform-origin': '50% 50%'
       });
+    vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
+    $element.attr('viewBox', vbString);
 
     tower.subscribe('home')(function(){
       matrixString =  matrixAsCss(identityMatrix);
