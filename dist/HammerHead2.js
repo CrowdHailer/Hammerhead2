@@ -280,11 +280,13 @@ var Hammerhead = {};
     var viewBoxZoom = 1;
     var maxScale = config.maxZoom;
     var minScale = config.minZoom;
+    var thisScale = 1;
 
     listenStart(function(){
       beginAnimation();
       maxScale = config.maxZoom/viewBoxZoom;
       minScale = config.minZoom/viewBoxZoom;
+      thisScale = 1;
     });
 
     listenDrag(function(data){
@@ -294,10 +296,12 @@ var Hammerhead = {};
     listenPinch(function(data){
       var scale = Math.max(Math.min(data.scale, maxScale), minScale);
       matrixString = matrixAsCss(Mx.scaling(scale));
+      thisScale = scale;
     });
 
     listenEnd(function(data){
-      if (data.scale === 1) {
+      console.log(thisScale)
+      if (thisScale === 1) {
         var fixedTranslation = Pt.scalar(properFix)(data.delta);
         var inverseCTM = $element[0].getScreenCTM().inverse();
         inverseCTM.e = 0;
