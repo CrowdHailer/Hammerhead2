@@ -29,6 +29,7 @@ module.exports = function(grunt) {
           'src/overflow.js',
           'src/touch.js',
           'src/positionhandler.js',
+          'src/mousewheel.js',
           'src/init.js',
         ],
         dest: 'fullfat/<%= pkg.name %>.js'
