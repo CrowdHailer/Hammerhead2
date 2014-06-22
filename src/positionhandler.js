@@ -25,7 +25,7 @@
     var widthRatio = (boxWidth* ctmScale) / elWidth;
     var heightRatio = (boxHeight * ctmScale) / elHeight;
     var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-    properFix = limitDecPlaces(1)(properFix);
+    properFix = _.round(1)(properFix);
 
     ////////////////////////////
 

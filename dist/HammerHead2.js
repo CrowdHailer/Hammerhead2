@@ -1,14 +1,3 @@
-// Rounding decimals
-
-function limitDecPlaces(dp){
-  dp = dp || 0;
-  var factor = Math.pow(10, dp);
-  var bump = Math.pow(0.1, dp + 1); // needed for case 2 d.p on 1.005
-  return function(num){
-    return Math.round(num * factor + bump) / factor;
-  };
-}
-
 // String interpolations
 
 function interpolate(s) {
@@ -313,7 +302,7 @@ var Hammerhead = {};
     var widthRatio = (boxWidth* ctmScale) / elWidth;
     var heightRatio = (boxHeight * ctmScale) / elHeight;
     var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-    properFix = limitDecPlaces(1)(properFix);
+    properFix = _.round(1)(properFix);
 
     ////////////////////////////
 

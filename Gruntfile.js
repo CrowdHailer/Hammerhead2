@@ -21,6 +21,7 @@ module.exports = function(grunt) {
       fullfat: {
         src: [
           'bower_components/cumin/dist/cumin.js',
+          'bower_components/cumin/dist/math.min.js',
           'bower_components/belfry/dist/belfry.js',
           'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
           'src/prefix.js',

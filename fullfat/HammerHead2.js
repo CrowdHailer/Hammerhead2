@@ -233,8 +233,11 @@ var _ = (function(){
   }
 
   function within(array){
+    if (arguments.length > 1) {
+      array = argsToList(arguments);
+    }
     return function(item){
-      return array.indexOf(item) != -1;
+      return array.indexOf(item) !== -1;
     };
   }
 
@@ -262,7 +265,7 @@ var _ = (function(){
   function foundation(object){
     // builds a new object from the properties of a foundation object and extention object.
     return function(extra){
-      results = {};
+      var results = {};
       each(eachObject(function(value, key){
         results[key] = value;
       }))(object || {}, extra || {});
@@ -273,7 +276,7 @@ var _ = (function(){
   function overlay(extra){
     // builds a new object from the properties of a foundation object and extention object.
     return function(object){
-      results = {};
+      var results = {};
       each(eachObject(function(value, key){
         results[key] = value;
       }))(object || {}, extra || {});
@@ -388,6 +391,12 @@ var _ = (function(){
     console.log.apply(console, arguments);
   }
 
+  function position(func){
+    return function(item, position){
+      return func(position);
+    };
+  }
+
   function equals(a){
     return function(b){
       return a === b;
@@ -442,6 +451,7 @@ var _ = (function(){
     refreeze: refreeze,
     size: size,
     log: log,
+    position: position,
     equals: equals,
   };
   return _;
@@ -610,17 +620,6 @@ var SVGroovy = {};
     return create().translate(x, y);
   };
 }(SVGroovy));
-// Rounding decimals
-
-function limitDecPlaces(dp){
-  dp = dp || 0;
-  var factor = Math.pow(10, dp);
-  var bump = Math.pow(0.1, dp + 1); // needed for case 2 d.p on 1.005
-  return function(num){
-    return Math.round(num * factor + bump) / factor;
-  };
-}
-
 // String interpolations
 
 function interpolate(s) {
@@ -925,7 +924,7 @@ var Hammerhead = {};
     var widthRatio = (boxWidth* ctmScale) / elWidth;
     var heightRatio = (boxHeight * ctmScale) / elHeight;
     var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-    properFix = limitDecPlaces(1)(properFix);
+    properFix = _.round(1)(properFix);
 
     ////////////////////////////
 
