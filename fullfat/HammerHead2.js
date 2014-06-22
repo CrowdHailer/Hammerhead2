@@ -879,9 +879,9 @@ var Hammerhead = {};
     identityMatrix = Mx(),
     matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
-
   var buildConfig = _.foundation({
     maxZoom: 2,
+    minZoom: 0.5
   });
 
   var listenStart = tower.subscribe('start');
@@ -905,10 +905,12 @@ var Hammerhead = {};
     var HOME = viewBox = VB($element.attr('viewBox'));
     var viewBoxZoom = 1;
     var maxScale = config.maxZoom;
+    var minScale = config.minZoom;
 
     listenStart(function(){
       beginAnimation();
       maxScale = config.maxZoom/viewBoxZoom;
+      minScale = config.minZoom/viewBoxZoom;
     });
 
     listenDrag(function(data){
@@ -916,7 +918,7 @@ var Hammerhead = {};
     });
 
     listenPinch(function(data){
-      var scale = Math.min(data.scale, maxScale);
+      var scale = Math.max(Math.min(data.scale, maxScale), minScale);
       matrixString = matrixAsCss(Mx.scaling(scale));
     });
 
@@ -930,7 +932,7 @@ var Hammerhead = {};
         var svgTrans = scaleTo(fixedTranslation);
         viewBox = VB.translate(svgTrans)(viewBox);
       } else{
-        var scale = Math.min(data.scale, maxScale);
+        var scale = Math.max(Math.min(data.scale, maxScale), minScale);
         viewBoxZoom *= scale;
         viewBox = VB.zoom(scale)()(viewBox);
       }
@@ -1020,7 +1022,7 @@ var Hammerhead = {};
   var tower = Belfry.getTower();
 
   var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
-  var managePositionSettings = _.pick('maxZoom');
+  var managePositionSettings = _.pick('maxZoom', 'minZoom');
   var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   function init(svgId, options){

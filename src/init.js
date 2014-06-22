@@ -2,7 +2,7 @@
   var tower = Belfry.getTower();
 
   var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
-  var managePositionSettings = _.pick('maxZoom');
+  var managePositionSettings = _.pick('maxZoom', 'minZoom');
   var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   function init(svgId, options){
