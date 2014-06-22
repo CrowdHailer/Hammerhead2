@@ -5,26 +5,21 @@
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-
-  function checkSVGTarget(svg){
-    return function(target){
-      return (target.ownerSVGElement || target) === svg;
-    };
-  }
-
-  var standardOptions = _.foundation({
-    mousewheelSensitivity: 0.1
+  var buildConfig = _.foundation({
+    mousewheelSensitivity: 0.1,
+    mousewheelDelay: 200
   });
 
   parent.mousewheelDispatch = function($element, options){
-    options = standardOptions(options);
+    var config = buildConfig(options);
     
-    var SVGElement = $element[0], scale;
+    var SVGElement = $element[0];
+    var scale;
     var onTarget = checkSVGTarget(SVGElement);
-    var factor = 1 + options.mousewheelSensitivity;
+    var factor = 1 + config.mousewheelSensitivity;
 
-    var finishScrolling = _.debounce(200)(function(){
-      alertEnd('wheel');
+    var finishScrolling = _.debounce(config.mousewheelDelay)(function(scaleFactor){
+      alertEnd({scale: scaleFactor});
       scale = null;
     });
 
@@ -42,8 +37,10 @@
         scale /= factor;
       }
 
-      alertPinch({element: SVGElement, scale: scale});
-      finishScrolling();
+      alertPinch({
+        element: SVGElement,
+        scale: scale});
+      finishScrolling(scale);
     });
   };
 

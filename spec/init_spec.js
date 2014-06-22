@@ -19,7 +19,7 @@ describe('initialisation process', function(){
     var created = Hammerhead.create('name');
     expect(Hammerhead.regulateOverflow).toHaveBeenCalled();
     expect(Hammerhead.touchDispatch).toHaveBeenCalledWith([element]);
-    expect(Hammerhead.managePosition).toHaveBeenCalledWith([element]);
+    expect(Hammerhead.managePosition).toHaveBeenCalled();
     expect(Hammerhead.mousewheelDispatch).toHaveBeenCalled();
   });
 });

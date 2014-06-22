@@ -9,7 +9,7 @@ module.exports = function(grunt) {
         src: [
           'src/prefix.js',
           'src/viewbox.js',
-          'src/agile.js',
+          // 'src/agile.js',
           'src/overflow.js',
           'src/touch.js',
           'src/positionhandler.js',
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
           'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
           'src/prefix.js',
           'src/viewbox.js',
-          'src/agile.js',
+          // 'src/agile.js',
           'src/overflow.js',
           'src/touch.js',
           'src/positionhandler.js',

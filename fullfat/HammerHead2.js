@@ -636,6 +636,14 @@ function interpolate(s) {
   };
 }
 
+// check svg owner
+
+function checkSVGTarget(svg){
+  return function(target){
+    return (target.ownerSVGElement || target) === svg;
+  };
+}
+
 // Request animation frame polyfill
 
 (function() {
@@ -662,6 +670,21 @@ function interpolate(s) {
       clearTimeout(id);
     };
 }());
+
+// Missing windows pixel density fix 
+
+function missingCTM($element){
+  var elWidth = $element.width(),
+    elHeight = $element.height(),
+    CTMScale = $element[0].getScreenCTM().a,
+    boxWidth = $element.attr('viewBox').split(' ')[2],
+    boxHeight = $element.attr('viewBox').split(' ')[3],
+    widthRatio = (boxWidth* CTMScale) / elWidth,
+    heightRatio = (boxHeight * CTMScale) / elHeight,
+    properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
+
+  return _.round(1)(properFix);
+}
 
 var hammertime = Hammer(document);
 
@@ -733,65 +756,16 @@ var Hammerhead = {};
   parent.ViewBox = create;
 }(Hammerhead));
 (function(parent){
-  var VB = parent.ViewBox;
-  var Pt = SVGroovy.Point;
-  prototype = {
-    translate: function(delta){
-      var newViewBox = VB.translate(delta)(this.getCurrent());
-      this.setTemporary(newViewBox);
-      return this;
-    },
-    scale: function(magnification, center){
-      var newViewBox = VB.zoom(magnification)(center)(this.getCurrent());
-      this.setTemporary(newViewBox);
-      return this;
-    },
-    drag: function(screenDelta){
-      var delta = this.scaleTo()(screenDelta);
-      return this.translate(delta);
-    },
-    zoom: function(scale, screenCenter){
-      var center;
-      if (screenCenter) {
-        center = this.mapTo()(screenCenter);
-      }
-      return this.scale(scale, center);
-    },
-    mapTo: function(){
-      return Pt.matrixTransform(this.getScreenCTM().inverse());
-    },
-    scaleTo: function(){
-      var inverseCTM = this.getScreenCTM().inverse();
-      inverseCTM.e = 0;
-      inverseCTM.f = 0;
-      return Pt.matrixTransform(inverseCTM);
-    }
-  };
-  function create(element, options){
-    var temporary, current, HOME;
-    current = temporary = HOME =  parent.ViewBox(element.getAttribute('viewBox'));
-
-    var instance = Object.create(prototype);
-    _.extend({
-      getCurrent: function(){ return current; },
-      getTemporary: function(){ return temporary; },
-      setTemporary: function(value){ temporary = value; },
-      fix: function(){ current = temporary; },
-      getScreenCTM: function(){ return element.getScreenCTM(); }
-    })(instance);
-    return instance;
-  }
-
-  parent.AgileView = create;
-}(Hammerhead));
-(function(parent){
   var tower = Belfry.getTower();
 
   var buildConfig = _.foundation({
-    overflowSurplus: 0.5
+    overflowSurplus: 0.5,
+    resizeDelay: 200
   });
 
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
+
+  $(window).on('resize', tower.publish('windowResize'));
 
   function createOverflowUpdater($element, options){
     var config = buildConfig(options);
@@ -800,21 +774,15 @@ var Hammerhead = {};
     var factor = 2 * surplus + 1;
     var $parent = $element.parent();
 
-    return function(){
+    return _.debounce(config.resizeDelay)(function(){
       var height = $parent.height();
       var width = $parent.width();
       $element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    };
+    });
   }
-
-  var publishResize = _.debounce(200)(tower.publish('windowResize'));
-
-  $(window).on('resize', function(){
-    publishResize();
-  });
 
   parent.regulateOverflow = function(element, options){
     var updateOverflow = createOverflowUpdater(element, options);
@@ -865,7 +833,9 @@ var Hammerhead = {};
     this.handlers.drag = false;
     this.handlers.pinch = false;
     alertEnd({
-      element: this.getElement()
+      element: this.getElement(),
+      delta: SVGroovy.Point(event.gesture),
+      scale: event.gesture.scale
     });
     return this;
   }
@@ -902,94 +872,105 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower();
+  var tower = Belfry.getTower(),
+    Pt = SVGroovy.Point,
+    Mx = SVGroovy.Matrix,
+    VB = parent.ViewBox,
+    identityMatrix = Mx(),
+    matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
-  var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
-
-  var Mx = SVGroovy.Matrix;
-  var identityMatrix = Mx();
-
-  var Pt = SVGroovy.Point;
-
+  var buildConfig = _.foundation({
+    maxZoom: 2,
+    minZoom: 0.5
+  });
 
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
   var listenEnd = tower.subscribe('end');
 
-  parent.managePosition = function($element){
-    // windows FIX
-    var elWidth = $element.width();
-    var elHeight = $element.height();
-    var ctmScale = $element[0].getScreenCTM().a;
-    var boxWidth = $element.attr('viewBox').split(' ')[2];
-    var boxHeight = $element.attr('viewBox').split(' ')[3];
+  var transformObject = function(matrixString){
+    return {
+      '-webkit-transform': matrixString,
+      '-ms-transform': matrixString,
+      'transform': matrixString
+    };
+  };
 
-    var widthRatio = (boxWidth* ctmScale) / elWidth;
-    var heightRatio = (boxHeight * ctmScale) / elHeight;
-    var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-    properFix = _.round(1)(properFix);
+  parent.managePosition = function($element, options){
+    var config = buildConfig(options);
+    var properFix = missingCTM($element); // windows FIX
 
-    ////////////////////////////
-
-    var aniFrame, matrixString;
-    var agile = Hammerhead.AgileView($element[0]);
+    var animationLoop, matrixString, vbString;
+    var HOME = viewBox = VB($element.attr('viewBox'));
+    var viewBoxZoom = 1;
+    var maxScale = config.maxZoom;
+    var minScale = config.minZoom;
 
     listenStart(function(){
       beginAnimation();
+      maxScale = config.maxZoom/viewBoxZoom;
+      minScale = config.minZoom/viewBoxZoom;
     });
 
     listenDrag(function(data){
-      // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      var translation = Pt(data.delta);
-      var fixedTranslation = Pt.scalar(properFix)(translation);
-      agile.drag(fixedTranslation);
     });
 
-    listenPinch(function(data, topic){
-      matrixString = matrixAsCss(Mx.scaling(data.scale));
-      agile.zoom(data.scale);
+    listenPinch(function(data){
+      var scale = Math.max(Math.min(data.scale, maxScale), minScale);
+      matrixString = matrixAsCss(Mx.scaling(scale));
     });
 
-    listenEnd(function(){
-      agile.fix();
-      vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+    listenEnd(function(data){
+      if (data.scale === 1) {
+        var fixedTranslation = Pt.scalar(properFix)(data.delta);
+        var inverseCTM = $element[0].getScreenCTM().inverse();
+        inverseCTM.e = 0;
+        inverseCTM.f = 0;
+        var scaleTo = Pt.matrixTransform(inverseCTM);
+        var svgTrans = scaleTo(fixedTranslation);
+        viewBox = VB.translate(svgTrans)(viewBox);
+      } else{
+        var scale = Math.max(Math.min(data.scale, maxScale), minScale);
+        viewBoxZoom *= scale;
+        viewBox = VB.zoom(scale)()(viewBox);
+      }
+      vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
       matrixString =  matrixAsCss(identityMatrix);
-      cancelAnimationFrame(aniFrame);
+      cancelAnimationFrame(animationLoop);
       requestAnimationFrame(function(){
         $element.attr('viewBox', vbString);
-        $element.css({
-          '-webkit-transform': matrixString,
-          '-ms-transform': matrixString,
-          'transform': matrixString
-        });
+        $element.css(transformObject(matrixString));
       });
     });
 
     function render(){
-      $element.css({
-        '-webkit-transform': matrixString,
-        '-ms-transform': matrixString,
-        'transform': matrixString
-      });
-      aniFrame = requestAnimationFrame( render );
+      $element.css(transformObject(matrixString));
+      animationLoop = requestAnimationFrame( render );
     }
 
     function beginAnimation(){
-      aniFrame = requestAnimationFrame( render );
+      animationLoop = requestAnimationFrame( render );
     }
 
-    $element.css({
-      '-webkit-transform': matrixAsCss(identityMatrix),
-      'transform': matrixAsCss(identityMatrix),
-      '-webkit-backface-visibility': 'hidden',
-      '-webkit-transform-origin': '50% 50%',
-      '-ms-transform-origin': '50% 50%',
-      'transform-origin': '50% 50%'
+    $element.css(transformObject(matrixAsCss(identityMatrix)))
+      .css({
+        '-webkit-backface-visibility': 'hidden',
+        '-webkit-transform-origin': '50% 50%',
+        '-ms-transform-origin': '50% 50%',
+        'transform-origin': '50% 50%'
+      });
+    vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
+    $element.attr('viewBox', vbString);
+
+    tower.subscribe('home')(function(){
+      matrixString =  matrixAsCss(identityMatrix);
+      $element.css(transformObject(matrixString));
+      viewBox = HOME;
+      vbString = VB.attrString(viewBox);
+      $element.attr('viewBox', vbString);
     });
-
-
   };
 }(Hammerhead));
 (function(parent){
@@ -999,26 +980,21 @@ var Hammerhead = {};
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-
-  function checkSVGTarget(svg){
-    return function(target){
-      return (target.ownerSVGElement || target) === svg;
-    };
-  }
-
-  var standardOptions = _.foundation({
-    mousewheelSensitivity: 0.1
+  var buildConfig = _.foundation({
+    mousewheelSensitivity: 0.1,
+    mousewheelDelay: 200
   });
 
   parent.mousewheelDispatch = function($element, options){
-    options = standardOptions(options);
+    var config = buildConfig(options);
     
-    var SVGElement = $element[0], scale;
+    var SVGElement = $element[0];
+    var scale;
     var onTarget = checkSVGTarget(SVGElement);
-    var factor = 1 + options.mousewheelSensitivity;
+    var factor = 1 + config.mousewheelSensitivity;
 
-    var finishScrolling = _.debounce(200)(function(){
-      alertEnd('wheel');
+    var finishScrolling = _.debounce(config.mousewheelDelay)(function(scaleFactor){
+      alertEnd({scale: scaleFactor});
       scale = null;
     });
 
@@ -1036,16 +1012,20 @@ var Hammerhead = {};
         scale /= factor;
       }
 
-      alertPinch({element: SVGElement, scale: scale});
-      finishScrolling();
+      alertPinch({
+        element: SVGElement,
+        scale: scale});
+      finishScrolling(scale);
     });
   };
 
 }(Hammerhead));
 (function(parent){
-  var mousewheelSettings = _.pick('mousewheelSensitivity');
+  var tower = Belfry.getTower();
 
-  var overflowSettings = _.pick('overflowSurplus');
+  var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
+  var managePositionSettings = _.pick('maxZoom', 'minZoom');
+  var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   function init(svgId, options){
     $svg = $('svg#' + svgId);
@@ -1058,8 +1038,12 @@ var Hammerhead = {};
 
     parent.regulateOverflow($svg, overflowSettings(options));
     parent.touchDispatch($svg);
-    parent.managePosition($svg);
+    parent.managePosition($svg, managePositionSettings(options));
     parent.mousewheelDispatch($svg, mousewheelSettings(options));
+
+    return {
+      home: tower.publish('home')
+    };
   }
   parent.create = init;
 }(Hammerhead));

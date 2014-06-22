@@ -1,91 +1,102 @@
 (function(parent){
-  var tower = Belfry.getTower();
+  var tower = Belfry.getTower(),
+    Pt = SVGroovy.Point,
+    Mx = SVGroovy.Matrix,
+    VB = parent.ViewBox,
+    identityMatrix = Mx(),
+    matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
 
-  var matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
-
-  var Mx = SVGroovy.Matrix;
-  var identityMatrix = Mx();
-
-  var Pt = SVGroovy.Point;
-
+  var buildConfig = _.foundation({
+    maxZoom: 2,
+    minZoom: 0.5
+  });
 
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
   var listenEnd = tower.subscribe('end');
 
-  parent.managePosition = function($element){
-    // windows FIX
-    var elWidth = $element.width();
-    var elHeight = $element.height();
-    var ctmScale = $element[0].getScreenCTM().a;
-    var boxWidth = $element.attr('viewBox').split(' ')[2];
-    var boxHeight = $element.attr('viewBox').split(' ')[3];
+  var transformObject = function(matrixString){
+    return {
+      '-webkit-transform': matrixString,
+      '-ms-transform': matrixString,
+      'transform': matrixString
+    };
+  };
 
-    var widthRatio = (boxWidth* ctmScale) / elWidth;
-    var heightRatio = (boxHeight * ctmScale) / elHeight;
-    var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-    properFix = _.round(1)(properFix);
+  parent.managePosition = function($element, options){
+    var config = buildConfig(options);
+    var properFix = missingCTM($element); // windows FIX
 
-    ////////////////////////////
-
-    var aniFrame, matrixString;
-    var agile = Hammerhead.AgileView($element[0]);
+    var animationLoop, matrixString, vbString;
+    var HOME = viewBox = VB($element.attr('viewBox'));
+    var viewBoxZoom = 1;
+    var maxScale = config.maxZoom;
+    var minScale = config.minZoom;
 
     listenStart(function(){
       beginAnimation();
+      maxScale = config.maxZoom/viewBoxZoom;
+      minScale = config.minZoom/viewBoxZoom;
     });
 
     listenDrag(function(data){
-      // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      var translation = Pt(data.delta);
-      var fixedTranslation = Pt.scalar(properFix)(translation);
-      agile.drag(fixedTranslation);
     });
 
-    listenPinch(function(data, topic){
-      matrixString = matrixAsCss(Mx.scaling(data.scale));
-      agile.zoom(data.scale);
+    listenPinch(function(data){
+      var scale = Math.max(Math.min(data.scale, maxScale), minScale);
+      matrixString = matrixAsCss(Mx.scaling(scale));
     });
 
-    listenEnd(function(){
-      agile.fix();
-      vbString = Hammerhead.ViewBox.attrString(agile.getCurrent());
+    listenEnd(function(data){
+      if (data.scale === 1) {
+        var fixedTranslation = Pt.scalar(properFix)(data.delta);
+        var inverseCTM = $element[0].getScreenCTM().inverse();
+        inverseCTM.e = 0;
+        inverseCTM.f = 0;
+        var scaleTo = Pt.matrixTransform(inverseCTM);
+        var svgTrans = scaleTo(fixedTranslation);
+        viewBox = VB.translate(svgTrans)(viewBox);
+      } else{
+        var scale = Math.max(Math.min(data.scale, maxScale), minScale);
+        viewBoxZoom *= scale;
+        viewBox = VB.zoom(scale)()(viewBox);
+      }
+      vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
       matrixString =  matrixAsCss(identityMatrix);
-      cancelAnimationFrame(aniFrame);
+      cancelAnimationFrame(animationLoop);
       requestAnimationFrame(function(){
         $element.attr('viewBox', vbString);
-        $element.css({
-          '-webkit-transform': matrixString,
-          '-ms-transform': matrixString,
-          'transform': matrixString
-        });
+        $element.css(transformObject(matrixString));
       });
     });
 
     function render(){
-      $element.css({
-        '-webkit-transform': matrixString,
-        '-ms-transform': matrixString,
-        'transform': matrixString
-      });
-      aniFrame = requestAnimationFrame( render );
+      $element.css(transformObject(matrixString));
+      animationLoop = requestAnimationFrame( render );
     }
 
     function beginAnimation(){
-      aniFrame = requestAnimationFrame( render );
+      animationLoop = requestAnimationFrame( render );
     }
 
-    $element.css({
-      '-webkit-transform': matrixAsCss(identityMatrix),
-      'transform': matrixAsCss(identityMatrix),
-      '-webkit-backface-visibility': 'hidden',
-      '-webkit-transform-origin': '50% 50%',
-      '-ms-transform-origin': '50% 50%',
-      'transform-origin': '50% 50%'
+    $element.css(transformObject(matrixAsCss(identityMatrix)))
+      .css({
+        '-webkit-backface-visibility': 'hidden',
+        '-webkit-transform-origin': '50% 50%',
+        '-ms-transform-origin': '50% 50%',
+        'transform-origin': '50% 50%'
+      });
+    vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
+    $element.attr('viewBox', vbString);
+
+    tower.subscribe('home')(function(){
+      matrixString =  matrixAsCss(identityMatrix);
+      $element.css(transformObject(matrixString));
+      viewBox = HOME;
+      vbString = VB.attrString(viewBox);
+      $element.attr('viewBox', vbString);
     });
-
-
   };
 }(Hammerhead));
