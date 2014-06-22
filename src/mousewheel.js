@@ -6,7 +6,8 @@
   var alertEnd = tower.publish('end');
 
   var buildConfig = _.foundation({
-    mousewheelSensitivity: 0.1
+    mousewheelSensitivity: 0.1,
+    mousewheelDelay: 200
   });
 
   parent.mousewheelDispatch = function($element, options){
@@ -17,7 +18,7 @@
     var onTarget = checkSVGTarget(SVGElement);
     var factor = 1 + config.mousewheelSensitivity;
 
-    var finishScrolling = _.debounce(200)(function(scaleFactor){
+    var finishScrolling = _.debounce(config.mousewheelDelay)(function(scaleFactor){
       alertEnd({scale: scaleFactor});
       scale = null;
     });

@@ -1,7 +1,7 @@
 (function(parent){
-  var mousewheelSettings = _.pick('mousewheelSensitivity');
+  var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
-  var overflowSettings = _.pick('overflowSurplus');
+  var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
 
   function init(svgId, options){
     $svg = $('svg#' + svgId);
