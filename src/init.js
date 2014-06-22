@@ -3,6 +3,10 @@
     sensitivity: 'mousewheelSensitivity'
   });
 
+  var overflowSettings = _.dot({
+    surplus: 'overflowSurplus'
+  });
+
   function init(svgId, options){
     $svg = $('svg#' + svgId);
 
@@ -12,7 +16,7 @@
 
     options = options || {};
 
-    parent.regulateOverflow($svg);
+    parent.regulateOverflow($svg, overflowSettings(options));
     parent.touchDispatch($svg);
     parent.managePosition($svg);
     parent.mousewheelDispatch($svg, mousewheelSettings(options));

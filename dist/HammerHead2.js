@@ -172,14 +172,22 @@ var Hammerhead = {};
 (function(parent){
   var tower = Belfry.getTower();
 
-  function createOverflowUpdater($element){
-    $parent = $element.parent();
+  var buildConfig = _.foundation({
+    surplus: 0.5
+  });
+
+  function createOverflowUpdater($element, options){
+    config = buildConfig(options);
+
+    var factor = 2 * config.surplus + 1;
+
+    var $parent = $element.parent();
     return function(){
       var height = $parent.height();
       var width = $parent.width();
-      $element.css('margin', interpolate('-%(height)spx -%(width)spx')({height: height/2, width: width/2}));
-      $element.width(width * 2);
-      $element.height(height * 2);
+      $element.css('margin', interpolate('-%(height)spx -%(width)spx')({height: height*config.surplus, width: width*config.surplus}));
+      $element.width(width * factor);
+      $element.height(height * factor);
     };
   }
 
@@ -189,8 +197,8 @@ var Hammerhead = {};
     publishResize();
   });
 
-  parent.regulateOverflow = function(element){
-    var updateOverflow = createOverflowUpdater(element);
+  parent.regulateOverflow = function(element, options){
+    var updateOverflow = createOverflowUpdater(element, options);
     
     updateOverflow();
     tower.subscribe('windowResize')(updateOverflow);
@@ -421,6 +429,10 @@ var Hammerhead = {};
     sensitivity: 'mousewheelSensitivity'
   });
 
+  var overflowSettings = _.dot({
+    surplus: 'overflowSurplus'
+  });
+
   function init(svgId, options){
     $svg = $('svg#' + svgId);
 
@@ -430,7 +442,7 @@ var Hammerhead = {};
 
     options = options || {};
 
-    parent.regulateOverflow($svg);
+    parent.regulateOverflow($svg, overflowSettings(options));
     parent.touchDispatch($svg);
     parent.managePosition($svg);
     parent.mousewheelDispatch($svg, mousewheelSettings(options));
