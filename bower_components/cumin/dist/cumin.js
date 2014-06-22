@@ -149,10 +149,11 @@ var _ = (function(){
 
   var reject = compose(filter, not);
 
-  function reduce(memo){
+  function reduce(initial){
     // The same code works here for arrays and objects so does not have varient.
     return function(operation){
       return function(){
+        var memo = initial;
         each(function(item, location){
           memo = isDefined(memo) ? operation(memo)(item, location) : item;
         }).apply({}, arguments);
@@ -164,25 +165,27 @@ var _ = (function(){
 // Higher collection operations
 
   function all(operation){
-    var memo = true;
     operation = operation || I;
     return function(){
+      var memo = true;
       each(function(item, location){
         memo = memo && operation(item, location);
       }).apply({}, arguments);
       return memo;
     };
+    // return location of first fail or length as location??
   }
 
   function any(operation){
-    var memo = false;
     operation = operation || I;
     return function(){
+      var memo = false;
       each(function(item, location){
         memo = memo || operation(item, location);
       }).apply({}, arguments);
       return memo;
     };
+    // return location of first success or length as location??
   }
 
   function min(operation){
@@ -226,6 +229,12 @@ var _ = (function(){
         results[index % n].push(element);
       })(collection);
       return results;
+    };
+  }
+
+  function within(array){
+    return function(item){
+      return array.indexOf(item) != -1;
     };
   }
 
@@ -288,7 +297,7 @@ var _ = (function(){
   function invoke(){
     var args = arguments;
     return function(func){
-      func.apply({}, args);
+      return func.apply({}, args);
     };
   }
 
@@ -341,6 +350,9 @@ var _ = (function(){
 
   function dot(key){
     return function(obj){
+      if (isArray(key) || isObj(key)) {
+        return map(invoke(obj))(map(dot)(key));
+      }
       return obj[key];
     };
   }
@@ -375,6 +387,12 @@ var _ = (function(){
   function log(){
     console.log.apply(console, arguments);
   }
+
+  function equals(a){
+    return function(b){
+      return a === b;
+    };
+  }
   var _ =  {
     eachArray: eachArray,
     eachArrayRight: eachArrayRight,
@@ -400,6 +418,7 @@ var _ = (function(){
 
     cyclic: cyclic,
     cleave: cleave,
+    within: within,
 
     extend: extend,
     augment: augment,
@@ -423,6 +442,7 @@ var _ = (function(){
     refreeze: refreeze,
     size: size,
     log: log,
+    equals: equals,
   };
   return _;
 }());

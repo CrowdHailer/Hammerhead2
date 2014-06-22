@@ -247,6 +247,17 @@ delayed return of function. useful in composition eg for nth item.
 min and max return location  
 zip  
 mixin particularly compositions
+dot takes multiple arguments to try in order
+lazy any all to stop execution. Might be useable with multi argument dot.
+conditional execution
+pass hash with key options and value processess
+would work with true false as implicitly turned to strings
+
+invoke with and expose using exec!! expose local
+
+dot function to take multiple structures array, object,
+syntactic sugar add .dot as method of object
+addition to main object throughout closure
 
 
 ### Inspired by
