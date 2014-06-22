@@ -18,7 +18,6 @@
   }
 
   function handleDrag(event){
-    this.handlers.pinch = false;
     alertDrag({
       element: this.getElement(),
       delta: SVGroovy.Point(event.gesture)

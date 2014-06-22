@@ -68,14 +68,6 @@ describe('dispatch touch notifications', function(){
       expect(dummy.calls.length).toEqual(4);
     });
     
-    it('should not call a pinches during a drag event', function(){
-      hammertime.trigger('touch', defaultGesture);
-      hammertime.trigger('drag', defaultGesture);
-      hammertime.trigger('drag', defaultGesture);
-      hammertime.trigger('pinch', defaultGesture);
-      hammertime.trigger('drag', defaultGesture);
-      expect(dummy.calls.length).toEqual(4);
-    });
   });
   describe('end event handling', function(){
     it('should be ready to accept new start event after release event', function(){
