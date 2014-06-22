@@ -10,6 +10,14 @@ function interpolate(s) {
   };
 }
 
+// check svg owner
+
+function checkSVGTarget(svg){
+  return function(target){
+    return (target.ownerSVGElement || target) === svg;
+  };
+}
+
 // Request animation frame polyfill
 
 (function() {

@@ -636,6 +636,14 @@ function interpolate(s) {
   };
 }
 
+// check svg owner
+
+function checkSVGTarget(svg){
+  return function(target){
+    return (target.ownerSVGElement || target) === svg;
+  };
+}
+
 // Request animation frame polyfill
 
 (function() {
@@ -1000,12 +1008,6 @@ var Hammerhead = {};
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-  function checkSVGTarget(svg){
-    return function(target){
-      return (target.ownerSVGElement || target) === svg;
-    };
-  }
-
   var buildConfig = _.foundation({
     mousewheelSensitivity: 0.1
   });
@@ -1039,7 +1041,6 @@ var Hammerhead = {};
 
       alertPinch({
         element: SVGElement,
-        center: SVGroovy.Point(),
         scale: scale});
       finishScrolling(scale);
     });
