@@ -149,10 +149,11 @@ var _ = (function(){
 
   var reject = compose(filter, not);
 
-  function reduce(memo){
+  function reduce(initial){
     // The same code works here for arrays and objects so does not have varient.
     return function(operation){
       return function(){
+        var memo = initial;
         each(function(item, location){
           memo = isDefined(memo) ? operation(memo)(item, location) : item;
         }).apply({}, arguments);
@@ -164,25 +165,27 @@ var _ = (function(){
 // Higher collection operations
 
   function all(operation){
-    var memo = true;
     operation = operation || I;
     return function(){
+      var memo = true;
       each(function(item, location){
         memo = memo && operation(item, location);
       }).apply({}, arguments);
       return memo;
     };
+    // return location of first fail or length as location??
   }
 
   function any(operation){
-    var memo = false;
     operation = operation || I;
     return function(){
+      var memo = false;
       each(function(item, location){
         memo = memo || operation(item, location);
       }).apply({}, arguments);
       return memo;
     };
+    // return location of first success or length as location??
   }
 
   function min(operation){
@@ -226,6 +229,12 @@ var _ = (function(){
         results[index % n].push(element);
       })(collection);
       return results;
+    };
+  }
+
+  function within(array){
+    return function(item){
+      return array.indexOf(item) != -1;
     };
   }
 
@@ -288,7 +297,7 @@ var _ = (function(){
   function invoke(){
     var args = arguments;
     return function(func){
-      func.apply({}, args);
+      return func.apply({}, args);
     };
   }
 
@@ -341,6 +350,9 @@ var _ = (function(){
 
   function dot(key){
     return function(obj){
+      if (isArray(key) || isObj(key)) {
+        return map(invoke(obj))(map(dot)(key));
+      }
       return obj[key];
     };
   }
@@ -375,6 +387,12 @@ var _ = (function(){
   function log(){
     console.log.apply(console, arguments);
   }
+
+  function equals(a){
+    return function(b){
+      return a === b;
+    };
+  }
   var _ =  {
     eachArray: eachArray,
     eachArrayRight: eachArrayRight,
@@ -400,6 +418,7 @@ var _ = (function(){
 
     cyclic: cyclic,
     cleave: cleave,
+    within: within,
 
     extend: extend,
     augment: augment,
@@ -423,6 +442,7 @@ var _ = (function(){
     refreeze: refreeze,
     size: size,
     log: log,
+    equals: equals,
   };
   return _;
 }());
@@ -764,14 +784,26 @@ var Hammerhead = {};
 (function(parent){
   var tower = Belfry.getTower();
 
-  function createOverflowUpdater($element){
-    $parent = $element.parent();
+  var buildConfig = _.foundation({
+    surplus: 0.5
+  });
+
+  var marginTemp = interpolate('-%(height)spx -%(width)spx');
+
+  function createOverflowUpdater($element, options){
+    var config = buildConfig(options);
+
+    var surplus = config.surplus;
+    var factor = 2 * surplus + 1;
+    var $parent = $element.parent();
+
     return function(){
       var height = $parent.height();
       var width = $parent.width();
-      $element.css('margin', interpolate('-%(height)spx -%(width)spx')({height: height/2, width: width/2}));
-      $element.width(width * 2);
-      $element.height(height * 2);
+      $element
+        .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
+        .width(width * factor)
+        .height(height * factor);
     };
   }
 
@@ -781,8 +813,8 @@ var Hammerhead = {};
     publishResize();
   });
 
-  parent.regulateOverflow = function(element){
-    var updateOverflow = createOverflowUpdater(element);
+  parent.regulateOverflow = function(element, options){
+    var updateOverflow = createOverflowUpdater(element, options);
     
     updateOverflow();
     tower.subscribe('windowResize')(updateOverflow);
@@ -959,17 +991,27 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
-  function init(svgId){
+  var mousewheelSettings = _.dot({
+    sensitivity: 'mousewheelSensitivity'
+  });
+
+  var overflowSettings = _.dot({
+    surplus: 'overflowSurplus'
+  });
+
+  function init(svgId, options){
     $svg = $('svg#' + svgId);
 
     if (!$svg[0]) {
       return false;
     }
 
-    parent.regulateOverflow($svg);
+    options = options || {};
+
+    parent.regulateOverflow($svg, overflowSettings(options));
     parent.touchDispatch($svg);
     parent.managePosition($svg);
-    parent.mousewheelDispatch($svg);
+    parent.mousewheelDispatch($svg, mousewheelSettings(options));
   }
   parent.create = init;
 }(Hammerhead));

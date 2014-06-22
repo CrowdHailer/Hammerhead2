@@ -112,7 +112,10 @@
 
   <script>
     var id = 'the-pear';
-    Hammerhead.create(id);
+    Hammerhead.create(id, {
+      mousewheelSensitivity: 0.2,
+      overflowSurplus: 0.8,
+    });
 
     ////////////////////////////////////////////
     // DEBUG

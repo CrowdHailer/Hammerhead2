@@ -1,14 +1,26 @@
 (function(parent){
   var tower = Belfry.getTower();
 
-  function createOverflowUpdater($element){
-    $parent = $element.parent();
+  var buildConfig = _.foundation({
+    surplus: 0.5
+  });
+
+  var marginTemp = interpolate('-%(height)spx -%(width)spx');
+
+  function createOverflowUpdater($element, options){
+    var config = buildConfig(options);
+
+    var surplus = config.surplus;
+    var factor = 2 * surplus + 1;
+    var $parent = $element.parent();
+
     return function(){
       var height = $parent.height();
       var width = $parent.width();
-      $element.css('margin', interpolate('-%(height)spx -%(width)spx')({height: height/2, width: width/2}));
-      $element.width(width * 2);
-      $element.height(height * 2);
+      $element
+        .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
+        .width(width * factor)
+        .height(height * factor);
     };
   }
 
@@ -18,8 +30,8 @@
     publishResize();
   });
 
-  parent.regulateOverflow = function(element){
-    var updateOverflow = createOverflowUpdater(element);
+  parent.regulateOverflow = function(element, options){
+    var updateOverflow = createOverflowUpdater(element, options);
     
     updateOverflow();
     tower.subscribe('windowResize')(updateOverflow);
