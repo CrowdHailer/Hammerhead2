@@ -370,7 +370,6 @@ var Hammerhead = {};
   var tower = Belfry.getTower(), scale;
 
   var alertStart = tower.publish('start');
-  var alertDrag = tower.publish('drag');
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
@@ -379,10 +378,11 @@ var Hammerhead = {};
     scale = null;
   });
   parent.mousewheelDispatch = function($element){
+    var SVGElement = $element[0];
     $(document).on('mousewheel', function(event){
       if (!scale) {
         scale = 1;
-        console.log((event.target.ownerSVGElement || event.target) === $element[0] );
+        console.log((event.target.ownerSVGElement || event.target) === SVGElement );
         alertStart('wheel');
       }
       if (event.wheelDelta > 0) {
@@ -390,7 +390,7 @@ var Hammerhead = {};
       } else{
         scale /= 1.1;
       }
-      alertPinch({element: $element[0], scale: scale});
+      alertPinch({element: SVGElement, scale: scale});
       finishScrolling();
     });
   };
