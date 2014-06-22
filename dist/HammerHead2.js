@@ -380,9 +380,16 @@ var Hammerhead = {};
     };
   }
 
-  parent.mousewheelDispatch = function($element){
+  var standardOptions = _.foundation({
+    sensitivity: 0.1
+  });
+
+  parent.mousewheelDispatch = function($element, options){
+    options = standardOptions(options);
+    
     var SVGElement = $element[0], scale;
     var onTarget = checkSVGTarget(SVGElement);
+    var factor = 1 + options.sensitivity;
 
     var finishScrolling = _.debounce(200)(function(){
       alertEnd('wheel');
@@ -398,11 +405,11 @@ var Hammerhead = {};
       }
 
       if (event.wheelDelta > 0) {
-        scale *= 1.1;
+        scale *= factor;
       } else{
-        scale /= 1.1;
+        scale /= factor;
       }
-      
+
       alertPinch({element: SVGElement, scale: scale});
       finishScrolling();
     });
