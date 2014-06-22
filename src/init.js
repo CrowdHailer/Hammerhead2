@@ -1,4 +1,6 @@
 (function(parent){
+  var tower = Belfry.getTower();
+
   var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
@@ -16,6 +18,10 @@
     parent.touchDispatch($svg);
     parent.managePosition($svg);
     parent.mousewheelDispatch($svg, mousewheelSettings(options));
+
+    return {
+      home: tower.publish('home')
+    };
   }
   parent.create = init;
 }(Hammerhead));

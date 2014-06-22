@@ -270,7 +270,7 @@ var Hammerhead = {};
     var properFix = missingCTM($element); // windows FIX
 
     var animationLoop, matrixString;
-    var viewBox = VB($element.attr('viewBox'));
+    var HOME = viewBox = VB($element.attr('viewBox'));
 
     listenStart(function(){
       beginAnimation();
@@ -321,6 +321,14 @@ var Hammerhead = {};
         '-ms-transform-origin': '50% 50%',
         'transform-origin': '50% 50%'
       });
+
+    tower.subscribe('home')(function(){
+      matrixString =  matrixAsCss(identityMatrix);
+      $element.css(transformObject(matrixString));
+      viewBox = HOME;
+      vbString = VB.attrString(viewBox);
+      $element.attr('viewBox', vbString);
+    });
   };
 }(Hammerhead));
 (function(parent){
@@ -371,6 +379,8 @@ var Hammerhead = {};
 
 }(Hammerhead));
 (function(parent){
+  var tower = Belfry.getTower();
+
   var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
@@ -388,6 +398,10 @@ var Hammerhead = {};
     parent.touchDispatch($svg);
     parent.managePosition($svg);
     parent.mousewheelDispatch($svg, mousewheelSettings(options));
+
+    return {
+      home: tower.publish('home')
+    };
   }
   parent.create = init;
 }(Hammerhead));

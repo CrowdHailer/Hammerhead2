@@ -23,7 +23,7 @@
     var properFix = missingCTM($element); // windows FIX
 
     var animationLoop, matrixString;
-    var viewBox = VB($element.attr('viewBox'));
+    var HOME = viewBox = VB($element.attr('viewBox'));
 
     listenStart(function(){
       beginAnimation();
@@ -74,5 +74,13 @@
         '-ms-transform-origin': '50% 50%',
         'transform-origin': '50% 50%'
       });
+
+    tower.subscribe('home')(function(){
+      matrixString =  matrixAsCss(identityMatrix);
+      $element.css(transformObject(matrixString));
+      viewBox = HOME;
+      vbString = VB.attrString(viewBox);
+      $element.attr('viewBox', vbString);
+    });
   };
 }(Hammerhead));
