@@ -5,18 +5,22 @@
     surplus: 0.5
   });
 
+  var marginTemp = interpolate('-%(height)spx -%(width)spx');
+
   function createOverflowUpdater($element, options){
-    config = buildConfig(options);
+    var config = buildConfig(options);
 
-    var factor = 2 * config.surplus + 1;
-
+    var surplus = config.surplus;
+    var factor = 2 * surplus + 1;
     var $parent = $element.parent();
+
     return function(){
       var height = $parent.height();
       var width = $parent.width();
-      $element.css('margin', interpolate('-%(height)spx -%(width)spx')({height: height*config.surplus, width: width*config.surplus}));
-      $element.width(width * factor);
-      $element.height(height * factor);
+      $element
+        .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
+        .width(width * factor)
+        .height(height * factor);
     };
   }
 
