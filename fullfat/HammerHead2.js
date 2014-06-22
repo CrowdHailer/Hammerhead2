@@ -939,30 +939,23 @@ var Hammerhead = {};
   parent.managePosition = function($element){
     var properFix = missingCTM($element); // windows FIX
 
-    var aniFrame, matrixString;
+    var animationLoop, matrixString;
     var viewBox = VB($element.attr('viewBox'));
-    // var agile = Hammerhead.AgileView($element[0]);
 
     listenStart(function(){
       beginAnimation();
     });
 
     listenDrag(function(data){
-      // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      // var translation = Pt(data.delta);
-      // var fixedTranslation = Pt.scalar(properFix)(translation);
-      // agile.drag(fixedTranslation);
     });
 
     listenPinch(function(data){
       matrixString = matrixAsCss(Mx.scaling(data.scale));
-      // agile.zoom(data.scale);
     });
 
     listenEnd(function(data){
-      console.log(data);
-      if (data.scale ===1) {
+      if (data.scale === 1) {
         var fixedTranslation = Pt.scalar(properFix)(data.delta);
         var inverseCTM = $element[0].getScreenCTM().inverse();
         inverseCTM.e = 0;
@@ -973,11 +966,9 @@ var Hammerhead = {};
       } else{
         viewBox = VB.zoom(data.scale)()(viewBox);
       }
-      console.log(viewBox);
-      // agile.fix();
       vbString = VB.attrString(viewBox);
       matrixString =  matrixAsCss(identityMatrix);
-      cancelAnimationFrame(aniFrame);
+      cancelAnimationFrame(animationLoop);
       requestAnimationFrame(function(){
         $element.attr('viewBox', vbString);
         $element.css(transformObject(matrixString));
@@ -986,11 +977,11 @@ var Hammerhead = {};
 
     function render(){
       $element.css(transformObject(matrixString));
-      aniFrame = requestAnimationFrame( render );
+      animationLoop = requestAnimationFrame( render );
     }
 
     function beginAnimation(){
-      aniFrame = requestAnimationFrame( render );
+      animationLoop = requestAnimationFrame( render );
     }
 
     $element.css(transformObject(matrixAsCss(identityMatrix)))
@@ -1009,26 +1000,26 @@ var Hammerhead = {};
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-
   function checkSVGTarget(svg){
     return function(target){
       return (target.ownerSVGElement || target) === svg;
     };
   }
 
-  var standardOptions = _.foundation({
+  var buildConfig = _.foundation({
     mousewheelSensitivity: 0.1
   });
 
   parent.mousewheelDispatch = function($element, options){
-    options = standardOptions(options);
+    var config = buildConfig(options);
     
-    var SVGElement = $element[0], scale;
+    var SVGElement = $element[0];
+    var scale;
     var onTarget = checkSVGTarget(SVGElement);
-    var factor = 1 + options.mousewheelSensitivity;
+    var factor = 1 + config.mousewheelSensitivity;
 
-    var finishScrolling = _.debounce(200)(function(){
-      alertEnd('wheel');
+    var finishScrolling = _.debounce(200)(function(scaleFactor){
+      alertEnd({scale: scaleFactor});
       scale = null;
     });
 
@@ -1046,8 +1037,11 @@ var Hammerhead = {};
         scale /= factor;
       }
 
-      alertPinch({element: SVGElement, scale: scale});
-      finishScrolling();
+      alertPinch({
+        element: SVGElement,
+        center: SVGroovy.Point(),
+        scale: scale});
+      finishScrolling(scale);
     });
   };
 

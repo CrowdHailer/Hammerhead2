@@ -22,30 +22,23 @@
   parent.managePosition = function($element){
     var properFix = missingCTM($element); // windows FIX
 
-    var aniFrame, matrixString;
+    var animationLoop, matrixString;
     var viewBox = VB($element.attr('viewBox'));
-    // var agile = Hammerhead.AgileView($element[0]);
 
     listenStart(function(){
       beginAnimation();
     });
 
     listenDrag(function(data){
-      // compose matrix creating from data and matrixAsCss using cumin
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      // var translation = Pt(data.delta);
-      // var fixedTranslation = Pt.scalar(properFix)(translation);
-      // agile.drag(fixedTranslation);
     });
 
     listenPinch(function(data){
       matrixString = matrixAsCss(Mx.scaling(data.scale));
-      // agile.zoom(data.scale);
     });
 
     listenEnd(function(data){
-      console.log(data);
-      if (data.scale ===1) {
+      if (data.scale === 1) {
         var fixedTranslation = Pt.scalar(properFix)(data.delta);
         var inverseCTM = $element[0].getScreenCTM().inverse();
         inverseCTM.e = 0;
@@ -56,11 +49,9 @@
       } else{
         viewBox = VB.zoom(data.scale)()(viewBox);
       }
-      console.log(viewBox);
-      // agile.fix();
       vbString = VB.attrString(viewBox);
       matrixString =  matrixAsCss(identityMatrix);
-      cancelAnimationFrame(aniFrame);
+      cancelAnimationFrame(animationLoop);
       requestAnimationFrame(function(){
         $element.attr('viewBox', vbString);
         $element.css(transformObject(matrixString));
@@ -69,11 +60,11 @@
 
     function render(){
       $element.css(transformObject(matrixString));
-      aniFrame = requestAnimationFrame( render );
+      animationLoop = requestAnimationFrame( render );
     }
 
     function beginAnimation(){
-      aniFrame = requestAnimationFrame( render );
+      animationLoop = requestAnimationFrame( render );
     }
 
     $element.css(transformObject(matrixAsCss(identityMatrix)))
