@@ -7,8 +7,8 @@
 
 
   function checkSVGTarget(svg){
-    return function(event){
-      return (event.target.ownerSVGElement || event.target) === svg;
+    return function(target){
+      return (target.ownerSVGElement || target) === svg;
     };
   }
 
@@ -23,16 +23,18 @@
 
     $(document).on('mousewheel', function(event){
       if (!scale) {
+        if (!onTarget(event.target)) return;
+
         scale = 1;
-        console.log((event.target.ownerSVGElement || event.target) === SVGElement );
         alertStart('wheel');
-        console.log(onTarget(event));
       }
+
       if (event.wheelDelta > 0) {
         scale *= 1.1;
       } else{
         scale /= 1.1;
       }
+      
       alertPinch({element: SVGElement, scale: scale});
       finishScrolling();
     });
