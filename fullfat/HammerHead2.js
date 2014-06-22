@@ -663,6 +663,21 @@ function interpolate(s) {
     };
 }());
 
+// Missing windows pixel density fix 
+
+function missingCTM($element){
+  var elWidth = $element.width(),
+    elHeight = $element.height(),
+    CTMScale = $element[0].getScreenCTM().a,
+    boxWidth = $element.attr('viewBox').split(' ')[2],
+    boxHeight = $element.attr('viewBox').split(' ')[3],
+    widthRatio = (boxWidth* CTMScale) / elWidth,
+    heightRatio = (boxHeight * CTMScale) / elHeight,
+    properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
+
+  return _.round(1)(properFix);
+}
+
 var hammertime = Hammer(document);
 
 var Hammerhead = {};
@@ -919,19 +934,7 @@ var Hammerhead = {};
   };
 
   parent.managePosition = function($element){
-    // windows FIX
-    var elWidth = $element.width();
-    var elHeight = $element.height();
-    var ctmScale = $element[0].getScreenCTM().a;
-    var boxWidth = $element.attr('viewBox').split(' ')[2];
-    var boxHeight = $element.attr('viewBox').split(' ')[3];
-
-    var widthRatio = (boxWidth* ctmScale) / elWidth;
-    var heightRatio = (boxHeight * ctmScale) / elHeight;
-    var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-    properFix = _.round(1)(properFix);
-
-    ////////////////////////////
+    var properFix = missingCTM($element); // windows FIX
 
     var aniFrame, matrixString;
     var agile = Hammerhead.AgileView($element[0]);
@@ -980,8 +983,6 @@ var Hammerhead = {};
         '-ms-transform-origin': '50% 50%',
         'transform-origin': '50% 50%'
       });
-
-
   };
 }(Hammerhead));
 (function(parent){

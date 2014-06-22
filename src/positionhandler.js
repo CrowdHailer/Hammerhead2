@@ -19,19 +19,7 @@
   };
 
   parent.managePosition = function($element){
-    // windows FIX
-    var elWidth = $element.width();
-    var elHeight = $element.height();
-    var ctmScale = $element[0].getScreenCTM().a;
-    var boxWidth = $element.attr('viewBox').split(' ')[2];
-    var boxHeight = $element.attr('viewBox').split(' ')[3];
-
-    var widthRatio = (boxWidth* ctmScale) / elWidth;
-    var heightRatio = (boxHeight * ctmScale) / elHeight;
-    var properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-    properFix = _.round(1)(properFix);
-
-    ////////////////////////////
+    var properFix = missingCTM($element); // windows FIX
 
     var aniFrame, matrixString;
     var agile = Hammerhead.AgileView($element[0]);

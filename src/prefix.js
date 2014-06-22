@@ -37,6 +37,21 @@ function interpolate(s) {
     };
 }());
 
+// Missing windows pixel density fix 
+
+function missingCTM($element){
+  var elWidth = $element.width(),
+    elHeight = $element.height(),
+    CTMScale = $element[0].getScreenCTM().a,
+    boxWidth = $element.attr('viewBox').split(' ')[2],
+    boxHeight = $element.attr('viewBox').split(' ')[3],
+    widthRatio = (boxWidth* CTMScale) / elWidth,
+    heightRatio = (boxHeight * CTMScale) / elHeight,
+    properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
+
+  return _.round(1)(properFix);
+}
+
 var hammertime = Hammer(document);
 
 var Hammerhead = {};
