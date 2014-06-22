@@ -910,6 +910,14 @@ var Hammerhead = {};
   var listenPinch = tower.subscribe('pinch');
   var listenEnd = tower.subscribe('end');
 
+  var transformObject = function(matrixString){
+    return {
+      '-webkit-transform': matrixString,
+      '-ms-transform': matrixString,
+      'transform': matrixString
+    };
+  };
+
   parent.managePosition = function($element){
     // windows FIX
     var elWidth = $element.width();
@@ -952,20 +960,12 @@ var Hammerhead = {};
       cancelAnimationFrame(aniFrame);
       requestAnimationFrame(function(){
         $element.attr('viewBox', vbString);
-        $element.css({
-          '-webkit-transform': matrixString,
-          '-ms-transform': matrixString,
-          'transform': matrixString
-        });
+        $element.css(transformObject(matrixString));
       });
     });
 
     function render(){
-      $element.css({
-        '-webkit-transform': matrixString,
-        '-ms-transform': matrixString,
-        'transform': matrixString
-      });
+      $element.css(transformObject(matrixString));
       aniFrame = requestAnimationFrame( render );
     }
 
@@ -973,14 +973,13 @@ var Hammerhead = {};
       aniFrame = requestAnimationFrame( render );
     }
 
-    $element.css({
-      '-webkit-transform': matrixAsCss(identityMatrix),
-      'transform': matrixAsCss(identityMatrix),
-      '-webkit-backface-visibility': 'hidden',
-      '-webkit-transform-origin': '50% 50%',
-      '-ms-transform-origin': '50% 50%',
-      'transform-origin': '50% 50%'
-    });
+    $element.css(transformObject(matrixAsCss(identityMatrix)))
+      .css({
+        '-webkit-backface-visibility': 'hidden',
+        '-webkit-transform-origin': '50% 50%',
+        '-ms-transform-origin': '50% 50%',
+        'transform-origin': '50% 50%'
+      });
 
 
   };
