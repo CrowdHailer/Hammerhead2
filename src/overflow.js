@@ -9,12 +9,12 @@
     config = buildConfig(options);
 
     var factor = 2 * config.surplus + 1;
-    console.log(factor);
+
     var $parent = $element.parent();
     return function(){
       var height = $parent.height();
       var width = $parent.width();
-      $element.css('margin', interpolate('-%(height)spx -%(width)spx')({height: height/2, width: width/2}));
+      $element.css('margin', interpolate('-%(height)spx -%(width)spx')({height: height*config.surplus, width: width*config.surplus}));
       $element.width(width * factor);
       $element.height(height * factor);
     };

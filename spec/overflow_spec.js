@@ -21,5 +21,6 @@ describe('managing overflow padding of active elements', function(){
     Hammerhead.regulateOverflow($('#inner'), {surplus: 0.2});
     expect($('#inner').width()).toEqual(280);
     expect($('#inner').height()).toEqual(140);
+    expect($('#inner').css('margin')).toEqual('-20px -40px');
   });
 });
