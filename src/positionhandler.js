@@ -22,6 +22,7 @@
       viewBoxZoom = 1;
 
     var HOME = viewBox = VB($element.attr('viewBox'));
+    
     var animationLoop,
       thisScale,
       maxScale,

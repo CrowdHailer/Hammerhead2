@@ -18,13 +18,7 @@ var transformObject = function(matrixString){
   };
 };
 
-// check svg owner
 
-function checkSVGTarget(svg){
-  return function(target){
-    return (target.ownerSVGElement || target) === svg;
-  };
-}
 
 // Request animation frame polyfill
 
@@ -99,6 +93,14 @@ SVGroovy.Matrix.forTranslation = function(point){
 SVGroovy.Matrix.forMagnification = function(scale){
   return SVGroovy.Matrix.scaling(scale);
 };
+
+// check svg owner
+
+function checkSVGTarget(svg){
+  return function(target){
+    return (target.ownerSVGElement || target) === svg;
+  };
+}
 
 var hammertime = Hammer(document);
 
