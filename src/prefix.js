@@ -10,6 +10,14 @@ function interpolate(s) {
   };
 }
 
+var transformObject = function(matrixString){
+  return {
+    '-webkit-transform': matrixString,
+    '-ms-transform': matrixString,
+    'transform': matrixString
+  };
+};
+
 // check svg owner
 
 function checkSVGTarget(svg){

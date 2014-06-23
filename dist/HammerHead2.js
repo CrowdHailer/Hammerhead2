@@ -10,6 +10,14 @@ function interpolate(s) {
   };
 }
 
+var transformObject = function(matrixString){
+  return {
+    '-webkit-transform': matrixString,
+    '-ms-transform': matrixString,
+    'transform': matrixString
+  };
+};
+
 // check svg owner
 
 function checkSVGTarget(svg){
@@ -281,9 +289,7 @@ var Hammerhead = {};
   var tower = Belfry.getTower(),
     Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
-    VB = parent.ViewBox,
-    identityMatrix = Mx(),
-    matrixAsCss = Mx.asCss;
+    VB = parent.ViewBox;
 
   var buildConfig = _.foundation({
     maxZoom: 2,
@@ -295,15 +301,7 @@ var Hammerhead = {};
   var listenPinch = tower.subscribe('pinch');
   var listenEnd = tower.subscribe('end');
 
-  var transformObject = function(matrixString){
-    return {
-      '-webkit-transform': matrixString,
-      '-ms-transform': matrixString,
-      'transform': matrixString
-    };
-  };
-
-  var displace = _.compose(transformObject, Mx.asCss, Mx.forTranslation);
+  var XBtransform = _.compose(transformObject, Mx.asCss);
 
   parent.managePosition = function($element, options){
     var config = buildConfig(options);
@@ -370,7 +368,7 @@ var Hammerhead = {};
       animationLoop = requestAnimationFrame( render );
     }
 
-    $element.css(transformObject(matrixAsCss(identityMatrix)));
+    $element.css(transformObject(Mx.asCss()));
     vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
     $element.attr('viewBox', vbString);
 
