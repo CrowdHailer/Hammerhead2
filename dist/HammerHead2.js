@@ -349,12 +349,11 @@ var Hammerhead = {};
         viewBoxZoom *= scale;
         viewBox = VB.zoom(scale)()(viewBox);
       }
-      vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
       // matrixString =  matrixAsCss(identityMatrix);
       cancelAnimationFrame(animationLoop);
       currentMatrix = Mx();
       requestAnimationFrame(function(){
-        $element.attr('viewBox', vbString);
+        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
         $element.css(XBtransform());
       });
     });
@@ -369,15 +368,13 @@ var Hammerhead = {};
     }
 
     $element.css(XBtransform());
-    vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
-    $element.attr('viewBox', vbString);
+    $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
 
     tower.subscribe('home')(function(){
       // matrixString =  matrixAsCss(identityMatrix);
       $element.css(XBtransform());
       viewBox = HOME;
-      vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
-      $element.attr('viewBox', vbString);
+      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
     });
   };
 }(Hammerhead));
