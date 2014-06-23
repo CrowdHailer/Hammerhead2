@@ -10,7 +10,7 @@
 
   $(window).on('resize', tower.publish('windowResize'));
 
-  function createOverflowUpdater(options){
+  function createOverflowUpdater(){
     // var config = buildConfig(options);
 
     var surplus = this.getConfig('overflowSurplus');
@@ -27,8 +27,8 @@
     }).bind(this);
   }
 
-  parent.regulateOverflow = function(options){
-    var updateOverflow = createOverflowUpdater.call(this, options);
+  parent.regulateOverflow = function(){
+    var updateOverflow = createOverflowUpdater.call(this);
     
     updateOverflow();
     tower.subscribe('windowResize')(updateOverflow);

@@ -3,9 +3,9 @@
 
   var tower = Belfry.getTower();
 
-  var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
-  var managePositionSettings = _.pick('maxZoom', 'minZoom');
-  var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
+  // var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
+  // var managePositionSettings = _.pick('maxZoom', 'minZoom');
+  // var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   var prototype = {
     home: tower.publish('home')
@@ -38,12 +38,12 @@
     };
 
     // parent.regulateOverflow($svg, overflowSettings(options));
-    parent.regulateOverflow.call(instance, overflowSettings(options));
+    parent.regulateOverflow.call(instance);
     parent.touchDispatch($svg);
     // parent.managePosition($svg, managePositionSettings(options));
     parent.managePosition.call(instance);
     // parent.mousewheelDispatch($svg, mousewheelSettings(options));
-    parent.mousewheelDispatch.call(instance, mousewheelSettings(options));
+    parent.mousewheelDispatch.call(instance);
 
     return instance;
   }

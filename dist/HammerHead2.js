@@ -183,7 +183,7 @@ var Hammerhead = {};
 
   $(window).on('resize', tower.publish('windowResize'));
 
-  function createOverflowUpdater(options){
+  function createOverflowUpdater(){
     // var config = buildConfig(options);
 
     var surplus = this.getConfig('overflowSurplus');
@@ -200,8 +200,8 @@ var Hammerhead = {};
     }).bind(this);
   }
 
-  parent.regulateOverflow = function(options){
-    var updateOverflow = createOverflowUpdater.call(this, options);
+  parent.regulateOverflow = function(){
+    var updateOverflow = createOverflowUpdater.call(this);
     
     updateOverflow();
     tower.subscribe('windowResize')(updateOverflow);
@@ -389,7 +389,7 @@ var Hammerhead = {};
   //   mousewheelDelay: 200
   // });
 
-  parent.mousewheelDispatch = function(options){
+  parent.mousewheelDispatch = function(){
     // var config = buildConfig(options);
     
     var SVGElement = this.$element[0];
@@ -430,9 +430,9 @@ var Hammerhead = {};
 
   var tower = Belfry.getTower();
 
-  var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
-  var managePositionSettings = _.pick('maxZoom', 'minZoom');
-  var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
+  // var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
+  // var managePositionSettings = _.pick('maxZoom', 'minZoom');
+  // var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
   var prototype = {
     home: tower.publish('home')
@@ -465,12 +465,12 @@ var Hammerhead = {};
     };
 
     // parent.regulateOverflow($svg, overflowSettings(options));
-    parent.regulateOverflow.call(instance, overflowSettings(options));
+    parent.regulateOverflow.call(instance);
     parent.touchDispatch($svg);
     // parent.managePosition($svg, managePositionSettings(options));
     parent.managePosition.call(instance);
     // parent.mousewheelDispatch($svg, mousewheelSettings(options));
-    parent.mousewheelDispatch.call(instance, mousewheelSettings(options));
+    parent.mousewheelDispatch.call(instance);
 
     return instance;
   }
