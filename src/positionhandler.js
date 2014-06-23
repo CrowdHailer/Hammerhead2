@@ -53,7 +53,6 @@
     });
 
     listenEnd(function(data){
-      console.log(thisScale)
       if (thisScale === 1) {
         var fixedTranslation = Pt.scalar(properFix)(data.delta);
         var inverseCTM = $element[0].getScreenCTM().inverse();

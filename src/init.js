@@ -1,4 +1,6 @@
 (function(parent){
+  "use strict";
+  
   var tower = Belfry.getTower();
 
   var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
@@ -10,7 +12,7 @@
   };
 
   function init(svgId, options){
-    $svg = $('svg#' + svgId);
+    var $svg = $('svg#' + svgId);
 
     if (!$svg[0]) {
       return false;
