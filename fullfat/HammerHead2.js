@@ -706,6 +706,12 @@ _.debounce = function(wait){
   };
 };
 
+_.peruse = function(obj){
+  return function(key){
+    return obj[key];
+  };
+};
+
 //SVGroovy fills NB requires interpolate
 
 SVGroovy.Matrix.asCss = function(matrix){
@@ -1064,9 +1070,7 @@ var Hammerhead = {};
     var instance = Object.create(prototype);
     instance.$element = $svg;
     instance.isComponent = checkSVGTarget($svg[0]);
-    instance.getConfig = function(setting){
-      return config[setting];
-    };
+    instance.getConfig = _.peruse(config);
 
     parent.regulateOverflow.call(instance);
     parent.touchDispatch($svg);

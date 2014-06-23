@@ -23,15 +23,10 @@
       return false;
     }
 
-    options = options || {};
-    var config = buildConfig(options);
-
     var instance = Object.create(prototype);
     instance.$element = $svg;
     instance.isComponent = checkSVGTarget($svg[0]);
-    instance.getConfig = function(setting){
-      return config[setting];
-    };
+    instance.getConfig = _.peruse(buildConfig(options));
 
     parent.regulateOverflow.call(instance);
     parent.touchDispatch($svg);

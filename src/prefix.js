@@ -80,6 +80,12 @@ _.debounce = function(wait){
   };
 };
 
+_.peruse = function(obj){
+  return function(key){
+    return obj[key];
+  };
+};
+
 //SVGroovy fills NB requires interpolate
 
 SVGroovy.Matrix.asCss = function(matrix){
