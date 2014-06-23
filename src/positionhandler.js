@@ -4,10 +4,10 @@
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox;
 
-  var buildConfig = _.foundation({
-    maxZoom: 2,
-    minZoom: 0.5
-  });
+  // var buildConfig = _.foundation({
+  //   maxZoom: 2,
+  //   minZoom: 0.5
+  // });
 
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
@@ -16,13 +16,14 @@
 
   var XBtransform = _.compose(transformObject, Mx.asCss);
 
-  parent.managePosition = function($element, options){
-    var config = buildConfig(options),
-      properFix = missingCTM($element), // windows FIX
+  parent.managePosition = function(){
+    // var config = buildConfig(options),
+    var $element = this.$element;
+    var properFix = missingCTM($element), // windows FIX
       viewBoxZoom = 1;
 
     var HOME = viewBox = VB($element.attr('viewBox'));
-    
+
     var animationLoop,
       thisScale,
       maxScale,
@@ -31,10 +32,10 @@
 
     listenStart(function(){
       beginAnimation();
-      maxScale = config.maxZoom/viewBoxZoom;
-      minScale = config.minZoom/viewBoxZoom;
+      maxScale = this.getConfig('maxZoom')/viewBoxZoom;
+      minScale = this.getConfig('minZoom')/viewBoxZoom;
       thisScale = 1;
-    });
+    }.bind(this));
 
     listenDrag(function(data){
       currentMatrix = Mx.forTranslation(data.delta);

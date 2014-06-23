@@ -800,23 +800,23 @@ var Hammerhead = {};
 (function(parent){
   var tower = Belfry.getTower();
 
-  var buildConfig = _.foundation({
-    overflowSurplus: 0.5,
-    resizeDelay: 200
-  });
+  // var buildConfig = _.foundation({
+  //   overflowSurplus: 0.5,
+  //   resizeDelay: 200
+  // });
 
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
 
   $(window).on('resize', tower.publish('windowResize'));
 
   function createOverflowUpdater(options){
-    var config = buildConfig(options);
+    // var config = buildConfig(options);
 
-    var surplus = config.overflowSurplus;
+    var surplus = this.getConfig('overflowSurplus');
     var factor = 2 * surplus + 1;
     var $parent = this.$element.parent();
 
-    return _.debounce(config.resizeDelay)(function(){
+    return _.debounce(this.getConfig('resizeDelay'))(function(){
       var height = $parent.height();
       var width = $parent.width();
       this.$element
@@ -919,10 +919,10 @@ var Hammerhead = {};
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox;
 
-  var buildConfig = _.foundation({
-    maxZoom: 2,
-    minZoom: 0.5
-  });
+  // var buildConfig = _.foundation({
+  //   maxZoom: 2,
+  //   minZoom: 0.5
+  // });
 
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
@@ -931,13 +931,14 @@ var Hammerhead = {};
 
   var XBtransform = _.compose(transformObject, Mx.asCss);
 
-  parent.managePosition = function($element, options){
-    var config = buildConfig(options),
-      properFix = missingCTM($element), // windows FIX
+  parent.managePosition = function(){
+    // var config = buildConfig(options),
+    var $element = this.$element;
+    var properFix = missingCTM($element), // windows FIX
       viewBoxZoom = 1;
 
     var HOME = viewBox = VB($element.attr('viewBox'));
-    
+
     var animationLoop,
       thisScale,
       maxScale,
@@ -946,10 +947,10 @@ var Hammerhead = {};
 
     listenStart(function(){
       beginAnimation();
-      maxScale = config.maxZoom/viewBoxZoom;
-      minScale = config.minZoom/viewBoxZoom;
+      maxScale = this.getConfig('maxZoom')/viewBoxZoom;
+      minScale = this.getConfig('minZoom')/viewBoxZoom;
       thisScale = 1;
-    });
+    }.bind(this));
 
     listenDrag(function(data){
       currentMatrix = Mx.forTranslation(data.delta);
@@ -1009,20 +1010,19 @@ var Hammerhead = {};
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-  var buildConfig = _.foundation({
-    mousewheelSensitivity: 0.1,
-    mousewheelDelay: 200
-  });
+  // var buildConfig = _.foundation({
+  //   mousewheelSensitivity: 0.1,
+  //   mousewheelDelay: 200
+  // });
 
   parent.mousewheelDispatch = function(options){
-    var config = buildConfig(options);
+    // var config = buildConfig(options);
     
     var SVGElement = this.$element[0];
     var scale;
-    var onTarget = checkSVGTarget(SVGElement);
-    var factor = 1 + config.mousewheelSensitivity;
+    var factor = 1 + this.getConfig('mousewheelSensitivity');
 
-    var finishScrolling = _.debounce(config.mousewheelDelay)(function(scaleFactor){
+    var finishScrolling = _.debounce(this.getConfig('mousewheelDelay'))(function(scaleFactor){
       alertEnd({scale: scaleFactor});
       scale = null;
     });
@@ -1046,7 +1046,6 @@ var Hammerhead = {};
         scale: scale});
       finishScrolling(scale);
     }.bind(this);
-      
 
     $(document).on('mousewheel', handleMousewheel);
   };
@@ -1065,6 +1064,15 @@ var Hammerhead = {};
     home: tower.publish('home')
   };
 
+  var buildConfig = _.foundation({
+    mousewheelSensitivity: 0.1,
+    mousewheelDelay: 200,
+    maxZoom: 2,
+    minZoom: 0.5,
+    overflowSurplus: 0.5,
+    resizeDelay: 200
+  });
+
   function init(svgId, options){
     var $svg = $('svg#' + svgId);
 
@@ -1073,15 +1081,20 @@ var Hammerhead = {};
     }
 
     options = options || {};
+    var config = buildConfig(options);
 
     var instance = Object.create(prototype);
     instance.$element = $svg;
     instance.isComponent = checkSVGTarget($svg[0]);
+    instance.getConfig = function(setting){
+      return config[setting];
+    };
 
     // parent.regulateOverflow($svg, overflowSettings(options));
     parent.regulateOverflow.call(instance, overflowSettings(options));
     parent.touchDispatch($svg);
-    parent.managePosition($svg, managePositionSettings(options));
+    // parent.managePosition($svg, managePositionSettings(options));
+    parent.managePosition.call(instance);
     // parent.mousewheelDispatch($svg, mousewheelSettings(options));
     parent.mousewheelDispatch.call(instance, mousewheelSettings(options));
 

@@ -5,19 +5,19 @@
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-  var buildConfig = _.foundation({
-    mousewheelSensitivity: 0.1,
-    mousewheelDelay: 200
-  });
+  // var buildConfig = _.foundation({
+  //   mousewheelSensitivity: 0.1,
+  //   mousewheelDelay: 200
+  // });
 
   parent.mousewheelDispatch = function(options){
-    var config = buildConfig(options);
+    // var config = buildConfig(options);
     
     var SVGElement = this.$element[0];
     var scale;
-    var factor = 1 + config.mousewheelSensitivity;
+    var factor = 1 + this.getConfig('mousewheelSensitivity');
 
-    var finishScrolling = _.debounce(config.mousewheelDelay)(function(scaleFactor){
+    var finishScrolling = _.debounce(this.getConfig('mousewheelDelay'))(function(scaleFactor){
       alertEnd({scale: scaleFactor});
       scale = null;
     });
