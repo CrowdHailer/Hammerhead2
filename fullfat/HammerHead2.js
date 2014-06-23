@@ -981,12 +981,12 @@ var Hammerhead = {};
       currentMatrix = Mx();
       requestAnimationFrame(function(){
         $element.attr('viewBox', vbString);
-        $element.css(transformObject(Mx.asCss()));
+        $element.css(XBtransform());
       });
     });
 
     function render(){
-      $element.css(transformObject(Mx.asCss(currentMatrix)));
+      $element.css(XBtransform(currentMatrix));
       animationLoop = requestAnimationFrame( render );
     }
 
@@ -994,13 +994,13 @@ var Hammerhead = {};
       animationLoop = requestAnimationFrame( render );
     }
 
-    $element.css(transformObject(Mx.asCss()));
+    $element.css(XBtransform());
     vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
     $element.attr('viewBox', vbString);
 
     tower.subscribe('home')(function(){
       // matrixString =  matrixAsCss(identityMatrix);
-      $element.css(transformObject(Mx.asCss()));
+      $element.css(XBtransform());
       viewBox = HOME;
       vbString = VB.attrString(viewBox);
       $element.attr('viewBox', vbString);
