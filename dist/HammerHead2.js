@@ -332,13 +332,7 @@ var Hammerhead = {};
       animationLoop = requestAnimationFrame( render );
     }
 
-    $element.css(transformObject(matrixAsCss(identityMatrix)))
-      .css({
-        '-webkit-backface-visibility': 'hidden',
-        '-webkit-transform-origin': '50% 50%',
-        '-ms-transform-origin': '50% 50%',
-        'transform-origin': '50% 50%'
-      });
+    $element.css(transformObject(matrixAsCss(identityMatrix)));
     vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
     $element.attr('viewBox', vbString);
 
