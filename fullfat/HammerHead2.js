@@ -714,6 +714,10 @@ SVGroovy.Matrix.forTranslation = function(point){
   return SVGroovy.Matrix.translating(point.x, point.y);
 };
 
+SVGroovy.Matrix.forMagnification = function(scale){
+  return SVGroovy.Matrix.scaling(scale);
+};
+
 var hammertime = Hammer(document);
 
 var Hammerhead = {};
@@ -931,12 +935,14 @@ var Hammerhead = {};
     var config = buildConfig(options);
     var properFix = missingCTM($element); // windows FIX
 
-    var animationLoop, matrixString, vbString;
+    var animationLoop, vbString;
     var HOME = viewBox = VB($element.attr('viewBox'));
     var viewBoxZoom = 1;
     var maxScale = config.maxZoom;
     var minScale = config.minZoom;
     var thisScale = 1;
+
+    var currentMatrix;
 
     listenStart(function(){
       beginAnimation();
@@ -946,13 +952,14 @@ var Hammerhead = {};
     });
 
     listenDrag(function(data){
-      matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
-      console.log(displace(data.delta));
+      // matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
+      currentMatrix = Mx.forTranslation(data.delta);
     });
 
     listenPinch(function(data){
       var scale = Math.max(Math.min(data.scale, maxScale), minScale);
-      matrixString = matrixAsCss(Mx.scaling(scale));
+      // matrixString = matrixAsCss(Mx.scaling(scale));
+      currentMatrix = Mx.forMagnification(scale);
       thisScale = scale;
     });
 
@@ -971,16 +978,17 @@ var Hammerhead = {};
         viewBox = VB.zoom(scale)()(viewBox);
       }
       vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
-      matrixString =  matrixAsCss(identityMatrix);
+      // matrixString =  matrixAsCss(identityMatrix);
       cancelAnimationFrame(animationLoop);
+      currentMatrix = Mx();
       requestAnimationFrame(function(){
         $element.attr('viewBox', vbString);
-        $element.css(transformObject(matrixString));
+        $element.css(transformObject(Mx.asCss()));
       });
     });
 
     function render(){
-      $element.css(transformObject(matrixString));
+      $element.css(transformObject(Mx.asCss(currentMatrix)));
       animationLoop = requestAnimationFrame( render );
     }
 
@@ -993,8 +1001,8 @@ var Hammerhead = {};
     $element.attr('viewBox', vbString);
 
     tower.subscribe('home')(function(){
-      matrixString =  matrixAsCss(identityMatrix);
-      $element.css(transformObject(matrixString));
+      // matrixString =  matrixAsCss(identityMatrix);
+      $element.css(transformObject(Mx.asCss()));
       viewBox = HOME;
       vbString = VB.attrString(viewBox);
       $element.attr('viewBox', vbString);

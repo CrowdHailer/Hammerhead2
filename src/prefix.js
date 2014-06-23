@@ -88,6 +88,10 @@ SVGroovy.Matrix.forTranslation = function(point){
   return SVGroovy.Matrix.translating(point.x, point.y);
 };
 
+SVGroovy.Matrix.forMagnification = function(scale){
+  return SVGroovy.Matrix.scaling(scale);
+};
+
 var hammertime = Hammer(document);
 
 var Hammerhead = {};
