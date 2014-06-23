@@ -4,7 +4,7 @@ function interpolate(s) {
   var i = 0;
   return function(args){
     return s.replace(/%(?:\(([^)]+)\))?([%diouxXeEfFgGcrs])/g, function (match, v, t) {
-      if (t == "%") return "%";
+      if (t === "%") {return "%";}
       return args[v || i++];
     });
   };
@@ -29,7 +29,7 @@ function checkSVGTarget(svg){
                                || window[vendors[x]+'CancelRequestAnimationFrame'];
   }
 
-  if (!window.requestAnimationFrame)
+  if (!window.requestAnimationFrame) {
     window.requestAnimationFrame = function(callback, element) {
       var currTime = new Date().getTime();
       var timeToCall = Math.max(0, 16 - (currTime - lastTime));
@@ -38,11 +38,13 @@ function checkSVGTarget(svg){
       lastTime = currTime + timeToCall;
       return id;
     };
+  }
 
-  if (!window.cancelAnimationFrame)
+  if (!window.cancelAnimationFrame) {
     window.cancelAnimationFrame = function(id) {
       clearTimeout(id);
     };
+  }
 }());
 
 // Missing windows pixel density fix 
