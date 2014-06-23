@@ -644,13 +644,7 @@ var transformObject = function(matrixString){
   };
 };
 
-// check svg owner
 
-function checkSVGTarget(svg){
-  return function(target){
-    return (target.ownerSVGElement || target) === svg;
-  };
-}
 
 // Request animation frame polyfill
 
@@ -725,6 +719,14 @@ SVGroovy.Matrix.forTranslation = function(point){
 SVGroovy.Matrix.forMagnification = function(scale){
   return SVGroovy.Matrix.scaling(scale);
 };
+
+// check svg owner
+
+function checkSVGTarget(svg){
+  return function(target){
+    return (target.ownerSVGElement || target) === svg;
+  };
+}
 
 var hammertime = Hammer(document);
 
@@ -935,6 +937,7 @@ var Hammerhead = {};
       viewBoxZoom = 1;
 
     var HOME = viewBox = VB($element.attr('viewBox'));
+    
     var animationLoop,
       thisScale,
       maxScale,
@@ -1011,10 +1014,10 @@ var Hammerhead = {};
     mousewheelDelay: 200
   });
 
-  parent.mousewheelDispatch = function($element, options){
+  parent.mousewheelDispatch = function(options){
     var config = buildConfig(options);
     
-    var SVGElement = $element[0];
+    var SVGElement = this.$element[0];
     var scale;
     var onTarget = checkSVGTarget(SVGElement);
     var factor = 1 + config.mousewheelSensitivity;
@@ -1024,9 +1027,9 @@ var Hammerhead = {};
       scale = null;
     });
 
-    $(document).on('mousewheel', function(event){
+    var handleMousewheel = function(event){
       if (!scale) {
-        if (!onTarget(event.target)) return;
+        if (!this.isComponent(event.target)) return;
 
         scale = 1;
         alertStart('wheel');
@@ -1034,7 +1037,7 @@ var Hammerhead = {};
 
       if (event.wheelDelta > 0) {
         scale *= factor;
-      } else{
+      } else {
         scale /= factor;
       }
 
@@ -1042,7 +1045,10 @@ var Hammerhead = {};
         element: SVGElement,
         scale: scale});
       finishScrolling(scale);
-    });
+    }.bind(this);
+      
+
+    $(document).on('mousewheel', handleMousewheel);
   };
 
 }(Hammerhead));
@@ -1070,12 +1076,14 @@ var Hammerhead = {};
 
     var instance = Object.create(prototype);
     instance.$element = $svg;
+    instance.isComponent = checkSVGTarget($svg[0]);
 
     // parent.regulateOverflow($svg, overflowSettings(options));
     parent.regulateOverflow.call(instance, overflowSettings(options));
     parent.touchDispatch($svg);
     parent.managePosition($svg, managePositionSettings(options));
-    parent.mousewheelDispatch($svg, mousewheelSettings(options));
+    // parent.mousewheelDispatch($svg, mousewheelSettings(options));
+    parent.mousewheelDispatch.call(instance, mousewheelSettings(options));
 
     return instance;
   }

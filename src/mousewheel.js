@@ -10,12 +10,11 @@
     mousewheelDelay: 200
   });
 
-  parent.mousewheelDispatch = function($element, options){
+  parent.mousewheelDispatch = function(options){
     var config = buildConfig(options);
     
-    var SVGElement = $element[0];
+    var SVGElement = this.$element[0];
     var scale;
-    var onTarget = checkSVGTarget(SVGElement);
     var factor = 1 + config.mousewheelSensitivity;
 
     var finishScrolling = _.debounce(config.mousewheelDelay)(function(scaleFactor){
@@ -23,9 +22,9 @@
       scale = null;
     });
 
-    $(document).on('mousewheel', function(event){
+    var handleMousewheel = function(event){
       if (!scale) {
-        if (!onTarget(event.target)) return;
+        if (!this.isComponent(event.target)) return;
 
         scale = 1;
         alertStart('wheel');
@@ -33,7 +32,7 @@
 
       if (event.wheelDelta > 0) {
         scale *= factor;
-      } else{
+      } else {
         scale /= factor;
       }
 
@@ -41,7 +40,9 @@
         element: SVGElement,
         scale: scale});
       finishScrolling(scale);
-    });
+    }.bind(this);
+
+    $(document).on('mousewheel', handleMousewheel);
   };
 
 }(Hammerhead));

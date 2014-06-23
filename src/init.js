@@ -22,12 +22,14 @@
 
     var instance = Object.create(prototype);
     instance.$element = $svg;
+    instance.isComponent = checkSVGTarget($svg[0]);
 
     // parent.regulateOverflow($svg, overflowSettings(options));
     parent.regulateOverflow.call(instance, overflowSettings(options));
     parent.touchDispatch($svg);
     parent.managePosition($svg, managePositionSettings(options));
-    parent.mousewheelDispatch($svg, mousewheelSettings(options));
+    // parent.mousewheelDispatch($svg, mousewheelSettings(options));
+    parent.mousewheelDispatch.call(instance, mousewheelSettings(options));
 
     return instance;
   }
