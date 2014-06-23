@@ -630,7 +630,7 @@ function interpolate(s) {
   var i = 0;
   return function(args){
     return s.replace(/%(?:\(([^)]+)\))?([%diouxXeEfFgGcrs])/g, function (match, v, t) {
-      if (t == "%") return "%";
+      if (t === "%") {return "%";}
       return args[v || i++];
     });
   };
@@ -655,7 +655,7 @@ function checkSVGTarget(svg){
                                || window[vendors[x]+'CancelRequestAnimationFrame'];
   }
 
-  if (!window.requestAnimationFrame)
+  if (!window.requestAnimationFrame) {
     window.requestAnimationFrame = function(callback, element) {
       var currTime = new Date().getTime();
       var timeToCall = Math.max(0, 16 - (currTime - lastTime));
@@ -664,11 +664,13 @@ function checkSVGTarget(svg){
       lastTime = currTime + timeToCall;
       return id;
     };
+  }
 
-  if (!window.cancelAnimationFrame)
+  if (!window.cancelAnimationFrame) {
     window.cancelAnimationFrame = function(id) {
       clearTimeout(id);
     };
+  }
 }());
 
 // Missing windows pixel density fix 
@@ -1025,6 +1027,10 @@ var Hammerhead = {};
   var managePositionSettings = _.pick('maxZoom', 'minZoom');
   var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
+  var prototype = {
+    home: tower.publish('home')
+  };
+
   function init(svgId, options){
     $svg = $('svg#' + svgId);
 
@@ -1034,14 +1040,15 @@ var Hammerhead = {};
 
     options = options || {};
 
+    var instance = Object.create(prototype);
+    instance.$element = $svg;
+
     parent.regulateOverflow($svg, overflowSettings(options));
     parent.touchDispatch($svg);
     parent.managePosition($svg, managePositionSettings(options));
     parent.mousewheelDispatch($svg, mousewheelSettings(options));
 
-    return {
-      home: tower.publish('home')
-    };
+    return instance;
   }
   parent.create = init;
 }(Hammerhead));

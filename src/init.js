@@ -5,6 +5,10 @@
   var managePositionSettings = _.pick('maxZoom', 'minZoom');
   var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
 
+  var prototype = {
+    home: tower.publish('home')
+  };
+
   function init(svgId, options){
     $svg = $('svg#' + svgId);
 
@@ -14,14 +18,15 @@
 
     options = options || {};
 
+    var instance = Object.create(prototype);
+    instance.$element = $svg;
+
     parent.regulateOverflow($svg, overflowSettings(options));
     parent.touchDispatch($svg);
     parent.managePosition($svg, managePositionSettings(options));
     parent.mousewheelDispatch($svg, mousewheelSettings(options));
 
-    return {
-      home: tower.publish('home')
-    };
+    return instance;
   }
   parent.create = init;
 }(Hammerhead));
