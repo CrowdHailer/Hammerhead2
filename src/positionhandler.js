@@ -89,7 +89,7 @@
       // matrixString =  matrixAsCss(identityMatrix);
       $element.css(XBtransform());
       viewBox = HOME;
-      vbString = VB.attrString(viewBox);
+      vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
       $element.attr('viewBox', vbString);
     });
   };
