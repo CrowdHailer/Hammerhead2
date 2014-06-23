@@ -14,9 +14,22 @@ body, html {
   user-select: none;
 }
 svg {
+  /* Uncomment section for full screen*/
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* end of section */
   cursor: move;
-  touch-action: none;
+
   -ms-touch-action: none;
-  transition: none;
+  touch-action: none;
+
   -webkit-transition: none;
+  transition: none;
+
+  -webkit-backface-visibility: hidden;
+
+  -webkit-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
 }
