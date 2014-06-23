@@ -62,6 +62,8 @@ function missingCTM($element){
   return _.round(1)(properFix);
 }
 
+// cumin fills
+
 _.debounce = function(wait){
   return function(func){
     var timeout, args;
@@ -74,7 +76,17 @@ _.debounce = function(wait){
       }, wait);
     };
   };
-}
+};
+
+//SVGroovy fills NB requires interpolate
+
+SVGroovy.Matrix.asCss = function(matrix){
+  return interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(matrix || SVGroovy.Matrix());
+};
+
+SVGroovy.Matrix.forTranslation = function(point){
+  return SVGroovy.Matrix.translating(point.x, point.y);
+};
 
 var hammertime = Hammer(document);
 

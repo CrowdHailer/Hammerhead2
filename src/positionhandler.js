@@ -4,7 +4,7 @@
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
     identityMatrix = Mx(),
-    matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
+    matrixAsCss = Mx.asCss;
 
   var buildConfig = _.foundation({
     maxZoom: 2,
@@ -23,6 +23,8 @@
       'transform': matrixString
     };
   };
+
+  var displace = _.compose(transformObject, Mx.asCss, Mx.forTranslation);
 
   parent.managePosition = function($element, options){
     var config = buildConfig(options);
@@ -44,6 +46,7 @@
 
     listenDrag(function(data){
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
+      console.log(displace(data.delta));
     });
 
     listenPinch(function(data){

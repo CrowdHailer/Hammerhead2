@@ -62,6 +62,8 @@ function missingCTM($element){
   return _.round(1)(properFix);
 }
 
+// cumin fills
+
 _.debounce = function(wait){
   return function(func){
     var timeout, args;
@@ -74,7 +76,17 @@ _.debounce = function(wait){
       }, wait);
     };
   };
-}
+};
+
+//SVGroovy fills NB requires interpolate
+
+SVGroovy.Matrix.asCss = function(matrix){
+  return interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(matrix || SVGroovy.Matrix());
+};
+
+SVGroovy.Matrix.forTranslation = function(point){
+  return SVGroovy.Matrix.translating(point.x, point.y);
+};
 
 var hammertime = Hammer(document);
 
@@ -175,7 +187,7 @@ var Hammerhead = {};
   }
 
   parent.regulateOverflow = function(options){
-    var updateOverflow = createOverflowUpdater(options);
+    var updateOverflow = createOverflowUpdater.call(this, options);
     
     updateOverflow();
     tower.subscribe('windowResize')(updateOverflow);
@@ -267,7 +279,7 @@ var Hammerhead = {};
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
     identityMatrix = Mx(),
-    matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
+    matrixAsCss = Mx.asCss;
 
   var buildConfig = _.foundation({
     maxZoom: 2,
@@ -286,6 +298,8 @@ var Hammerhead = {};
       'transform': matrixString
     };
   };
+
+  var displace = _.compose(transformObject, Mx.asCss, Mx.forTranslation);
 
   parent.managePosition = function($element, options){
     var config = buildConfig(options);
@@ -307,6 +321,7 @@ var Hammerhead = {};
 
     listenDrag(function(data){
       matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
+      console.log(displace(data.delta));
     });
 
     listenPinch(function(data){
