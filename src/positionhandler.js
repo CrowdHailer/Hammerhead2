@@ -4,11 +4,6 @@
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox;
 
-  // var buildConfig = _.foundation({
-  //   maxZoom: 2,
-  //   minZoom: 0.5
-  // });
-
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
@@ -17,7 +12,6 @@
   var XBtransform = _.compose(transformObject, Mx.asCss);
 
   parent.managePosition = function(){
-    // var config = buildConfig(options),
     var $element = this.$element;
     var properFix = missingCTM($element), // windows FIX
       viewBoxZoom = 1;

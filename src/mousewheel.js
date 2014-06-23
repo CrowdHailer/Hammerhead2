@@ -5,13 +5,7 @@
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-  // var buildConfig = _.foundation({
-  //   mousewheelSensitivity: 0.1,
-  //   mousewheelDelay: 200
-  // });
-
   parent.mousewheelDispatch = function(){
-    // var config = buildConfig(options);
     
     var SVGElement = this.$element[0];
     var scale;

@@ -174,17 +174,11 @@ var Hammerhead = {};
 (function(parent){
   var tower = Belfry.getTower();
 
-  // var buildConfig = _.foundation({
-  //   overflowSurplus: 0.5,
-  //   resizeDelay: 200
-  // });
-
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
 
   $(window).on('resize', tower.publish('windowResize'));
 
   function createOverflowUpdater(){
-    // var config = buildConfig(options);
 
     var surplus = this.getConfig('overflowSurplus');
     var factor = 2 * surplus + 1;
@@ -293,11 +287,6 @@ var Hammerhead = {};
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox;
 
-  // var buildConfig = _.foundation({
-  //   maxZoom: 2,
-  //   minZoom: 0.5
-  // });
-
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
@@ -306,7 +295,6 @@ var Hammerhead = {};
   var XBtransform = _.compose(transformObject, Mx.asCss);
 
   parent.managePosition = function(){
-    // var config = buildConfig(options),
     var $element = this.$element;
     var properFix = missingCTM($element), // windows FIX
       viewBoxZoom = 1;
@@ -384,13 +372,7 @@ var Hammerhead = {};
   var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
-  // var buildConfig = _.foundation({
-  //   mousewheelSensitivity: 0.1,
-  //   mousewheelDelay: 200
-  // });
-
   parent.mousewheelDispatch = function(){
-    // var config = buildConfig(options);
     
     var SVGElement = this.$element[0];
     var scale;
@@ -430,10 +412,6 @@ var Hammerhead = {};
 
   var tower = Belfry.getTower();
 
-  // var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
-  // var managePositionSettings = _.pick('maxZoom', 'minZoom');
-  // var mousewheelSettings = _.pick('mousewheelSensitivity', 'mousewheelDelay');
-
   var prototype = {
     home: tower.publish('home')
   };
@@ -464,12 +442,9 @@ var Hammerhead = {};
       return config[setting];
     };
 
-    // parent.regulateOverflow($svg, overflowSettings(options));
     parent.regulateOverflow.call(instance);
     parent.touchDispatch($svg);
-    // parent.managePosition($svg, managePositionSettings(options));
     parent.managePosition.call(instance);
-    // parent.mousewheelDispatch($svg, mousewheelSettings(options));
     parent.mousewheelDispatch.call(instance);
 
     return instance;

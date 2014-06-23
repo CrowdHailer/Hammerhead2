@@ -1,17 +1,11 @@
 (function(parent){
   var tower = Belfry.getTower();
 
-  // var buildConfig = _.foundation({
-  //   overflowSurplus: 0.5,
-  //   resizeDelay: 200
-  // });
-
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
 
   $(window).on('resize', tower.publish('windowResize'));
 
   function createOverflowUpdater(){
-    // var config = buildConfig(options);
 
     var surplus = this.getConfig('overflowSurplus');
     var factor = 2 * surplus + 1;
