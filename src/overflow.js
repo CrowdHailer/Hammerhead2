@@ -10,25 +10,25 @@
 
   $(window).on('resize', tower.publish('windowResize'));
 
-  function createOverflowUpdater($element, options){
+  function createOverflowUpdater(options){
     var config = buildConfig(options);
 
     var surplus = config.overflowSurplus;
     var factor = 2 * surplus + 1;
-    var $parent = $element.parent();
+    var $parent = this.$element.parent();
 
     return _.debounce(config.resizeDelay)(function(){
       var height = $parent.height();
       var width = $parent.width();
-      $element
+      this.$element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    });
+    }).bind(this);
   }
 
-  parent.regulateOverflow = function(element, options){
-    var updateOverflow = createOverflowUpdater(element, options);
+  parent.regulateOverflow = function(options){
+    var updateOverflow = createOverflowUpdater.call(this, options);
     
     updateOverflow();
     tower.subscribe('windowResize')(updateOverflow);

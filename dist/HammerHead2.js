@@ -62,6 +62,20 @@ function missingCTM($element){
   return _.round(1)(properFix);
 }
 
+_.debounce = function(wait){
+  return function(func){
+    var timeout, args;
+    return function(){
+      var context = this;
+      args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(function(){
+        func.apply(context, args);
+      }, wait);
+    };
+  };
+}
+
 var hammertime = Hammer(document);
 
 var Hammerhead = {};
@@ -143,25 +157,25 @@ var Hammerhead = {};
 
   $(window).on('resize', tower.publish('windowResize'));
 
-  function createOverflowUpdater($element, options){
+  function createOverflowUpdater(options){
     var config = buildConfig(options);
 
     var surplus = config.overflowSurplus;
     var factor = 2 * surplus + 1;
-    var $parent = $element.parent();
+    var $parent = this.$element.parent();
 
     return _.debounce(config.resizeDelay)(function(){
       var height = $parent.height();
       var width = $parent.width();
-      $element
+      this.$element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    });
+    }).bind(this);
   }
 
-  parent.regulateOverflow = function(element, options){
-    var updateOverflow = createOverflowUpdater(element, options);
+  parent.regulateOverflow = function(options){
+    var updateOverflow = createOverflowUpdater(options);
     
     updateOverflow();
     tower.subscribe('windowResize')(updateOverflow);
@@ -302,7 +316,6 @@ var Hammerhead = {};
     });
 
     listenEnd(function(data){
-      console.log(thisScale)
       if (thisScale === 1) {
         var fixedTranslation = Pt.scalar(properFix)(data.delta);
         var inverseCTM = $element[0].getScreenCTM().inverse();
@@ -395,6 +408,8 @@ var Hammerhead = {};
 
 }(Hammerhead));
 (function(parent){
+  "use strict";
+
   var tower = Belfry.getTower();
 
   var overflowSettings = _.pick('overflowSurplus', 'resizeDelay');
@@ -406,7 +421,7 @@ var Hammerhead = {};
   };
 
   function init(svgId, options){
-    $svg = $('svg#' + svgId);
+    var $svg = $('svg#' + svgId);
 
     if (!$svg[0]) {
       return false;
@@ -417,7 +432,8 @@ var Hammerhead = {};
     var instance = Object.create(prototype);
     instance.$element = $svg;
 
-    parent.regulateOverflow($svg, overflowSettings(options));
+    // parent.regulateOverflow($svg, overflowSettings(options));
+    parent.regulateOverflow.call(instance, overflowSettings(options));
     parent.touchDispatch($svg);
     parent.managePosition($svg, managePositionSettings(options));
     parent.mousewheelDispatch($svg, mousewheelSettings(options));

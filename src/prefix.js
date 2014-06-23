@@ -62,6 +62,20 @@ function missingCTM($element){
   return _.round(1)(properFix);
 }
 
+_.debounce = function(wait){
+  return function(func){
+    var timeout, args;
+    return function(){
+      var context = this;
+      args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(function(){
+        func.apply(context, args);
+      }, wait);
+    };
+  };
+}
+
 var hammertime = Hammer(document);
 
 var Hammerhead = {};
