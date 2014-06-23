@@ -17,17 +17,16 @@
   var XBtransform = _.compose(transformObject, Mx.asCss);
 
   parent.managePosition = function($element, options){
-    var config = buildConfig(options);
-    var properFix = missingCTM($element); // windows FIX
+    var config = buildConfig(options),
+      properFix = missingCTM($element), // windows FIX
+      viewBoxZoom = 1;
 
-    var animationLoop;
     var HOME = viewBox = VB($element.attr('viewBox'));
-    var viewBoxZoom = 1;
-    var maxScale = config.maxZoom;
-    var minScale = config.minZoom;
-    var thisScale = 1;
-
-    var currentMatrix;
+    var animationLoop,
+      thisScale,
+      maxScale,
+      minScale,
+      currentMatrix;
 
     listenStart(function(){
       beginAnimation();
@@ -37,13 +36,11 @@
     });
 
     listenDrag(function(data){
-      // matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
       currentMatrix = Mx.forTranslation(data.delta);
     });
 
     listenPinch(function(data){
       var scale = Math.max(Math.min(data.scale, maxScale), minScale);
-      // matrixString = matrixAsCss(Mx.scaling(scale));
       currentMatrix = Mx.forMagnification(scale);
       thisScale = scale;
     });
@@ -62,7 +59,6 @@
         viewBoxZoom *= scale;
         viewBox = VB.zoom(scale)()(viewBox);
       }
-      // matrixString =  matrixAsCss(identityMatrix);
       cancelAnimationFrame(animationLoop);
       currentMatrix = Mx();
       requestAnimationFrame(function(){
@@ -84,7 +80,6 @@
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
 
     tower.subscribe('home')(function(){
-      // matrixString =  matrixAsCss(identityMatrix);
       $element.css(XBtransform());
       viewBox = HOME;
       $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
