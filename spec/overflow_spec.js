@@ -1,18 +1,18 @@
 describe('managing overflow padding of active elements', function(){
   var inner, outer, dummy;
-  beforeEach(function(){
-    var testString = '<div id="outer"><div id="inner"></div><div>';
-    document.body.innerHTML += testString;
-    inner = $('#inner');
-    outer = $('#outer');
-    outer.width(200).height(100);
-    jasmine.createSpy();
-    _.debounce = function(delay){
-      return function(func){
-        return func;
-      };
-    };
-  });
+  // beforeEach(function(){
+  //   var testString = '<div id="outer"><div id="inner"></div><div>';
+  //   document.body.innerHTML += testString;
+  //   inner = $('#inner');
+  //   outer = $('#outer');
+  //   outer.width(200).height(100);
+  //   jasmine.createSpy();
+  //   _.debounce = function(delay){
+  //     return function(func){
+  //       return func;
+  //     };
+  //   };
+  // });
 
   xit('should set a elements margin outside the parent, default 50%', function(){
     Hammerhead.regulateOverflow.call({
