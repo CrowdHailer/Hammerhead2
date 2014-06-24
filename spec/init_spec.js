@@ -36,6 +36,7 @@ describe('initialisation process', function(){
     });
     it('should make available the element', function(){
       expect(created.$element[0]).toBe(element);
+      expect(created.element).toBe(element);
     });
     it('should make available a home call', function(){
       var dummy = jasmine.createSpy();

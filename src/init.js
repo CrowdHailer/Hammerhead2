@@ -22,14 +22,16 @@
 
   function init(svgId, options){
     var $svg = $('svg#' + svgId);
+    var element = $svg[0];
 
-    if (!$svg[0]) {
+    if (!element) {
       console.warn(noElement({id: svgId}));
       return false;
     }
 
     var instance = Object.create(prototype);
     instance.$element = $svg;
+    instance.element = element;
     instance.isComponent = checkSVGTarget($svg[0]);
     instance.getConfig = _.peruse(buildConfig(options));
 
