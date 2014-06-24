@@ -44,5 +44,18 @@ describe('initialisation process', function(){
       created.home();
       expect(dummy).toHaveBeenCalledWith(element, 'home');
     });
+    var defaultConfigs = {
+      mousewheelSensitivity: 0.1,
+      mousewheelDelay: 200,
+      maxZoom: 2,
+      minZoom: 0.5,
+      overflowSurplus: 0.5,
+      resizeDelay: 200
+    };
+    _.each(function(value, setting){
+      it('should return config accessor for ' + setting, function(){
+        expect(created.getConfig(setting)).toEqual(value);
+      });
+    })(defaultConfigs);
   });
 });
