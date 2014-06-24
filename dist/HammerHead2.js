@@ -419,7 +419,9 @@ var Hammerhead = {};
   var tower = Belfry.getTower();
 
   var prototype = {
-    home: tower.publish('home')
+    home: function(){
+      tower.publish('home')(this.$element[0]);
+    }
   };
 
   var buildConfig = _.foundation({
@@ -431,20 +433,22 @@ var Hammerhead = {};
     resizeDelay: 200
   });
 
+  var noElement = interpolate("SVG element '%(id)s' not found");
+
   function init(svgId, options){
     var $svg = $('svg#' + svgId);
+    var element = $svg[0];
 
-    if (!$svg[0]) {
+    if (!element) {
+      console.warn(noElement({id: svgId}));
       return false;
     }
 
-    options = options || {};
-    var config = buildConfig(options);
-
     var instance = Object.create(prototype);
     instance.$element = $svg;
-    instance.isComponent = checkSVGTarget($svg[0]);
-    instance.getConfig = _.peruse(config);
+    instance.element = element;
+    instance.isComponent = checkSVGTarget(element);
+    instance.getConfig = _.peruse(buildConfig(options));
 
     parent.regulateOverflow.call(instance);
     parent.touchDispatch($svg);
