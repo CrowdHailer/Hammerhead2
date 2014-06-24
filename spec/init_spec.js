@@ -1,25 +1,28 @@
 describe('initialisation process', function(){
-  it('should create a zepto element', function(){
-    spyOn(window, '$').andReturn([]);
-    Hammerhead.create('name');
-    expect(window.$).toHaveBeenCalledWith('svg#name');
-  });
-  it('should return when no element found', function(){
-    spyOn(window, '$').andReturn([]);
-    var created = Hammerhead.create('name');
-    expect(created).toBe(false);
-  });
-  it('initialise components when element found', function(){
-    var element = {id: 'svg'};
+  var element = {};
+  beforeEach(function(){
     spyOn(window, '$').andReturn([element]);
     spyOn(Hammerhead, 'regulateOverflow');
     spyOn(Hammerhead, 'touchDispatch');
     spyOn(Hammerhead, 'managePosition');
     spyOn(Hammerhead, 'mousewheelDispatch');
+  });
+  it('should create a zepto element when given a valid SVG element', function(){
+    Hammerhead.create('name');
+    expect(window.$).toHaveBeenCalledWith('svg#name');
+  });
+  it('should return false and warn the console if no SVG element found', function(){
+    window.$.andReturn([]);
+    spyOn(console, 'warn');
+    var created = Hammerhead.create('incorrect');
+    expect(console.warn).toHaveBeenCalledWith("SVG element 'incorrect' not found")
+    expect(created).toBe(false);
+  });
+  it('should initialise all components with valid element', function(){
     var created = Hammerhead.create('name');
-    expect(Hammerhead.regulateOverflow).toHaveBeenCalled();
+    expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith();
     expect(Hammerhead.touchDispatch).toHaveBeenCalledWith([element]);
-    expect(Hammerhead.managePosition).toHaveBeenCalled();
-    expect(Hammerhead.mousewheelDispatch).toHaveBeenCalled();
+    expect(Hammerhead.managePosition).toHaveBeenCalledWith();
+    expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith();
   });
 });

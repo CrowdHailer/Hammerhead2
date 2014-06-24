@@ -16,10 +16,13 @@
     resizeDelay: 200
   });
 
+  var noElement = interpolate("SVG element '%(id)s' not found");
+
   function init(svgId, options){
     var $svg = $('svg#' + svgId);
 
     if (!$svg[0]) {
+      console.warn(noElement({id: svgId}));
       return false;
     }
 
