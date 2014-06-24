@@ -57,5 +57,19 @@ describe('initialisation process', function(){
         expect(created.getConfig(setting)).toEqual(value);
       });
     })(defaultConfigs);
+    var customConfigs = {
+      mousewheelSensitivity: 1,
+      mousewheelDelay: 2,
+      maxZoom: 3,
+      minZoom: 4,
+      overflowSurplus: 5,
+      resizeDelay: 6
+    };
+    _.each(function(value, setting){
+      it('should allow overwrite of ' + setting, function(){
+        var custom = Hammerhead.create('name', customConfigs);
+        expect(custom.getConfig(setting)).toEqual(value);
+      });
+    })(customConfigs);
   });
 });
