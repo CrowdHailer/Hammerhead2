@@ -4,7 +4,9 @@
   var tower = Belfry.getTower();
 
   var prototype = {
-    home: tower.publish('home')
+    home: function(){
+      tower.publish('home')(this.$element[0]);
+    }
   };
 
   var buildConfig = _.foundation({
