@@ -32,7 +32,7 @@
     var instance = Object.create(prototype);
     instance.$element = $svg;
     instance.element = element;
-    instance.isComponent = checkSVGTarget($svg[0]);
+    instance.isComponent = checkSVGTarget(element);
     instance.getConfig = _.peruse(buildConfig(options));
 
     parent.regulateOverflow.call(instance);
