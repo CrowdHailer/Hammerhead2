@@ -2,58 +2,46 @@
   var tower = Belfry.getTower(),
     Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
-    VB = parent.ViewBox,
-    identityMatrix = Mx(),
-    matrixAsCss = interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)');
-
-  var buildConfig = _.foundation({
-    maxZoom: 2,
-    minZoom: 0.5
-  });
+    VB = parent.ViewBox;
 
   var listenStart = tower.subscribe('start');
   var listenDrag = tower.subscribe('drag');
   var listenPinch = tower.subscribe('pinch');
   var listenEnd = tower.subscribe('end');
 
-  var transformObject = function(matrixString){
-    return {
-      '-webkit-transform': matrixString,
-      '-ms-transform': matrixString,
-      'transform': matrixString
-    };
-  };
+  var XBtransform = _.compose(transformObject, Mx.asCss);
 
-  parent.managePosition = function($element, options){
-    var config = buildConfig(options);
-    var properFix = missingCTM($element); // windows FIX
+  parent.managePosition = function(){
+    var $element = this.$element;
+    var properFix = missingCTM($element), // windows FIX
+      viewBoxZoom = 1;
 
-    var animationLoop, matrixString, vbString;
     var HOME = viewBox = VB($element.attr('viewBox'));
-    var viewBoxZoom = 1;
-    var maxScale = config.maxZoom;
-    var minScale = config.minZoom;
-    var thisScale = 1;
+
+    var animationLoop,
+      thisScale,
+      maxScale,
+      minScale,
+      currentMatrix;
 
     listenStart(function(){
       beginAnimation();
-      maxScale = config.maxZoom/viewBoxZoom;
-      minScale = config.minZoom/viewBoxZoom;
+      maxScale = this.getConfig('maxZoom')/viewBoxZoom;
+      minScale = this.getConfig('minZoom')/viewBoxZoom;
       thisScale = 1;
-    });
+    }.bind(this));
 
     listenDrag(function(data){
-      matrixString = matrixAsCss(Mx.translating(data.delta.x, data.delta.y));
+      currentMatrix = Mx.forTranslation(data.delta);
     });
 
     listenPinch(function(data){
       var scale = Math.max(Math.min(data.scale, maxScale), minScale);
-      matrixString = matrixAsCss(Mx.scaling(scale));
+      currentMatrix = Mx.forMagnification(scale);
       thisScale = scale;
     });
 
     listenEnd(function(data){
-      console.log(thisScale)
       if (thisScale === 1) {
         var fixedTranslation = Pt.scalar(properFix)(data.delta);
         var inverseCTM = $element[0].getScreenCTM().inverse();
@@ -67,17 +55,16 @@
         viewBoxZoom *= scale;
         viewBox = VB.zoom(scale)()(viewBox);
       }
-      vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
-      matrixString =  matrixAsCss(identityMatrix);
       cancelAnimationFrame(animationLoop);
+      currentMatrix = Mx();
       requestAnimationFrame(function(){
-        $element.attr('viewBox', vbString);
-        $element.css(transformObject(matrixString));
+        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+        $element.css(XBtransform());
       });
     });
 
     function render(){
-      $element.css(transformObject(matrixString));
+      $element.css(XBtransform(currentMatrix));
       animationLoop = requestAnimationFrame( render );
     }
 
@@ -85,16 +72,13 @@
       animationLoop = requestAnimationFrame( render );
     }
 
-    $element.css(transformObject(matrixAsCss(identityMatrix)));
-    vbString = VB.attrString(VB.zoom(0.5)()(viewBox));
-    $element.attr('viewBox', vbString);
+    $element.css(XBtransform());
+    $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
 
     tower.subscribe('home')(function(){
-      matrixString =  matrixAsCss(identityMatrix);
-      $element.css(transformObject(matrixString));
+      $element.css(XBtransform());
       viewBox = HOME;
-      vbString = VB.attrString(viewBox);
-      $element.attr('viewBox', vbString);
+      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
     });
   };
 }(Hammerhead));

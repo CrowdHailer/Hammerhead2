@@ -18,7 +18,7 @@ module.exports = function(config) {
       'src/positionhandler.js',
       'src/mousewheel.js',
       'src/init.js',
-      'spec/prefix_spec.js',
+      // 'spec/prefix_spec.js',
       'spec/viewbox_spec.js',
       // 'spec/agile_spec.js',
       'spec/overflow_spec.js',

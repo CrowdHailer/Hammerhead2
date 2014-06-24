@@ -1,10 +1,27 @@
 describe('managing overflow padding of active elements', function(){
-  var testString = '<div id="outer"><div id="inner"></div><div>';
-  document.body.innerHTML += testString;
-  $('#outer').width(200).height(100);
+  var inner, outer, dummy;
+  // beforeEach(function(){
+  //   var testString = '<div id="outer"><div id="inner"></div><div>';
+  //   document.body.innerHTML += testString;
+  //   inner = $('#inner');
+  //   outer = $('#outer');
+  //   outer.width(200).height(100);
+  //   jasmine.createSpy();
+  //   _.debounce = function(delay){
+  //     return function(func){
+  //       return func;
+  //     };
+  //   };
+  // });
 
   xit('should set a elements margin outside the parent, default 50%', function(){
-    Hammerhead.regulateOverflow($('#inner'), {resizeDelay: 0});
+    Hammerhead.regulateOverflow.call({
+      $element: inner,
+      getConfig: _.peruse({
+        overflowSurplus: 0.5,
+        resizeDelay: 200
+      })
+    });
     expect($('#inner').width()).toEqual(400);
     expect($('#inner').height()).toEqual(200);
   });
