@@ -18,11 +18,15 @@ describe('initialisation process', function(){
     expect(console.warn).toHaveBeenCalledWith("SVG element 'incorrect' not found")
     expect(created).toBe(false);
   });
-  it('should initialise all components with valid element', function(){
+  it('should initialise all components when given valid id', function(){
     var created = Hammerhead.create('name');
     expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith();
     expect(Hammerhead.touchDispatch).toHaveBeenCalledWith([element]);
     expect(Hammerhead.managePosition).toHaveBeenCalledWith();
     expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith();
+  });
+  it('should make available the element', function(){
+    var created = Hammerhead.create('name');
+    expect(created.$element[0]).toBe(element)
   });
 });
