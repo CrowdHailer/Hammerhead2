@@ -416,13 +416,7 @@ var Hammerhead = {};
 (function(parent){
   "use strict";
 
-  var tower = Belfry.getTower();
-
-  var prototype = {
-    home: function(){
-      tower.publish('home')(this.$element[0]);
-    }
-  };
+  var prototype = {};
 
   var buildConfig = _.foundation({
     mousewheelSensitivity: 0.1,
@@ -433,25 +427,23 @@ var Hammerhead = {};
     resizeDelay: 200
   });
 
-  var noElement = interpolate("SVG element '%(id)s' not found");
-
   function init(svgId, options){
-    var $svg = $('svg#' + svgId);
-    var element = $svg[0];
+    var $element = $('svg#' + svgId);
+    var element = $element[0];
 
     if (!element) {
-      console.warn(noElement({id: svgId}));
+      console.warn(interpolate("SVG element '%(id)s' not found")({id: svgId}));
       return false;
     }
 
     var instance = Object.create(prototype);
-    instance.$element = $svg;
+    instance.$element = $element;
     instance.element = element;
     instance.isComponent = checkSVGTarget(element);
     instance.getConfig = _.peruse(buildConfig(options));
 
     parent.regulateOverflow.call(instance);
-    parent.touchDispatch($svg);
+    parent.touchDispatch.call(instance);
     parent.managePosition.call(instance);
     parent.mousewheelDispatch.call(instance);
 
