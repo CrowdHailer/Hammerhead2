@@ -10,7 +10,7 @@ describe('managing overflow padding of active elements', function(){
     $('#outer').remove();
   });
 
-  iit('should set a elements margin outside the parent, default 50%', function(){
+  it('should set a elements margin outside the parent, default 50%', function(){
     outer.width(200).height(100);
     Hammerhead.regulateOverflow.call({
       $element: inner,
@@ -21,21 +21,11 @@ describe('managing overflow padding of active elements', function(){
     });
     expect($('#inner').width()).toEqual(400);
     expect($('#inner').height()).toEqual(200);
+    expect($('#inner').css('margin')).toEqual('-50px -100px');
     $('#outer').width(300).height(100);
     bean.fire(window, 'resize');
-  });
-  
-  xit('should update overflow on tower announcement', function(){
-    Belfry.getTower().publish('windowResize')();
     expect($('#inner').width()).toEqual(600);
-  });
-
-  // warning does not clear channels so test order matters
-  xit('should set a elements margin outside the parent dependant on configuration', function(){
-  $('#outer').width(200).height(100);
-    Hammerhead.regulateOverflow($('#inner'), {overflowSurplus: 0.2});
-    expect($('#inner').width()).toEqual(280);
-    expect($('#inner').height()).toEqual(140);
-    expect($('#inner').css('margin')).toEqual('-20px -40px');
+    expect($('#inner').css('margin')).toEqual('-50px -150px');
+    //requires separating after hammerhead teardown
   });
 });
