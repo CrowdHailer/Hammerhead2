@@ -1,4 +1,4 @@
-ddescribe('Failing initialisation process', function(){
+describe('Failing initialisation process', function(){
   beforeEach(function(){
     spyOn(window, '$').and.returnValue([]);
     spyOn(console, 'warn');
@@ -12,6 +12,28 @@ ddescribe('Failing initialisation process', function(){
   });
 });
 
+describe('Vaild initialisation process', function(){
+  var element = {};
+  var created;
+  beforeEach(function(){
+    spyOn(Hammerhead, 'regulateOverflow');
+    spyOn(Hammerhead, 'touchDispatch');
+    spyOn(Hammerhead, 'managePosition');
+    spyOn(Hammerhead, 'mousewheelDispatch');
+    spyOn(window, '$').and.returnValue([element]);
+    created = Hammerhead.create('name');
+  });
+  it('should create a zepto element', function(){
+    expect(window.$).toHaveBeenCalledWith('svg#name');
+  });
+  iit('should initialise all components', function(){
+    expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith();
+    expect(Hammerhead.touchDispatch).toHaveBeenCalledWith();
+    expect(Hammerhead.managePosition).toHaveBeenCalledWith();
+    expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith();
+  });
+});
+
 describe('initialisation process', function(){
   var element = {};
   var created;
@@ -21,19 +43,7 @@ describe('initialisation process', function(){
   //   spyOn(Hammerhead, 'managePosition');
   //   spyOn(Hammerhead, 'mousewheelDispatch');
   // });
-  describe('invalid setup', function(){
-    beforeEach(function(){
-      spyOn(window, '$').andReturn([]);
-      spyOn(console, 'warn');
-      created = Hammerhead.create('incorrect');
-    });
-    it('should warn the console if no SVG element found', function(){
-      expect(console.warn).toHaveBeenCalledWith("SVG element 'incorrect' not found")
-    });
-    it('should return false if no SVG element found', function(){
-      expect(created).toBe(false);
-    });
-  });
+  // });
   describe('valid element', function(){
     beforeEach(function(){
       spyOn(window, '$').andReturn([element]);

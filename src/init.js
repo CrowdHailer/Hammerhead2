@@ -36,7 +36,7 @@
     instance.getConfig = _.peruse(buildConfig(options));
 
     parent.regulateOverflow.call(instance);
-    parent.touchDispatch($svg);
+    parent.touchDispatch.call(instance);
     parent.managePosition.call(instance);
     parent.mousewheelDispatch.call(instance);
 
