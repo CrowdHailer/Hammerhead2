@@ -13,8 +13,18 @@
 
   parent.managePosition = function(){
     var $element = this.$element;
+    var element = this.element;
+    console.log(element)
     var properFix = missingCTM($element), // windows FIX
       viewBoxZoom = 1;
+
+    bean.on($element[0], 'displace', function(point){
+      $element.css(XBtransform(Mx.toTranslate(point)));
+    });
+
+    bean.on($element[0], 'inflate', function(scaleFactor){
+      $element.css(XBtransform(Mx.toScale(scaleFactor)));
+    });
 
     var HOME = viewBox = VB($element.attr('viewBox'));
 
@@ -24,12 +34,12 @@
       minScale,
       currentMatrix;
 
-    listenStart(function(){
-      beginAnimation();
-      maxScale = this.getConfig('maxZoom')/viewBoxZoom;
-      minScale = this.getConfig('minZoom')/viewBoxZoom;
-      thisScale = 1;
-    }.bind(this));
+    // listenStart(function(){
+    //   beginAnimation();
+    //   maxScale = this.getConfig('maxZoom')/viewBoxZoom;
+    //   minScale = this.getConfig('minZoom')/viewBoxZoom;
+    //   thisScale = 1;
+    // }.bind(this));
 
     listenDrag(function(data){
       currentMatrix = Mx.forTranslation(data.delta);
