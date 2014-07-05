@@ -21,11 +21,12 @@
       return false;
     }
 
-    var instance = Object.create(prototype);
-    instance.$element = $element;
-    instance.element = element;
-    instance.isComponent = checkSVGTarget(element);
-    instance.getConfig = _.peruse(buildConfig(options));
+    var instance = _.augment(Object.create(prototype))({
+      $element: $element,
+      element: element,
+      isComponent: checkSVGTarget(element),
+      getConfig: _.peruse(buildConfig(options))
+    });
 
     parent.regulateOverflow.call(instance);
     parent.touchDispatch.call(instance);
