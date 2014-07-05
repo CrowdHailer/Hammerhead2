@@ -16,74 +16,79 @@ Cumin.js adds key utilities for functional programming, such as map, reduce and 
  6. Does not carry any concept of context
 
 ### List of functions
-##### Main
 
-- eachArray
-- eachArrayRight
-- eachObject
+#### Core
 - each
-- mapArray
-- mapObject
 - map
-- filterArray
-- filterObject
 - filter
-- rejectArray
-- rejectObject
 - reject
 - reduce
+
+#### Search
+- find
 - all
 - any
 - min
 - max
+
+#### Array
 - cleave
 - cyclic
+
+#### Object
 - foundation
 - extend
+
+#### Function
+- adjoin
 - compose
+- invoke
+- times
+- not
+- pospone
 - debounce
 - throttle
-- not
-- Identity (I)
-- dot
-- times
-- random
 
-##### Special
+#### Utilities
+- equals
+- dot
+- method
+- size
+- now
+- log
+- Identity (I)
+
+#### Special
 - expose
 - defreeze
 - refreeze
 
-##### Development
+#### Maths
+- round
+- random
+
+#### Development
 - and
-- pluck
-- weed
+- pick
+- omit
 - limit
 
+#### Base
+- eachArray
+- eachArrayRight
+- eachObject
+- mapArray
+- mapObject
+- filterArray
+- filterObject
+- rejectArray
+- rejectObject
+
 ### Collections
-**eachArray** `_.eachArray(operation)(array)`
-
-Iterates over an array of elements, with increasing index, from index 0 to length-1. The operation is called for each element with two arguments `(element, index)`
-
-**eachArrayRight** `_.eachArrayRight(operation)(array)`
-
-Iterates over an array of elements, with decreasing index, from index length-1 to 0. The operation is called for each element with two arguments `(element, index)` *This is the reverse operation to eachArray*
-
-**eachObj** `_.eachObject(operation)(object)`
-
-Iterates through all key value pairs on an object. The operation is called for each pair with two arguments `(value, key)`
 
 **each** `_.each(operation)(object)`
 
 Iterates through a collection (array, object, arguments). No order is guarenteed. The operations is called for each item with two arguments `(item, location)`
-
-**mapArray** `_.mapArray(operation)(array)`
-
-Maps each element in an array to an element in new array. New values are the return of operation. Operation is called each time with arguments `(element, index)`. By default the return array is frozen.
-
-**mapObject** `_.mapObject(operation)(object)`
-
-Maps each value in an object to the same key in a new object. New values are the return of operation. Operation is called each time with arguments `(value, key)`. By default the return object is frozen.
 
 **map** `_.map(operation)(collection)`
 
@@ -118,21 +123,13 @@ Maps items in a collection (array, object, arguments) to a new collection. The r
 > => [2, 3]
 > ```
 
-**filterArray** `_.filterArray(operation)(array)`
-
-Adds each element to a new array on condition operation returns true. Operation is called each time with arguments `(element, index)`. By default the return array is frozen.
-
-**filterObject** `_.filterObject(operation)(object)`
-
-Adds each value to a new object on condition operation returns true. Operation is called each time with arguments `(value, key)`. By default the return object is frozen.
-
 **filter** `_.filter(operation)(collection)`
 
 Adds each item to a new collection on condition operation returns true. The returned collection is frozen by default. If given an object map will return an object. If given an array or multiple arguments map will return an array.
 
-**rejectArray, rejectObject, reject**
+**reject**
 
-Same behaviour as filter functions except adds items when condition returns false.
+Same behaviour as filter function except adds items to output when condition returns false.
 
 **reduce** `_.reduce(initial)(operation)(collection)`
 
@@ -240,18 +237,23 @@ dot() // valid
 ```
 
 ### Future possibilities
-Needs clarification on context;  
-include breaker;  
+Needs clarification on context DONE;  
+include breaker DONE;  
+group by retruns object equiv as partition  
+parralell assign  
 optional checking of input type to skip null steps in all, min etc.  
 delayed return of function. useful in composition eg for nth item.  
 min and max return location  
 zip  
-mixin particularly compositions
-dot takes multiple arguments to try in order
-lazy any all to stop execution. Might be useable with multi argument dot.
-conditional execution
-pass hash with key options and value processess
-would work with true false as implicitly turned to strings
+note test for throttle and debounce are basically the same'  
+mixin particularly compositions  
+dot takes multiple arguments to try in order  
+lazy any all to stop execution. Might be useable with multi argument   dot.  
+conditional execution  
+pass hash with key options and value processess  
+would work with true false as implicitly turned to strings  
+
+each object and each array now only tested for correct input
 
 invoke with and expose using exec!! expose local
 
@@ -267,3 +269,32 @@ addition to main object throughout closure
 - [preludejs](https://github.com/loop-recur/PreludeJS)
 - [lambdajs](https://github.com/loop-recur/lambdajs)
 
+
+**eachArray** `_.eachArray(operation)(array)`
+
+Iterates over an array of elements, with increasing index, from index 0 to length-1. The operation is called for each element with two arguments `(element, index)`
+
+**eachArrayRight** `_.eachArrayRight(operation)(array)`
+
+Iterates over an array of elements, with decreasing index, from index length-1 to 0. The operation is called for each element with two arguments `(element, index)` *This is the reverse operation to eachArray*
+
+**eachObj** `_.eachObject(operation)(object)`
+
+Iterates through all key value pairs on an object. The operation is called for each pair with two arguments `(value, key)`
+
+**mapArray** `_.mapArray(operation)(array)`
+
+Maps each element in an array to an element in new array. New values are the return of operation. Operation is called each time with arguments `(element, index)`. By default the return array is frozen.
+
+**mapObject** `_.mapObject(operation)(object)`
+
+Maps each value in an object to the same key in a new object. New values are the return of operation. Operation is called each time with arguments `(value, key)`. By default the return object is frozen.
+
+
+**filterArray** `_.filterArray(operation)(array)`
+
+Adds each element to a new array on condition operation returns true. Operation is called each time with arguments `(element, index)`. By default the return array is frozen.
+
+**filterObject** `_.filterObject(operation)(object)`
+
+Adds each value to a new object on condition operation returns true. Operation is called each time with arguments `(value, key)`. By default the return object is frozen.

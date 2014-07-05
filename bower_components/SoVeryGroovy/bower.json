@@ -1,6 +1,6 @@
 {
   "name": "SoVeryGroovy",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "authors": [
     "Peter <peterhsaxton@gmail.com>"
   ],
@@ -13,6 +13,6 @@
     "spec"
   ],
   "dependencies": {
-    "cumin": "0.6.1"
+    "cumin": "0.8.0"
   }
 }
