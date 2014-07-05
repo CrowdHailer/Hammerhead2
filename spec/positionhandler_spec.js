@@ -1,3 +1,18 @@
+ddescribe('element manipulation', function(){
+  var $svg, $container;
+  Mx = SVGroovy.Matrix;
+  beforeEach(function(){
+    $(document.body).append('<div id="container"><svg id="svg" viewBox="0 0 2000 1000"></svg></div>');
+    $svg = $('#svg');
+    $container = $('#container');
+  });
+  it('it should displace', function(){
+    var XBtransform = _.compose(transformObject, Mx.asCss);
+    $svg.css(XBtransform());
+    console.log($svg.css('-webkit-transform'));
+  });
+});
+
 describe('responding to tower broadcasts', function(){
   var testSVG, tower, live;
   var Pt = SVGroovy.Point;
