@@ -17,9 +17,9 @@ describe('Vaild initialisation process', function(){
   var created;
   beforeEach(function(){
     spyOn(Hammerhead, 'regulateOverflow');
-    spyOn(Hammerhead, 'touchDispatch');
-    spyOn(Hammerhead, 'managePosition');
-    spyOn(Hammerhead, 'mousewheelDispatch');
+    // spyOn(Hammerhead, 'touchDispatch');
+    // spyOn(Hammerhead, 'managePosition');
+    // spyOn(Hammerhead, 'mousewheelDispatch');
     spyOn(window, '$').and.returnValue([element]);
     created = Hammerhead.create('name');
   });
@@ -28,9 +28,9 @@ describe('Vaild initialisation process', function(){
   });
   it('should initialise all components', function(){
     expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith();
-    expect(Hammerhead.touchDispatch).toHaveBeenCalledWith();
-    expect(Hammerhead.managePosition).toHaveBeenCalledWith();
-    expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith();
+    // expect(Hammerhead.touchDispatch).toHaveBeenCalledWith();
+    // expect(Hammerhead.managePosition).toHaveBeenCalledWith();
+    // expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith();
   });
   it('should make available the element', function(){
     expect(created.$element[0]).toBe(element);

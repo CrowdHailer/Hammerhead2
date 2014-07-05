@@ -25,7 +25,10 @@
 
   parent.regulateOverflow = function(){
     var updateOverflow = createOverflowUpdater.call(this);
-    bean.on(window, 'resize', updateOverflow);
     updateOverflow();
+    bean.on(window, 'resize', updateOverflow);
+    return function(){
+      bean.off(window, 'resize', updateOverflow);
+    };
   };
 }(Hammerhead));

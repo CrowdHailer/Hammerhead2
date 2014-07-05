@@ -27,5 +27,6 @@ describe('managing overflow padding of active elements', function(){
     expect($('#inner').width()).toEqual(600);
     expect($('#inner').css('margin')).toEqual('-50px -150px');
     //requires separating after hammerhead teardown
+    //throttle neads leading edge
   });
 });

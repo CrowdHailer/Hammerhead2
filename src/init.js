@@ -34,11 +34,11 @@
       getConfig: _.peruse(buildConfig(options))
     });
 
-    parent.regulateOverflow.call(instance);
-    parent.touchDispatch.call(instance);
-    parent.managePosition.call(instance);
-    parent.mousewheelDispatch.call(instance);
-
+    instance.clear = parent.regulateOverflow.call(instance);
+    // parent.touchDispatch.call(instance);
+    // parent.managePosition.call(instance);
+    // parent.mousewheelDispatch.call(instance);
+    
     return instance;
   }
   parent.create = init;
