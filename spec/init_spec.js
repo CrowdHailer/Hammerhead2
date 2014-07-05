@@ -1,12 +1,26 @@
+ddescribe('Failing initialisation process', function(){
+  beforeEach(function(){
+    spyOn(window, '$').and.returnValue([]);
+    spyOn(console, 'warn');
+    created = Hammerhead.create('incorrect');
+  });
+  it('should warn the console if no SVG element found', function(){
+    expect(console.warn).toHaveBeenCalledWith("SVG element 'incorrect' not found")
+  });
+  it('should return false if no SVG element found', function(){
+    expect(created).toBe(false);
+  });
+});
+
 describe('initialisation process', function(){
   var element = {};
   var created;
-  beforeEach(function(){
-    spyOn(Hammerhead, 'regulateOverflow');
-    spyOn(Hammerhead, 'touchDispatch');
-    spyOn(Hammerhead, 'managePosition');
-    spyOn(Hammerhead, 'mousewheelDispatch');
-  });
+  // beforeEach(function(){
+  //   spyOn(Hammerhead, 'regulateOverflow');
+  //   spyOn(Hammerhead, 'touchDispatch');
+  //   spyOn(Hammerhead, 'managePosition');
+  //   spyOn(Hammerhead, 'mousewheelDispatch');
+  // });
   describe('invalid setup', function(){
     beforeEach(function(){
       spyOn(window, '$').andReturn([]);
