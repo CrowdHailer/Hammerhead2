@@ -36,7 +36,7 @@
 
     instance.clear = parent.regulateOverflow.call(instance);
     // parent.touchDispatch.call(instance);
-    // parent.managePosition.call(instance);
+    parent.managePosition.call(instance);
     // parent.mousewheelDispatch.call(instance);
     
     return instance;
