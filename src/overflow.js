@@ -10,18 +10,9 @@
 
     var surplus = this.getConfig('overflowSurplus');
     var factor = 2 * surplus + 1;
-    var $parent = this.$element.parent();
-
-    // _.debounce(this.getConfig('resizeDelay'))(function(){
-    //   var height = $parent.height();
-    //   var width = $parent.width();
-    //   this.$element
-    //     .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
-    //     .width(width * factor)
-    //     .height(height * factor);
-    // }).bind(this);
-
     var $element = this.$element;
+    var $parent = $element.parent();
+
     return function(){
       var height = $parent.height();
       var width = $parent.width();
@@ -33,9 +24,10 @@
   }
 
   parent.regulateOverflow = function(){
-    console.log(this)
     var updateOverflow = createOverflowUpdater.call(this);
-    
+    bean.on(window, 'resize', function(){
+      console.log('hello from bean');
+    });
     updateOverflow();
     // tower.subscribe('windowResize')(updateOverflow);
   };

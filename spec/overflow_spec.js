@@ -21,10 +21,11 @@ describe('managing overflow padding of active elements', function(){
     });
     expect($('#inner').width()).toEqual(400);
     expect($('#inner').height()).toEqual(200);
+    $('#outer').width(300).height(100);
+    bean.fire(window, 'resize');
   });
   
   xit('should update overflow on tower announcement', function(){
-    $('#outer').width(300).height(100);
     Belfry.getTower().publish('windowResize')();
     expect($('#inner').width()).toEqual(600);
   });
