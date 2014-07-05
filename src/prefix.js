@@ -102,12 +102,6 @@ SVGroovy.Matrix.forMagnification = function(scale){
 
 // check svg owner
 
-function checkSVGTarget(svg){
-  return function(target){
-    return (target.ownerSVGElement || target) === svg;
-  };
-}
-
 var hammertime = Hammer(document);
 
 var Hammerhead = {};

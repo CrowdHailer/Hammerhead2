@@ -12,6 +12,12 @@
     resizeDelay: 200
   });
 
+  function checkSVGTarget(svg){
+    return function(target){
+      return (target.ownerSVGElement || target) === svg;
+    };
+  }
+
   function init(svgId, options){
     var $element = $('svg#' + svgId);
     var element = $element[0];

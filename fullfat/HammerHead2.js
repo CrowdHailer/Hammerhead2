@@ -759,12 +759,6 @@ SVGroovy.Matrix.forMagnification = function(scale){
 
 // check svg owner
 
-function checkSVGTarget(svg){
-  return function(target){
-    return (target.ownerSVGElement || target) === svg;
-  };
-}
-
 var hammertime = Hammer(document);
 
 var Hammerhead = {};
@@ -1084,6 +1078,12 @@ var Hammerhead = {};
     resizeDelay: 200
   });
 
+  function checkSVGTarget(svg){
+    return function(target){
+      return (target.ownerSVGElement || target) === svg;
+    };
+  }
+
   function init(svgId, options){
     var $element = $('svg#' + svgId);
     var element = $element[0];
@@ -1099,10 +1099,6 @@ var Hammerhead = {};
       isComponent: checkSVGTarget(element),
       getConfig: _.peruse(buildConfig(options))
     });
-    // instance.$element = $element;
-    // instance.element = element;
-    // instance.isComponent = checkSVGTarget(element);
-    // instance.getConfig = _.peruse(buildConfig(options));
 
     parent.regulateOverflow.call(instance);
     parent.touchDispatch.call(instance);
