@@ -25,6 +25,7 @@ describe('element manipulation', function(){
       expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 2, 3)');
       done();
     }, 20);
+    expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
   });
 
   it('should inflate', function(done){
@@ -33,6 +34,7 @@ describe('element manipulation', function(){
       expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
       done();
     }, 20);
+    expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
   });
 
   it('should translate', function(done){
