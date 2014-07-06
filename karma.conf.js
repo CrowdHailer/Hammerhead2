@@ -24,7 +24,7 @@ module.exports = function(config) {
       'spec/viewbox_spec.js',
       'spec/overflow_spec.js',
       // 'spec/agile_spec.js',
-      // 'spec/touch_spec.js',
+      'spec/touch_spec.js',
       'spec/positionhandler_spec.js',
       // 'spec/mousewheel_spec.js',
     ],

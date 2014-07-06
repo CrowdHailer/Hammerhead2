@@ -17,7 +17,7 @@ describe('Vaild initialisation process', function(){
   var created;
   beforeEach(function(){
     spyOn(Hammerhead, 'regulateOverflow');
-    // spyOn(Hammerhead, 'touchDispatch');
+    spyOn(Hammerhead, 'dispatchTouch');
     spyOn(Hammerhead, 'managePosition');
     // spyOn(Hammerhead, 'mousewheelDispatch');
     spyOn(window, '$').and.returnValue([element]);
@@ -28,7 +28,7 @@ describe('Vaild initialisation process', function(){
   });
   it('should initialise all components', function(){
     expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith();
-    // expect(Hammerhead.touchDispatch).toHaveBeenCalledWith();
+    expect(Hammerhead.dispatchTouch).toHaveBeenCalledWith();
     expect(Hammerhead.managePosition).toHaveBeenCalledWith();
     // expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith();
   });

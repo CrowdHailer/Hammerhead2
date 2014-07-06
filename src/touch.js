@@ -1,4 +1,9 @@
 (function(parent){
+  'use strict';
+
+  parent.dispatchTouch = function(){
+    console.log('boom');
+  };
   var tower = Belfry.getTower();
 
   var alertStart = tower.publish('start');

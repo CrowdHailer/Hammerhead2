@@ -1,4 +1,4 @@
-describe('dispatch touch notifications', function(){
+xdescribe('dispatch touch notifications', function(){
   // console.log(hammertime) -very busy all elements not evenHandlers array;
   var testSVG, testPath, preventDefault, defaultGesture, dummy, tower, emitter;
   beforeEach(function(){
