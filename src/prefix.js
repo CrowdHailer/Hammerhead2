@@ -66,19 +66,6 @@ function missingCTM($element){
 
 // cumin fills
 
-_.debounce = function(wait){
-  return function(func){
-    var timeout, args;
-    return function(){
-      var context = this;
-      args = arguments;
-      clearTimeout(timeout);
-      timeout = setTimeout(function(){
-        func.apply(context, args);
-      }, wait);
-    };
-  };
-};
 
 _.peruse = function(obj){
   return function(key){
@@ -90,14 +77,6 @@ _.peruse = function(obj){
 
 SVGroovy.Matrix.asCss = function(matrix){
   return interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(matrix || SVGroovy.Matrix());
-};
-
-SVGroovy.Matrix.forTranslation = function(point){
-  return SVGroovy.Matrix.translating(point.x, point.y);
-};
-
-SVGroovy.Matrix.forMagnification = function(scale){
-  return SVGroovy.Matrix.scaling(scale);
 };
 
 // check svg owner
