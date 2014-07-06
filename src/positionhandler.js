@@ -5,6 +5,7 @@
 
   var XBtransform = _.compose(transformObject, Mx.asCss);
   //cumin compose map map
+  // limit zoom
 
   parent.managePosition = function(){
     var $element = this.$element;
@@ -53,7 +54,6 @@
         $element.css(XBtransform(Mx()));
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
       });
-      //end animation as separate public function
     });
 
     bean.on(element, 'magnify', function(scale){
