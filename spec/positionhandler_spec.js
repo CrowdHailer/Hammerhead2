@@ -15,7 +15,7 @@ describe('element manipulation', function(){
       })
     });
   });
-  it('it should displace', function(){
+  iit('it should displace', function(done){
     Hammerhead.managePosition.call({
       $element: $svg,
       element: $svg[0],
@@ -27,12 +27,16 @@ describe('element manipulation', function(){
     var XBtransform = _.compose(transformObject, Mx.asCss);
     $svg.css(XBtransform());
     bean.fire($svg[0], 'displace', Pt(2, 3));
-    console.log($svg.css('-webkit-transform'));
-    bean.fire($svg[0], 'inflate', 3);
-    console.log($svg.css('-webkit-transform'));
-    bean.fire($svg[0], 'translate', Pt(2, 3));
-    console.log($svg.css('-webkit-transform'));
-    console.log($svg.attr('viewBox'));
+    expect($svg.css('-webkit-transform')).toEqual(3);
+    setTimeout(function(){
+      console.log($svg.css('-webkit-transform'));
+      done();
+    }, 25);
+    // bean.fire($svg[0], 'inflate', 3);
+    // console.log($svg.css('-webkit-transform'));
+    // bean.fire($svg[0], 'translate', Pt(2, 3));
+    // console.log($svg.css('-webkit-transform'));
+    // console.log($svg.attr('viewBox'));
     // setTimeout(function(){
     //   done();
     // }, 10);

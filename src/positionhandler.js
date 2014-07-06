@@ -19,9 +19,20 @@
       minScale,
       currentMatrix;
 
+    function render(){
+      $element.css(XBtransform(currentMatrix));
+      animationLoop = false;
+    }
+
+    function beginAnimation(){
+      animationLoop = requestAnimationFrame( render );
+    }
+
     bean.on(element, 'displace', function(point){
       currentMatrix = Mx.toTranslate(point);
-      //start animation if not running
+      if (!animationLoop) {
+        animationLoop = requestAnimationFrame( render );
+      }
     });
 
     bean.on(element, 'inflate', function(scaleFactor){
@@ -84,14 +95,7 @@
       });
     };
 
-    function render(){
-      $element.css(XBtransform(currentMatrix));
-      animationLoop = requestAnimationFrame( render );
-    }
-
-    function beginAnimation(){
-      animationLoop = requestAnimationFrame( render );
-    }
+    
 
     $element.css(XBtransform());
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
