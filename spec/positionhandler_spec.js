@@ -1,37 +1,30 @@
 describe('element manipulation', function(){
+  'use strict';
+
   var $svg, $container;
-  Mx = SVGroovy.Matrix;
-  Pt = SVGroovy.Point;
+  var Pt = SVGroovy.Point;
   beforeEach(function(){
     $(document.body).append('<div id="container"><svg id="svg" viewBox="0 0 2000 1000"></svg></div>');
     $svg = $('#svg');
     $container = $('#container');
     $container.width(200).height(100);
-    Hammerhead.regulateOverflow.call({
-      $element: $svg,
-      getConfig: _.peruse({
-        overflowSurplus: 0.5,
-        resizeDelay: 200
-      })
-    });
   });
-  iit('it should displace', function(done){
+
+  afterEach(function(){
+    $container.remove();
+  });
+
+  it('it should displace', function(done){
     Hammerhead.managePosition.call({
       $element: $svg,
       element: $svg[0],
-      getConfig: _.peruse({
-        overflowSurplus: 0.5,
-        resizeDelay: 200
-      })
+      getConfig: _.peruse({})
     });
-    var XBtransform = _.compose(transformObject, Mx.asCss);
-    $svg.css(XBtransform());
     bean.fire($svg[0], 'displace', Pt(2, 3));
-    expect($svg.css('-webkit-transform')).toEqual(3);
     setTimeout(function(){
-      console.log($svg.css('-webkit-transform'));
+      expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 2, 3)');
       done();
-    }, 25);
+    }, 20);
     // bean.fire($svg[0], 'inflate', 3);
     // console.log($svg.css('-webkit-transform'));
     // bean.fire($svg[0], 'translate', Pt(2, 3));
