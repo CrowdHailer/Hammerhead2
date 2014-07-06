@@ -36,7 +36,10 @@
     });
 
     bean.on(element, 'inflate', function(scaleFactor){
-      $element.css(XBtransform(Mx.toScale(scaleFactor)));
+      currentMatrix = Mx.toScale(scaleFactor);
+      if (!animationLoop) {
+        animationLoop = requestAnimationFrame( render );
+      }
     });
     bean.on(element, 'translate', function(delta){
       $element.css(XBtransform(Mx()));
@@ -99,7 +102,7 @@
 
     $element.css(XBtransform());
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-    beginAnimation();
+    
 
   };
 }(Hammerhead));

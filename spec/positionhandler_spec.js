@@ -34,5 +34,18 @@ describe('element manipulation', function(){
     //   done();
     // }, 10);
   });
+
+  it('should inflate', function(done){
+    Hammerhead.managePosition.call({
+      $element: $svg,
+      element: $svg[0],
+      getConfig: _.peruse({})
+    });
+    bean.fire($svg[0], 'inflate', 2);
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+      done();
+    }, 20);
+  });
 });
 
