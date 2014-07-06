@@ -25,14 +25,6 @@ describe('element manipulation', function(){
       expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 2, 3)');
       done();
     }, 20);
-    // bean.fire($svg[0], 'inflate', 3);
-    // console.log($svg.css('-webkit-transform'));
-    // bean.fire($svg[0], 'translate', Pt(2, 3));
-    // console.log($svg.css('-webkit-transform'));
-    // console.log($svg.attr('viewBox'));
-    // setTimeout(function(){
-    //   done();
-    // }, 10);
   });
 
   it('should inflate', function(done){
@@ -44,6 +36,19 @@ describe('element manipulation', function(){
     bean.fire($svg[0], 'inflate', 2);
     setTimeout(function(){
       expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+      done();
+    }, 20);
+  });
+
+  it('should translate', function(done){
+    Hammerhead.managePosition.call({
+      $element: $svg,
+      element: $svg[0],
+      getConfig: _.peruse({})
+    });
+    bean.fire($svg[0], 'translate', Pt(100, 0));
+    setTimeout(function(){
+      expect($svg.attr('viewBox')).toEqual('-3000 -500 4000 2000');
       done();
     }, 20);
   });
