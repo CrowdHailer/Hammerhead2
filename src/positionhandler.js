@@ -26,10 +26,6 @@
       animationLoop = false;
     }
 
-    function beginAnimation(){
-      animationLoop = requestAnimationFrame( render );
-    }
-
     bean.on(element, 'displace', function(point){
       currentMatrix = Mx.toTranslate(point);
       if (!animationLoop) {
