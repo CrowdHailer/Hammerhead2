@@ -4,6 +4,7 @@
     VB = parent.ViewBox;
 
   var XBtransform = _.compose(transformObject, Mx.asCss);
+  //cumin compose map map
 
   parent.managePosition = function(){
     var $element = this.$element;
@@ -41,6 +42,7 @@
         animationLoop = requestAnimationFrame( render );
       }
     });
+
     bean.on(element, 'translate', function(delta){
       $element.css(XBtransform(Mx()));
       properFix = 1;
