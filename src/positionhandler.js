@@ -50,14 +50,18 @@
       var scaleTo = Pt.matrixTransform(inverseCTM);
       var svgTrans = scaleTo(fixedTranslation);
       viewBox = VB.translate(svgTrans)(viewBox);
-      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+      requestAnimationFrame( function () {
+        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+      });
       //end animation as separate public function
     });
 
     bean.on(element, 'magnify', function(scale){
       $element.css(XBtransform(Mx()));
       viewBox = VB.zoom(scale)()(viewBox);
-      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+      requestAnimationFrame( function(){
+        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+      });
     });
 
     

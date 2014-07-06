@@ -43,6 +43,7 @@ describe('element manipulation', function(){
       expect($svg.attr('viewBox')).toEqual('-3000 -500 4000 2000');
       done();
     }, 20);
+    expect($svg.attr('viewBox')).toEqual('-1000 -500 4000 2000');
   });
 
   it('should magnify', function(done){
@@ -51,6 +52,7 @@ describe('element manipulation', function(){
       expect($svg.attr('viewBox')).toEqual('0 0 2000 1000');
       done();
     }, 20);
+    expect($svg.attr('viewBox')).toEqual('-1000 -500 4000 2000');
   });
 });
 
