@@ -1,8 +1,43 @@
 (function(parent){
   'use strict';
 
+  var Pt = SVGroovy.Point;
+  
   parent.dispatchTouch = function(){
-    console.log('boom');
+    // TDD with cumin method, gesture handler and deactivate return.
+    var element = this.element,
+      isComponent = this.isComponent,
+      live = false,
+      dragging = true;
+
+    hammertime.on('touch', function(event){
+      live = isComponent(event.target);
+    });
+
+    hammertime.on('drag', function(event){
+      if (live && dragging) {
+        bean.fire(element, 'displace', Pt(event.gesture));
+      }
+    });
+
+    hammertime.on('pinch', function(event){
+      if (live) {
+        dragging = false;
+        bean.fire(element, 'inflate', event.gesture.scale);
+      }
+    });
+
+    hammertime.on('release', function(){
+      if (live) {
+        if (dragging) {
+          bean.fire(element, 'translate', Pt(event.gesture));
+        } else{
+          bean.fire(element, 'magnify', event.gesture.scale);
+        }
+        live = false;
+        dragging = true;
+      }
+    });
   };
   var tower = Belfry.getTower();
 
@@ -78,7 +113,7 @@
       hammertime.off('touch drag pinch release', gestureHandler);
     };
 
-    instance.activate();
+    // instance.activate();
     return instance;
 
   };
