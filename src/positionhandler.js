@@ -41,7 +41,6 @@
     });
 
     bean.on(element, 'translate', function(delta){
-      $element.css(XBtransform(Mx()));
       properFix = 1;
       var fixedTranslation = Pt.scalar(properFix)(delta);
       var inverseCTM = $element[0].getScreenCTM().inverse();
@@ -51,15 +50,16 @@
       var svgTrans = scaleTo(fixedTranslation);
       viewBox = VB.translate(svgTrans)(viewBox);
       requestAnimationFrame( function () {
+        $element.css(XBtransform(Mx()));
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
       });
       //end animation as separate public function
     });
 
     bean.on(element, 'magnify', function(scale){
-      $element.css(XBtransform(Mx()));
       viewBox = VB.zoom(scale)()(viewBox);
       requestAnimationFrame( function(){
+        $element.css(XBtransform(Mx()));
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
       });
     });

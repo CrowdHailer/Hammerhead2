@@ -54,5 +54,33 @@ describe('element manipulation', function(){
     }, 20);
     expect($svg.attr('viewBox')).toEqual('-1000 -500 4000 2000');
   });
+
+  it('should clear css transform when permanently translated', function(done){
+    bean.fire($svg[0], 'inflate', 2);
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+      bean.fire($svg[0], 'translate', Pt(100, 0));
+      setTimeout(function(){
+        expect($svg.attr('viewBox')).toEqual('-3000 -500 4000 2000');
+        expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
+        done();
+      }, 20);
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+    }, 20);
+  });
+
+  it('should clear css transform when permanently magnified', function(done){
+    bean.fire($svg[0], 'inflate', 2);
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+      bean.fire($svg[0], 'magnify', 2);
+      setTimeout(function(){
+        expect($svg.attr('viewBox')).toEqual('0 0 2000 1000');
+        expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
+        done();
+      }, 20);
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+    }, 20);
+  });
 });
 
