@@ -42,5 +42,13 @@ describe('element manipulation', function(){
       done();
     }, 20);
   });
+
+  it('should magnify', function(done){
+    bean.fire($svg[0], 'magnify', 2);
+    setTimeout(function(){
+      expect($svg.attr('viewBox')).toEqual('0 0 2000 1000');
+      done();
+    }, 20);
+  });
 });
 

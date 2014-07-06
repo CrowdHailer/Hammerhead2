@@ -58,6 +58,12 @@
       //end animation as separate public function
     });
 
+    bean.on(element, 'magnify', function(scale){
+      $element.css(XBtransform(Mx()));
+      viewBox = VB.zoom(scale)()(viewBox);
+      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+    });
+
     
 
     

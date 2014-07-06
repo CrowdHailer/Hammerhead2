@@ -172,33 +172,37 @@ var Hammerhead = {};
   parent.ViewBox = create;
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower();
+  'use strict';
+  // var tower = Belfry.getTower();
 
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
 
-  $(window).on('resize', tower.publish('windowResize'));
+  // $(window).on('resize', tower.publish('windowResize'));
 
   function createOverflowUpdater(){
 
     var surplus = this.getConfig('overflowSurplus');
     var factor = 2 * surplus + 1;
-    var $parent = this.$element.parent();
+    var $element = this.$element;
+    var $parent = $element.parent();
 
-    return _.debounce(this.getConfig('resizeDelay'))(function(){
+    return function(){
       var height = $parent.height();
       var width = $parent.width();
-      this.$element
+      $element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    }).bind(this);
+    };
   }
 
   parent.regulateOverflow = function(){
     var updateOverflow = createOverflowUpdater.call(this);
-    
     updateOverflow();
-    tower.subscribe('windowResize')(updateOverflow);
+    bean.on(window, 'resize', updateOverflow);
+    return function(){
+      bean.off(window, 'resize', updateOverflow);
+    };
   };
 }(Hammerhead));
 (function(parent){
@@ -282,20 +286,16 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower(),
-    Pt = SVGroovy.Point,
+  var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox;
 
-  var listenStart = tower.subscribe('start');
-  var listenDrag = tower.subscribe('drag');
-  var listenPinch = tower.subscribe('pinch');
-  var listenEnd = tower.subscribe('end');
-
   var XBtransform = _.compose(transformObject, Mx.asCss);
+  //cumin compose map map
 
   parent.managePosition = function(){
     var $element = this.$element;
+    var element = this.element;
     var properFix = missingCTM($element), // windows FIX
       viewBoxZoom = 1;
 
@@ -307,24 +307,66 @@ var Hammerhead = {};
       minScale,
       currentMatrix;
 
-    listenStart(function(){
+    function render(){
+      console.log('render');
+      $element.css(XBtransform(currentMatrix));
+      animationLoop = false;
+    }
+
+    function beginAnimation(){
+      animationLoop = requestAnimationFrame( render );
+    }
+
+    bean.on(element, 'displace', function(point){
+      currentMatrix = Mx.toTranslate(point);
+      if (!animationLoop) {
+        animationLoop = requestAnimationFrame( render );
+      }
+    });
+
+    bean.on(element, 'inflate', function(scaleFactor){
+      currentMatrix = Mx.toScale(scaleFactor);
+      if (!animationLoop) {
+        animationLoop = requestAnimationFrame( render );
+      }
+    });
+
+    bean.on(element, 'translate', function(delta){
+      $element.css(XBtransform(Mx()));
+      properFix = 1;
+      var fixedTranslation = Pt.scalar(properFix)(delta);
+      var inverseCTM = $element[0].getScreenCTM().inverse();
+      inverseCTM.e = 0;
+      inverseCTM.f = 0;
+      var scaleTo = Pt.matrixTransform(inverseCTM);
+      var svgTrans = scaleTo(fixedTranslation);
+      viewBox = VB.translate(svgTrans)(viewBox);
+      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+      //end animation as separate public function
+    });
+
+    
+
+    
+
+    function startofanim(){
       beginAnimation();
       maxScale = this.getConfig('maxZoom')/viewBoxZoom;
       minScale = this.getConfig('minZoom')/viewBoxZoom;
       thisScale = 1;
-    }.bind(this));
+    }
 
-    listenDrag(function(data){
+    function dragaction(data){
       currentMatrix = Mx.forTranslation(data.delta);
-    });
+    };
 
-    listenPinch(function(data){
+    function pinchaction(data){
       var scale = Math.max(Math.min(data.scale, maxScale), minScale);
       currentMatrix = Mx.forMagnification(scale);
       thisScale = scale;
-    });
+    };
 
-    listenEnd(function(data){
+    function endofanimation(data){
       if (thisScale === 1) {
         var fixedTranslation = Pt.scalar(properFix)(data.delta);
         var inverseCTM = $element[0].getScreenCTM().inverse();
@@ -344,25 +386,14 @@ var Hammerhead = {};
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
         $element.css(XBtransform());
       });
-    });
+    };
 
-    function render(){
-      $element.css(XBtransform(currentMatrix));
-      animationLoop = requestAnimationFrame( render );
-    }
-
-    function beginAnimation(){
-      animationLoop = requestAnimationFrame( render );
-    }
+    
 
     $element.css(XBtransform());
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+    
 
-    tower.subscribe('home')(function(){
-      $element.css(XBtransform());
-      viewBox = HOME;
-      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-    });
   };
 }(Hammerhead));
 (function(parent){
@@ -443,11 +474,11 @@ var Hammerhead = {};
       getConfig: _.peruse(buildConfig(options))
     });
 
-    parent.regulateOverflow.call(instance);
-    parent.touchDispatch.call(instance);
+    instance.clear = parent.regulateOverflow.call(instance);
+    // parent.touchDispatch.call(instance);
     parent.managePosition.call(instance);
-    parent.mousewheelDispatch.call(instance);
-
+    // parent.mousewheelDispatch.call(instance);
+    
     return instance;
   }
   parent.create = init;
