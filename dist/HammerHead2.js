@@ -286,20 +286,22 @@ var Hammerhead = {};
   };
 }(Hammerhead));
 (function(parent){
+  'use strict';
+
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
-    VB = parent.ViewBox;
-
-  var XBtransform = _.compose(transformObject, Mx.asCss);
+    VB = parent.ViewBox,
+    xBtransform = _.compose(transformObject, Mx.asCss);
   //cumin compose map map
+  // limit zoom
 
   parent.managePosition = function(){
-    var $element = this.$element;
-    var element = this.element;
-    var properFix = missingCTM($element), // windows FIX
-      viewBoxZoom = 1;
-
-    var HOME = viewBox = VB($element.attr('viewBox'));
+    var $element = this.$element,
+      element = this.element,
+      properFix = missingCTM($element), // windows FIX
+      viewBoxZoom = 1,
+      viewBox = VB($element.attr('viewBox')),
+      HOME = viewBox;
 
     var animationLoop,
       thisScale,
@@ -307,32 +309,34 @@ var Hammerhead = {};
       minScale,
       currentMatrix;
 
-    function render(){
-      console.log('render');
-      $element.css(XBtransform(currentMatrix));
-      animationLoop = false;
+    function renderCSS(){
+      if (!animationLoop) {
+        animationLoop = requestAnimationFrame(function(){
+          $element.css(xBtransform(currentMatrix));
+          animationLoop = false;
+        });
+      }
     }
 
-    function beginAnimation(){
-      animationLoop = requestAnimationFrame( render );
+    function renderViewBox(){
+      requestAnimationFrame( function(){
+        cancelAnimationFrame(animationLoop);
+        $element.css(xBtransform());
+        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+      });
     }
 
     bean.on(element, 'displace', function(point){
       currentMatrix = Mx.toTranslate(point);
-      if (!animationLoop) {
-        animationLoop = requestAnimationFrame( render );
-      }
+      renderCSS();
     });
 
     bean.on(element, 'inflate', function(scaleFactor){
       currentMatrix = Mx.toScale(scaleFactor);
-      if (!animationLoop) {
-        animationLoop = requestAnimationFrame( render );
-      }
+      renderCSS();
     });
 
     bean.on(element, 'translate', function(delta){
-      $element.css(XBtransform(Mx()));
       properFix = 1;
       var fixedTranslation = Pt.scalar(properFix)(delta);
       var inverseCTM = $element[0].getScreenCTM().inverse();
@@ -341,8 +345,12 @@ var Hammerhead = {};
       var scaleTo = Pt.matrixTransform(inverseCTM);
       var svgTrans = scaleTo(fixedTranslation);
       viewBox = VB.translate(svgTrans)(viewBox);
-      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-      //end animation as separate public function
+      renderViewBox();
+    });
+
+    bean.on(element, 'magnify', function(scale){
+      viewBox = VB.zoom(scale)()(viewBox);
+      renderViewBox();
     });
 
     
@@ -384,13 +392,13 @@ var Hammerhead = {};
       currentMatrix = Mx();
       requestAnimationFrame(function(){
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-        $element.css(XBtransform());
+        $element.css(xBtransform());
       });
     };
 
     
 
-    $element.css(XBtransform());
+    $element.css(xBtransform());
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
     
 

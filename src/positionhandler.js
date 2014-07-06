@@ -1,19 +1,21 @@
 (function(parent){
+  'use strict';
+
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
-    VB = parent.ViewBox;
-
-  var XBtransform = _.compose(transformObject, Mx.asCss);
+    VB = parent.ViewBox,
+    xBtransform = _.compose(transformObject, Mx.asCss);
   //cumin compose map map
   // limit zoom
+  // round pixels
 
   parent.managePosition = function(){
-    var $element = this.$element;
-    var element = this.element;
-    var properFix = missingCTM($element), // windows FIX
-      viewBoxZoom = 1;
-
-    var HOME = viewBox = VB($element.attr('viewBox'));
+    var $element = this.$element,
+      element = this.element,
+      properFix = missingCTM($element), // windows FIX
+      viewBoxZoom = 1,
+      viewBox = VB($element.attr('viewBox')),
+      HOME = viewBox;
 
     var animationLoop,
       thisScale,
@@ -21,24 +23,31 @@
       minScale,
       currentMatrix;
 
-    function render(){
-      console.log('render');
-      $element.css(XBtransform(currentMatrix));
-      animationLoop = false;
+    function renderCSS(){
+      if (!animationLoop) {
+        animationLoop = requestAnimationFrame(function(){
+          $element.css(xBtransform(currentMatrix));
+          animationLoop = false;
+        });
+      }
+    }
+
+    function renderViewBox(){
+      requestAnimationFrame( function(){
+        cancelAnimationFrame(animationLoop);
+        $element.css(xBtransform());
+        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
+      });
     }
 
     bean.on(element, 'displace', function(point){
       currentMatrix = Mx.toTranslate(point);
-      if (!animationLoop) {
-        animationLoop = requestAnimationFrame( render );
-      }
+      renderCSS();
     });
 
     bean.on(element, 'inflate', function(scaleFactor){
       currentMatrix = Mx.toScale(scaleFactor);
-      if (!animationLoop) {
-        animationLoop = requestAnimationFrame( render );
-      }
+      renderCSS();
     });
 
     bean.on(element, 'translate', function(delta){
@@ -50,18 +59,12 @@
       var scaleTo = Pt.matrixTransform(inverseCTM);
       var svgTrans = scaleTo(fixedTranslation);
       viewBox = VB.translate(svgTrans)(viewBox);
-      requestAnimationFrame( function () {
-        $element.css(XBtransform(Mx()));
-        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-      });
+      renderViewBox();
     });
 
     bean.on(element, 'magnify', function(scale){
       viewBox = VB.zoom(scale)()(viewBox);
-      requestAnimationFrame( function(){
-        $element.css(XBtransform(Mx()));
-        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-      });
+      renderViewBox();
     });
 
     
@@ -103,13 +106,13 @@
       currentMatrix = Mx();
       requestAnimationFrame(function(){
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-        $element.css(XBtransform());
+        $element.css(xBtransform());
       });
     };
 
     
 
-    $element.css(XBtransform());
+    $element.css(xBtransform());
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
     
 
