@@ -8,6 +8,11 @@ describe('element manipulation', function(){
     $svg = $('#svg');
     $container = $('#container');
     $container.width(200).height(100);
+    Hammerhead.managePosition.call({
+      $element: $svg,
+      element: $svg[0],
+      getConfig: _.peruse({})
+    });
   });
 
   afterEach(function(){
@@ -15,11 +20,6 @@ describe('element manipulation', function(){
   });
 
   it('it should displace', function(done){
-    Hammerhead.managePosition.call({
-      $element: $svg,
-      element: $svg[0],
-      getConfig: _.peruse({})
-    });
     bean.fire($svg[0], 'displace', Pt(2, 3));
     setTimeout(function(){
       expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 2, 3)');
@@ -28,11 +28,6 @@ describe('element manipulation', function(){
   });
 
   it('should inflate', function(done){
-    Hammerhead.managePosition.call({
-      $element: $svg,
-      element: $svg[0],
-      getConfig: _.peruse({})
-    });
     bean.fire($svg[0], 'inflate', 2);
     setTimeout(function(){
       expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
@@ -41,11 +36,6 @@ describe('element manipulation', function(){
   });
 
   it('should translate', function(done){
-    Hammerhead.managePosition.call({
-      $element: $svg,
-      element: $svg[0],
-      getConfig: _.peruse({})
-    });
     bean.fire($svg[0], 'translate', Pt(100, 0));
     setTimeout(function(){
       expect($svg.attr('viewBox')).toEqual('-3000 -500 4000 2000');

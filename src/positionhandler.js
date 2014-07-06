@@ -21,6 +21,7 @@
       currentMatrix;
 
     function render(){
+      console.log('render');
       $element.css(XBtransform(currentMatrix));
       animationLoop = false;
     }
