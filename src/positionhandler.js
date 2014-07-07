@@ -1,13 +1,13 @@
 (function(parent){
   'use strict';
+  //cumin compose map map
+  // limit zoom
+  // round pixels
 
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
     xBtransform = _.compose(transformObject, Mx.asCss);
-  //cumin compose map map
-  // limit zoom
-  // round pixels
 
   parent.managePosition = function(){
     var $element = this.$element,
