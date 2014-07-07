@@ -1,42 +1,96 @@
-describe('responding to tower broadcasts', function(){
-  var testSVG, tower, live;
+describe('element manipulation', function(){
+  'use strict';
+
+  var $svg, $container, remove;
   var Pt = SVGroovy.Point;
   beforeEach(function(){
-    //setting up DOM
-    svgString = '<div id="overflow" width="500px" height="250px"><svg id="test" viewBox="0 0 2000 1000"></svg></div>';
-    document.body.innerHTML += svgString;
-    testSVG = $('#test');
-    testSVG.parent().width(500);
-    testSVG.parent().height(250);
-    live = Hammerhead.managePosition(testSVG);
+    $(document.body).append('<div id="container"><svg id="svg" viewBox="0 0 2000 1000"></svg></div>');
+    $svg = $('#svg');
+    $container = $('#container');
+    $container.width(200).height(100);
+    remove = Hammerhead.managePosition.call({
+      $element: $svg,
+      element: $svg[0],
+      getConfig: _.peruse({})
+    });
+  });
 
-    // test apparatus
-    tower = Belfry.getTower();
-  });
   afterEach(function(){
-    testSVG.remove();
+    remove();
+    $container.remove();
   });
-  // complications with time from moving viewbox change to render loop 
-  // possible complications from width seaming to start as zero in some phantom examples
-  
-  xit('long example', function(){
-    expect(testSVG.attr('viewBox')).toEqual('0 0 2000 1000');
-    tower.publish('start')(testSVG[0]);
-    tower.publish('drag')({
-      element: testSVG[0],
-      delta: Pt(100, 200)
-    });
-    var start = _.now();
-    var rounds = 0;
-    while (_.now()-start < 1000){
-      rounds += 1;
-    }
-    expect(testSVG.attr('viewBox')).toEqual('0 0 2000 1000');
-    console.log(testSVG.css('transform'));
-    console.log(testSVG.css('-webkit-transform')); //possibly not working due to render loop;
-    tower.publish('end')({
-      element: testSVG[0]
-    });
-    expect(testSVG.attr('viewBox')).toEqual('-400 -800 2000 1000');
+
+  it('it should displace', function(done){
+    bean.fire($svg[0], 'displace', Pt(2, 3));
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 2, 3)');
+      done();
+    }, 20);
+    expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
+  });
+
+  it('should inflate', function(done){
+    bean.fire($svg[0], 'inflate', 2);
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+      done();
+    }, 20);
+    expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
+  });
+
+  it('should translate', function(done){
+    bean.fire($svg[0], 'translate', Pt(100, 0));
+    setTimeout(function(){
+      expect($svg.attr('viewBox')).toEqual('-3000 -500 4000 2000');
+      done();
+    }, 20);
+    expect($svg.attr('viewBox')).toEqual('-1000 -500 4000 2000');
+  });
+
+  it('should magnify', function(done){
+    bean.fire($svg[0], 'magnify', 2);
+    setTimeout(function(){
+      expect($svg.attr('viewBox')).toEqual('0 0 2000 1000');
+      done();
+    }, 20);
+    expect($svg.attr('viewBox')).toEqual('-1000 -500 4000 2000');
+  });
+
+  it('should clear css transform when permanently translated', function(done){
+    bean.fire($svg[0], 'inflate', 2);
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+      bean.fire($svg[0], 'translate', Pt(100, 0));
+      setTimeout(function(){
+        expect($svg.attr('viewBox')).toEqual('-3000 -500 4000 2000');
+        expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
+        done();
+      }, 20);
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+    }, 20);
+  });
+
+  it('should clear css transform when permanently magnified', function(done){
+    bean.fire($svg[0], 'inflate', 2);
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+      bean.fire($svg[0], 'magnify', 2);
+      setTimeout(function(){
+        expect($svg.attr('viewBox')).toEqual('0 0 2000 1000');
+        expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
+        done();
+      }, 20);
+      expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+    }, 20);
+  });
+
+  it('it should remove all bean events', function(done){
+    remove();
+    bean.fire($svg[0], 'displace', Pt(2, 3));
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
+      done();
+    }, 20);
   });
 });
+

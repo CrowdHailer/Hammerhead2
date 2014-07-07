@@ -24,139 +24,136 @@ var isDefined = function(obj) {
 // functions return frozen objects
 
 // JavaScript all things? function(executable method invokable), collection, primitive, void(null undef)
-var _ = (function(){
+var _ = (function () {
+  'use strict';
 
   var FROZEN = true;
+  var BREAKER = {};
 
 // basic iterators
 
-  function eachArray(operation){
+  function eachArray(operation) {
   // iterates array left to right
   // assumes array type
-    return function(array){
+    return function (array) {
       for (var i = 0; i < array.length; i++) {
-        operation(array[i], i);
+        if (operation.call(this, array[i], i) === BREAKER) { return; }
       }
     };
   }
 
-  function eachArrayRight(operation){
+  function eachArrayRight(operation) {
   // iterates array right to left
   // assumes array type
-    return function(array){
+    return function (array) {
       for (var i = array.length - 1; i > -1; i--) {
-        operation(array[i], i);
+        if (operation.call(this, array[i], i) === BREAKER) { return; }
       }
     };
   }
 
-  function eachObject(operation){
+  function eachObject(operation) {
   // iterates through object key/value pairs
   // no order assumed
-    return function(object){
-      eachArray(function(key){
-        operation(object[key], key);
+    return function (object) {
+      var context = this;
+      eachArray(function (key) {
+        return operation.call(context, object[key], key);
       })(Object.keys(object));
     };
   }
 
-  function each(operation){
+  function each(operation) {
   // iterates through object/array/arguments
   // iterates left to right when given array/arguments
-    return function(collection){
+    return function (collection) {
       if (arguments.length > 1) {
         collection = argsToList(arguments);
       }
       if (isArray(collection)) {
-        eachArray(operation)(collection);
+        eachArray(operation).call(this, collection);
       } else {
-        eachObject(operation)(collection);
+        eachObject(operation).call(this, collection);
       }
     };
   }
 
 // Basic collection operations
 
-  function mapArray(operation){
-    return function(array){
+  function mapArray(operation) {
+    return function (array) {
       var results = [];
-      eachArray(function(element, index){
-        results.push(operation(element, index));
-      })(array);
-      return FROZEN? Object.freeze(results) : results;
+      eachArray(function (element, index) {
+        results.push(operation.call(this, element, index));
+      }).call(this, array);
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  function mapObject(operation){
-    return function(object){
+  function mapObject(operation) {
+    return function (object) {
       var results = {};
-      eachObject(function(value, key){
-        results[key] = operation(value, key);
-      })(object);
-      return FROZEN? Object.freeze(results) : results;
+      eachObject(function (value, key) {
+        results[key] = operation.call(this, value, key);
+      }).call(this, object);
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  function map(operation){
-    return function(collection){
+  function map(operation) {
+    return function (collection) {
       if (arguments.length > 1) {
         collection = argsToList(arguments);
       }
       if (isArray(collection)) {
-        return mapArray(operation)(collection);
+        return mapArray(operation).call(this, collection);
       } else {
-        return mapObject(operation)(collection);
+        return mapObject(operation).call(this, collection);
       }
     };
   }
 
-  function filterArray(operation){
-    return function(array){
+  function filterArray(operation) {
+    return function (array) {
       var results = [];
-      eachArray(function(element, index){
-        if (operation(element, index)) { results.push(element); }
-      })(array);
-      return FROZEN? Object.freeze(results) : results;
+      eachArray(function (element, index) {
+        if (operation.call(this, element, index)) { results.push(element); }
+      }).call(this, array);
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  var rejectArray = compose(filterArray, not);
-
-  function filterObject(operation){
-    return function(object){
+  function filterObject(operation) {
+    return function (object) {
       var results = {};
-      eachObject(function(value, key){
-        if (operation(value, key)) { results[key] = value;}
-      })(object);
-      return FROZEN? Object.freeze(results) : results;
+      eachObject(function (value, key) {
+        if (operation.call(this, value, key)) { results[key] = value; }
+      }).call(this, object);
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  var rejectObject = compose(filterObject, not);
-
-  function filter(operation){
-    return function(collection){
+  function filter(operation) {
+    return function (collection) {
       if (arguments.length > 1) {
         collection = argsToList(arguments);
       }
       if (isArray(collection)) {
-        return filterArray(operation)(collection);
+        return filterArray(operation).call(this, collection);
       } else {
-        return filterObject(operation)(collection);
+        return filterObject(operation).call(this, collection);
       }
     };
   }
 
-  var reject = compose(filter, not);
-
-  function reduce(initial){
+  function reduce(initial) {
     // The same code works here for arrays and objects so does not have varient.
-    return function(operation){
-      return function(){
+    return function (operation) {
+      return function () {
         var memo = initial;
-        each(function(item, location){
-          memo = isDefined(memo) ? operation(memo)(item, location) : item;
-        }).apply({}, arguments);
+        each(function (item, location) {
+          memo = isDefined(memo) ? operation.call(this, memo).call(this, item, location) : item;
+        }).apply(this, arguments);
         return memo;
       };
     };
@@ -164,195 +161,216 @@ var _ = (function(){
 
 // Higher collection operations
 
-  function all(operation){
+  function find(predicate) {
+    return function() {
+      var result;
+      each(function (item) {
+        if (predicate.call(this, item)) {
+          result = item;
+          return BREAKER;
+        }
+      }).apply(this, arguments);
+      return result;
+    };
+  }
+
+  function all(operation) {
     operation = operation || I;
-    return function(){
+    return function () {
       var memo = true;
-      each(function(item, location){
-        memo = memo && operation(item, location);
-      }).apply({}, arguments);
+      each(function (item, location) {
+        memo = operation.call(this, item, location);
+        return memo ? undefined : BREAKER;
+      }).apply(this, arguments);
       return memo;
     };
     // return location of first fail or length as location??
   }
 
-  function any(operation){
+  function any(operation) {
     operation = operation || I;
-    return function(){
+    return function () {
       var memo = false;
-      each(function(item, location){
-        memo = memo || operation(item, location);
-      }).apply({}, arguments);
+      each(function (item, location) {
+        memo = operation.call(this, item, location);
+        return memo ? BREAKER : undefined;
+      }).apply(this, arguments);
       return memo;
     };
     // return location of first success or length as location??
   }
 
-  function min(operation){
+  function min(operation) {
     operation = operation || I;
-    return function(){
+    return function () {
       var memo;
-      each(function(item){
-        memo = memo && (operation(memo) < operation(item)) ? memo : item;
-      }).apply({}, arguments);
+      each(function (item) {
+        memo = memo && (operation.call(this, memo) < operation.call(this, item)) ? memo : item;
+      }).apply(this, arguments);
       return memo;
     };
   }
 
-  function max(operation){
+  function max(operation) {
     operation = operation || I;
-    return function(){
+    return function () {
       var memo;
-      each(function(item){
-        memo = memo && (operation(memo) > operation(item)) ? memo : item;
-      }).apply({}, arguments);
+      each(function (item) {
+        memo = memo && (operation.call(this, memo) > operation.call(this, item)) ? memo : item;
+      }).apply(this, arguments);
       return memo;
     };
   }
 
 // Array
 
-  function cleave(n){
-    return function(array){
-      n = n < 0 ? array.length + n : n ;
+  function cleave(n) {
+    return function (array) {
+      n = n < 0 ? array.length + n : n;
       return [array.slice(0, n), array.slice(n)];
     };
   }
 
-  function cyclic(n){
+  function cyclic(n) {
     var results = [];
-    times(n)(function(){
+    times(n)(function () {
       results.push([]);
     });
-    return function(collection){
-      eachArray(function(element, index){
+    return function (collection) {
+      eachArray(function (element, index) {
         results[index % n].push(element);
       })(collection);
       return results;
     };
   }
 
-  function within(array){
+  function within(array) {
     if (arguments.length > 1) {
       array = argsToList(arguments);
     }
-    return function(item){
+    return function (item) {
       return array.indexOf(item) !== -1;
     };
   }
 
 // Object 
 
-  function extend(extra){
+  function extend(extra) {
     // adds extra key vales to second passed object
-    return function(object){
-      eachObject(function(value, key){
+    return function (object) {
+      eachObject(function (value, key) {
         object[key] = value;
       })(extra);
       return object;
     };
   }
 
-  function augment(object){
-    return function(extra){
-      eachObject(function(value, key){
+  function augment(object) {
+    return function (extra) {
+      eachObject(function (value, key) {
         object[key] = value;
       })(extra);
       return object;
     };
   }
 
-  function foundation(object){
+  function foundation(object) {
     // builds a new object from the properties of a foundation object and extention object.
-    return function(extra){
+    return function (extra) {
       var results = {};
-      each(eachObject(function(value, key){
+      each(eachObject(function (value, key) {
         results[key] = value;
       }))(object || {}, extra || {});
-      return FROZEN? Object.freeze(results) : results;
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  function overlay(extra){
+  function overlay(extra) {
     // builds a new object from the properties of a foundation object and extention object.
-    return function(object){
+    return function (object) {
       var results = {};
-      each(eachObject(function(value, key){
+      each(eachObject(function (value, key) {
         results[key] = value;
       }))(object || {}, extra || {});
-      return FROZEN? Object.freeze(results) : results;
+      return FROZEN ? Object.freeze(results) : results;
     };
-  }  
+  }
 
 // Function operations
 
-  function compose(){
-    var funcs = arguments;
-    return function(){
-      var args = arguments;
-      eachArrayRight(function(func){
-        args = [func.apply(this, args)];
-      })(funcs);
-      return args[0];
+  function adjoin(f) {
+    return function (g) {
+      return function () {
+        return f.call(this, (g.apply(this, arguments)));
+      };
     };
   }
 
-  function invoke(){
+  function invoke() {
     var args = arguments;
-    return function(func){
-      return func.apply({}, args);
+    return function (func) {
+      return func.apply(this, args);
     };
   }
 
-  function debounce(wait){
-    return function(func){
-      var timeout, args;
-      return function(){
-        args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(function(){
-          func.apply({}, args);
-        }, wait);
-      };
+  function postpone(func) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return function () {
+      return func.apply(this, args);
     };
   }
 
-  function throttle(wait){
-    return function(func){
-      var timeout, args;
-      return function(){
-        args = arguments;
-        if (timeout) { return; }
-        timeout = setTimeout(function(){
-          timeout = null;
-          func.apply({}, args);
-        }, wait);
-      };
-    };
-  }
-
-  function times(n){
-    return function(operation){
-      for (var i = 0; i < n; i++){
-        operation(i);
+  function times(n) {
+    return function (operation) {
+      for (var i = 0; i < n; i++) {
+        operation.call(this, i);
       }
     };
   }
 
-  function not(func){
-    return function(){
-      return !func.apply({}, arguments);
+  function debounce(wait) {
+    return function (func) {
+      var timeout, args;
+      return function () {
+        var context = this;
+        args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+          func.apply(context, args);
+        }, wait);
+      };
+    };
+  }
+
+  function throttle(wait) {
+    return function (func) {
+      var timeout, args;
+      return function () {
+        args = arguments;
+        var context = this;
+        if (timeout) { return; }
+        timeout = setTimeout(function () {
+          timeout = null;
+          func.apply(context, args);
+        }, wait);
+      };
+    };
+  }
+
+  function not(func) {
+    return function () {
+      return !func.apply(this, arguments);
     };
   }
 
 // Utilities
 
-  function I(x){
+  function I(x) {
     return x;
   }
 
-  function dot(key){
-    return function(obj){
+  function dot(key) {
+    return function (obj) {
       if (isArray(key) || isObj(key)) {
         return map(invoke(obj))(map(dot)(key));
       }
@@ -360,48 +378,58 @@ var _ = (function(){
     };
   }
 
-  var now = Date.now || function() { return new Date().getTime(); };
-
-  function random(max){
-    return function(){
-      return Math.random()*max|0;
+  function method(key) {
+    return function (obj) {
+      return obj && obj[key] && obj[key]();
     };
   }
 
-  function expose(nameList){
+  var now = Date.now || function () { return new Date().getTime(); };
+
+  function expose(nameList) {
     var fNames = nameList.split(' ');
-    eachArray(function(fName){
+    eachArray(function (fName) {
       window[fName] = _[fName];
     })(fNames);
   }
 
-  function defreeze(){
+  function defreeze() {
     FROZEN = false;
   }
 
-  function refreeze(){
+  function refreeze() {
     FROZEN = true;
   }
 
-  function size(collection){
+  function BREAK() {
+    return BREAKER;
+  }
+
+  function size(collection) {
     return collection.length || Object.keys(collection).length;
   }
 
-  function log(){
+  function log() {
     console.log.apply(console, arguments);
   }
 
-  function position(func){
-    return function(item, position){
+  function position(func) {
+    return function (item, position) {
       return func(position);
     };
   }
 
-  function equals(a){
-    return function(b){
+  function equals(a) {
+    return function (b) {
       return a === b;
     };
   }
+
+  var compose = reduce()(adjoin);
+  var rejectArray = compose(filterArray, not);
+  var rejectObject = compose(filterObject, not);
+  var reject = compose(filter, not);
+
   var _ =  {
     eachArray: eachArray,
     eachArrayRight: eachArrayRight,
@@ -420,9 +448,10 @@ var _ = (function(){
     reject: reject,
     reduce: reduce,
 
+    find: find,
     all: all, //poss every 
     any: any, //poss sum use any as anything eg first from obj or and shift to obj
-    min: min, 
+    min: min,
     max: max,
 
     cyclic: cyclic,
@@ -434,17 +463,19 @@ var _ = (function(){
     foundation: foundation,
     overlay: overlay,
 
+    adjoin: adjoin,
     compose: compose,
     invoke: invoke,
+    postpone: postpone,
     debounce: debounce,
     throttle: throttle,
     not: not,
 
     I: I,
     dot: dot,
+    method: method,
     now: now,
     times: times,
-    random: random,
 
     expose: expose,
     defreeze: defreeze,
@@ -453,12 +484,13 @@ var _ = (function(){
     log: log,
     position: position,
     equals: equals,
+    BREAK: BREAK
   };
   return _;
 }());
-/*! cumin 22-06-2014 */
-!function(a){a.round=function(a){a=a||0;var b=Math.pow(10,a),c=Math.pow(.1,a+1);return function(a){return Math.round(a*b+c)/b}}}(_);
-/*! cumin 22-06-2014 */
+/*! cumin 04-07-2014 */
+!function(a){"use strict";function b(a){a=a||0;var b=Math.pow(10,a),c=Math.pow(.1,a+1);return function(a){return Math.round(a*b+c)/b}}function c(a){return a=a||0,function(){return Math.random()*a|0}}a.round=b,a.random=c}(_);
+/*! cumin 04-07-2014 */
 !function(a){a.pluck=a.compose(a.map,a.dot),a.pick=a.compose(a.filter,a.position,a.within),a.omit=a.compose(a.filter,a.position,a.not,a.within)}(_);
 (function (global) {
   "use strict";
@@ -519,7 +551,6 @@ var SVGroovy = {};
   "use strict";
 
   var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-  var origin = darkSVG.createSVGPoint();
 
   function create(x, y){
     if (isObj(x)) {
@@ -617,11 +648,11 @@ var SVGroovy = {};
     return darkSVG.createSVGMatrix();
   }
   parent.Matrix = create;
-  parent.Matrix.scaling = function(scalar){
+  parent.Matrix.toScale = function(scalar){
     return create().scale(scalar);
   };
-  parent.Matrix.translating = function(x, y){
-    return create().translate(x, y);
+  parent.Matrix.toTranslate = function(point){
+    return create().translate(point.x, point.y);
   };
 }(SVGroovy));
 // String interpolations
@@ -692,19 +723,6 @@ function missingCTM($element){
 
 // cumin fills
 
-_.debounce = function(wait){
-  return function(func){
-    var timeout, args;
-    return function(){
-      var context = this;
-      args = arguments;
-      clearTimeout(timeout);
-      timeout = setTimeout(function(){
-        func.apply(context, args);
-      }, wait);
-    };
-  };
-};
 
 _.peruse = function(obj){
   return function(key){
@@ -718,21 +736,7 @@ SVGroovy.Matrix.asCss = function(matrix){
   return interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(matrix || SVGroovy.Matrix());
 };
 
-SVGroovy.Matrix.forTranslation = function(point){
-  return SVGroovy.Matrix.translating(point.x, point.y);
-};
-
-SVGroovy.Matrix.forMagnification = function(scale){
-  return SVGroovy.Matrix.scaling(scale);
-};
-
 // check svg owner
-
-function checkSVGTarget(svg){
-  return function(target){
-    return (target.ownerSVGElement || target) === svg;
-  };
-}
 
 var hammertime = Hammer(document);
 
@@ -804,36 +808,80 @@ var Hammerhead = {};
   parent.ViewBox = create;
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower();
+  'use strict';
+  // var tower = Belfry.getTower();
 
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
 
-  $(window).on('resize', tower.publish('windowResize'));
+  // $(window).on('resize', tower.publish('windowResize'));
 
   function createOverflowUpdater(){
 
     var surplus = this.getConfig('overflowSurplus');
     var factor = 2 * surplus + 1;
-    var $parent = this.$element.parent();
+    var $element = this.$element;
+    var $parent = $element.parent();
 
-    return _.debounce(this.getConfig('resizeDelay'))(function(){
+    return function(){
       var height = $parent.height();
       var width = $parent.width();
-      this.$element
+      $element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    }).bind(this);
+    };
   }
 
   parent.regulateOverflow = function(){
     var updateOverflow = createOverflowUpdater.call(this);
-    
     updateOverflow();
-    tower.subscribe('windowResize')(updateOverflow);
+    bean.on(window, 'resize', updateOverflow);
+    return function(){
+      bean.off(window, 'resize', updateOverflow);
+    };
   };
 }(Hammerhead));
 (function(parent){
+  'use strict';
+
+  var Pt = SVGroovy.Point;
+  
+  parent.dispatchTouch = function(){
+    // TDD with cumin method, gesture handler and deactivate return.
+    var element = this.element,
+      isComponent = this.isComponent,
+      live = false,
+      dragging = true;
+
+    hammertime.on('touch', function(event){
+      live = isComponent(event.target);
+    });
+
+    hammertime.on('drag', function(event){
+      if (live && dragging) {
+        bean.fire(element, 'displace', Pt(event.gesture));
+      }
+    });
+
+    hammertime.on('pinch', function(event){
+      if (live) {
+        dragging = false;
+        bean.fire(element, 'inflate', event.gesture.scale);
+      }
+    });
+
+    hammertime.on('release', function(){
+      if (live) {
+        if (dragging) {
+          bean.fire(element, 'translate', Pt(event.gesture));
+        } else{
+          bean.fire(element, 'magnify', event.gesture.scale);
+        }
+        live = false;
+        dragging = true;
+      }
+    });
+  };
   var tower = Belfry.getTower();
 
   var alertStart = tower.publish('start');
@@ -908,93 +956,78 @@ var Hammerhead = {};
       hammertime.off('touch drag pinch release', gestureHandler);
     };
 
-    instance.activate();
+    // instance.activate();
     return instance;
 
   };
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower(),
-    Pt = SVGroovy.Point,
+  'use strict';
+
+  var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
-    VB = parent.ViewBox;
-
-  var listenStart = tower.subscribe('start');
-  var listenDrag = tower.subscribe('drag');
-  var listenPinch = tower.subscribe('pinch');
-  var listenEnd = tower.subscribe('end');
-
-  var XBtransform = _.compose(transformObject, Mx.asCss);
+    VB = parent.ViewBox,
+    xBtransform = _.compose(transformObject, Mx.asCss);
+  //cumin compose map map
+  // limit zoom
+  // round pixels
 
   parent.managePosition = function(){
-    var $element = this.$element;
-    var properFix = missingCTM($element), // windows FIX
-      viewBoxZoom = 1;
-
-    var HOME = viewBox = VB($element.attr('viewBox'));
-
-    var animationLoop,
-      thisScale,
-      maxScale,
-      minScale,
+    var $element = this.$element,
+      element = this.element,
+      properFix = missingCTM($element), // windows FIX
+      viewBoxZoom = 1,
+      viewBox = VB($element.attr('viewBox')),
+      animationLoop,
       currentMatrix;
 
-    listenStart(function(){
-      beginAnimation();
-      maxScale = this.getConfig('maxZoom')/viewBoxZoom;
-      minScale = this.getConfig('minZoom')/viewBoxZoom;
-      thisScale = 1;
-    }.bind(this));
-
-    listenDrag(function(data){
-      currentMatrix = Mx.forTranslation(data.delta);
-    });
-
-    listenPinch(function(data){
-      var scale = Math.max(Math.min(data.scale, maxScale), minScale);
-      currentMatrix = Mx.forMagnification(scale);
-      thisScale = scale;
-    });
-
-    listenEnd(function(data){
-      if (thisScale === 1) {
-        var fixedTranslation = Pt.scalar(properFix)(data.delta);
-        var inverseCTM = $element[0].getScreenCTM().inverse();
-        inverseCTM.e = 0;
-        inverseCTM.f = 0;
-        var scaleTo = Pt.matrixTransform(inverseCTM);
-        var svgTrans = scaleTo(fixedTranslation);
-        viewBox = VB.translate(svgTrans)(viewBox);
-      } else{
-        var scale = Math.max(Math.min(thisScale, maxScale), minScale);
-        viewBoxZoom *= scale;
-        viewBox = VB.zoom(scale)()(viewBox);
+    function renderCSS(){
+      if (!animationLoop) {
+        animationLoop = requestAnimationFrame(function(){
+          $element.css(xBtransform(currentMatrix));
+          animationLoop = false;
+        });
       }
-      cancelAnimationFrame(animationLoop);
-      currentMatrix = Mx();
-      requestAnimationFrame(function(){
+    }
+
+    function renderViewBox(){
+      requestAnimationFrame( function(){
+        cancelAnimationFrame(animationLoop);
+        $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-        $element.css(XBtransform());
       });
+    }
+
+    bean.on(element, 'displace', function(point){
+      currentMatrix = Mx.toTranslate(point);
+      renderCSS();
     });
 
-    function render(){
-      $element.css(XBtransform(currentMatrix));
-      animationLoop = requestAnimationFrame( render );
-    }
+    bean.on(element, 'inflate', function(scaleFactor){
+      currentMatrix = Mx.toScale(scaleFactor);
+      renderCSS();
+    });
 
-    function beginAnimation(){
-      animationLoop = requestAnimationFrame( render );
-    }
+    bean.on(element, 'translate', function(delta){
+      properFix = 1;
+      var fixedTranslation = Pt.scalar(properFix)(delta);
+      var inverseCTM = $element[0].getScreenCTM().inverse();
+      inverseCTM.e = 0;
+      inverseCTM.f = 0;
+      var scaleTo = Pt.matrixTransform(inverseCTM);
+      var svgTrans = scaleTo(fixedTranslation);
+      viewBox = VB.translate(svgTrans)(viewBox);
+      renderViewBox();
+    });
 
-    $element.css(XBtransform());
+    bean.on(element, 'magnify', function(scale){
+      viewBox = VB.zoom(scale)()(viewBox);
+      renderViewBox();
+    });
+
+    $element.css(xBtransform());
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
 
-    tower.subscribe('home')(function(){
-      $element.css(XBtransform());
-      viewBox = HOME;
-      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-    });
   };
 }(Hammerhead));
 (function(parent){
@@ -1042,13 +1075,7 @@ var Hammerhead = {};
 (function(parent){
   "use strict";
 
-  var tower = Belfry.getTower();
-
-  var prototype = {
-    home: function(){
-      tower.publish('home')(this.$element[0]);
-    }
-  };
+  var prototype = {};
 
   var buildConfig = _.foundation({
     mousewheelSensitivity: 0.1,
@@ -1059,28 +1086,34 @@ var Hammerhead = {};
     resizeDelay: 200
   });
 
-  var noElement = interpolate("SVG element '%(id)s' not found");
+  function checkSVGTarget(svg){
+    return function(target){
+      return (target.ownerSVGElement || target) === svg;
+    };
+  }
 
   function init(svgId, options){
-    var $svg = $('svg#' + svgId);
-    var element = $svg[0];
+    var $element = $('svg#' + svgId);
+    var element = $element[0];
 
     if (!element) {
-      console.warn(noElement({id: svgId}));
+      console.warn(interpolate("SVG element '%(id)s' not found")({id: svgId}));
       return false;
     }
 
-    var instance = Object.create(prototype);
-    instance.$element = $svg;
-    instance.element = element;
-    instance.isComponent = checkSVGTarget(element);
-    instance.getConfig = _.peruse(buildConfig(options));
+    var instance = _.augment(Object.create(prototype))({
+      $element: $element,
+      element: element,
+      isComponent: checkSVGTarget(element),
+      getConfig: _.peruse(buildConfig(options))
+    });
 
-    parent.regulateOverflow.call(instance);
-    parent.touchDispatch($svg);
+    instance.clear = parent.regulateOverflow.call(instance);
+    parent.dispatchTouch.call(instance);
+    // parent.touchDispatch.call(instance);
     parent.managePosition.call(instance);
-    parent.mousewheelDispatch.call(instance);
-
+    // parent.mousewheelDispatch.call(instance);
+    
     return instance;
   }
   parent.create = init;

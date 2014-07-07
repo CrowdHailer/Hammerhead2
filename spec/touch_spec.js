@@ -1,4 +1,20 @@
-describe('dispatch touch notifications', function(){
+describe('notification of gestures', function(){
+  'use strict';
+
+  var $svg, $container;
+  beforeEach(function(){
+    $(document.body).append('<div id="container"><svg id="svg" viewBox="0 0 2000 1000"></svg></div>');
+    $svg = $('#svg');
+    $container = $('#container');
+    $container.width(200).height(100);
+  });
+
+  afterEach(function(){
+    $container.remove();
+  });
+});
+
+xdescribe('dispatch touch notifications', function(){
   // console.log(hammertime) -very busy all elements not evenHandlers array;
   var testSVG, testPath, preventDefault, defaultGesture, dummy, tower, emitter;
   beforeEach(function(){
