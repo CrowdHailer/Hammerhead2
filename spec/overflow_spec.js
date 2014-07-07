@@ -10,8 +10,7 @@ ddescribe('managing overflow padding of active elements', function(){
     remove = Hammerhead.regulateOverflow.call({
       $element: $svg,
       getConfig: _.peruse({
-        overflowSurplus: 0.5,
-        resizeDelay: 200
+        overflowSurplus: 0.5
       })
     });
   });
@@ -42,6 +41,16 @@ ddescribe('managing overflow padding of active elements', function(){
     expect($svg.width()).toEqual(600);
     expect($svg.height()).toEqual(300);
   });
+
+  it('should return event clearing function', function(){
+    remove();
+    $container.width(300).height(150);
+    bean.fire(window, 'resize');
+    expect($svg.width()).toEqual(400);
+    expect($svg.height()).toEqual(200);
+    expect($svg.css('margin')).toEqual('-50px -100px');
+  });
+
   xit('should set a elements margin outside the parent, default 50%', function(){
     outer.width(200).height(100);
     Hammerhead.regulateOverflow.call({

@@ -14,7 +14,7 @@
       .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
       .width(width * factor)
       .height(height * factor);
-    bean.on(window, 'resize', function(){
+    var update = function(){
       console.log('ello')
       var height = $parent.height();
       var width = $parent.width();
@@ -22,8 +22,11 @@
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    });
-    return function(){};
+    }
+    bean.on(window, 'resize', update);
+    return function(){
+      bean.off(window, 'resize', update);
+    };
   };
 
   function createOverflowUpdater(){
