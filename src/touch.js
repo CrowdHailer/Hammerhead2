@@ -11,17 +11,20 @@
       dragging = true;
 
     hammertime.on('touch', function(event){
+      event.gesture.preventDefault();
       live = isComponent(event.target);
       console.log(live);
     });
 
     hammertime.on('drag', function(event){
+      event.gesture.preventDefault();
       if (live && dragging) {
         bean.fire(element, 'displace', Pt(event.gesture));
       }
     });
 
     hammertime.on('pinch', function(event){
+      event.gesture.preventDefault();
       if (live) {
         dragging = false;
         bean.fire(element, 'inflate', event.gesture.scale);
@@ -29,6 +32,7 @@
     });
 
     hammertime.on('release', function(){
+      event.gesture.preventDefault();
       if (live) {
         if (dragging) {
           bean.fire(element, 'translate', Pt(event.gesture));
@@ -42,7 +46,7 @@
 
     return function(){
       hammertime.dispose();
-    }
+    };
   };
   var tower = Belfry.getTower();
 
@@ -110,16 +114,6 @@
       }
     }
 
-    instance.activate = function activate(){
-      hammertime.on('touch drag pinch release', gestureHandler);
-    };
-
-    instance.deactivate = function deactivate(){
-      hammertime.off('touch drag pinch release', gestureHandler);
-    };
-
-    // instance.activate();
-    return instance;
 
   };
 }(Hammerhead));
