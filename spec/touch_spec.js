@@ -1,5 +1,6 @@
 ddescribe('notification of gestures', function(){
   'use strict';
+  // nothing for touch release without pinch or drag
 
   var $svg, $path, defaultGesture, remove;
   beforeEach(function(){
@@ -17,6 +18,7 @@ ddescribe('notification of gestures', function(){
   });
 
   afterEach(function(){
+    remove();
     $svg.remove();
   });
 

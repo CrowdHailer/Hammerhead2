@@ -39,6 +39,10 @@
         dragging = true;
       }
     });
+
+    return function(){
+      hammertime.dispose();
+    }
   };
   var tower = Belfry.getTower();
 
