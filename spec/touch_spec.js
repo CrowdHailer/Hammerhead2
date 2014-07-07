@@ -20,21 +20,44 @@ ddescribe('notification of gestures', function(){
     $svg.remove();
   });
 
-  it('should displace on acive element', function(){
-    var dummy = jasmine.createSpy();
-    bean.on($svg[0], 'displace', dummy);
-    hammertime.trigger('touch', defaultGesture);
-    hammertime.trigger('drag', defaultGesture);
-    expect(dummy).toHaveBeenCalled();
+  describe('on target gestures', function(){
+    var dummy;
+    beforeEach(function(){
+      dummy = jasmine.createSpy();
+    });
+
+    it('should displace on acive element', function(){
+      bean.on($svg[0], 'displace', dummy);
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      expect(dummy).toHaveBeenCalled();
+    });
+
+    it('should inflate on acive element', function(){
+      bean.on($svg[0], 'inflate', dummy);
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      expect(dummy).toHaveBeenCalled();
+    });
+
+    it('should translate after dragging', function(){
+      bean.on($svg[0], 'translate', dummy);
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('drag', defaultGesture);
+      hammertime.trigger('release', defaultGesture);
+      expect(dummy).toHaveBeenCalled();
+    });
+
+    it('should magnify after pinch', function(){
+      bean.on($svg[0], 'magnify', dummy);
+      hammertime.trigger('touch', defaultGesture);
+      hammertime.trigger('pinch', defaultGesture);
+      hammertime.trigger('release', defaultGesture);
+      expect(dummy).toHaveBeenCalled();
+    });
   });
 
-  it('should inflate on acive element', function(){
-    var dummy = jasmine.createSpy('mike');
-    bean.on($svg[0], 'inflate', dummy);
-    hammertime.trigger('touch', defaultGesture);
-    hammertime.trigger('pinch', defaultGesture);
-    expect(dummy).toHaveBeenCalled();
-  });
+
 });
 
 xdescribe('dispatch touch notifications', function(){
