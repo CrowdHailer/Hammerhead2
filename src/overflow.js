@@ -14,6 +14,14 @@
       .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
       .width(width * factor)
       .height(height * factor);
+    bean.on(window, 'resize', function(){
+      console.log('ello')
+      var height = $parent.height();
+      var width = $parent.width();
+      $element
+        .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
+        
+    });
     return function(){};
   };
 
