@@ -923,8 +923,8 @@ var Hammerhead = {};
     }
 
     function renderViewBox(){
+      cancelAnimationFrame(animationLoop);
       requestAnimationFrame( function(){
-        cancelAnimationFrame(animationLoop);
         $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
       });
