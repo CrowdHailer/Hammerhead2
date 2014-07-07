@@ -2,6 +2,7 @@
   'use strict';
 
   var Pt = SVGroovy.Point;
+  var hammertime = Hammer(document);
   
   parent.dispatchTouch = function(){
     // TDD with cumin method, gesture handler and deactivate return.

@@ -81,6 +81,6 @@ SVGroovy.Matrix.asCss = function(matrix){
 
 // check svg owner
 
-var hammertime = Hammer(document);
+
 
 var Hammerhead = {};

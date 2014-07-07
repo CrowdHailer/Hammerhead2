@@ -1,9 +1,10 @@
-ddescribe('notification of gestures', function(){
+describe('notification of gestures', function(){
   'use strict';
   // nothing for touch release without pinch or drag
   // use last drag or pinch data
 
   var $svg, $path, defaultGesture, remove;
+  var hammertime = Hammer(document);
   beforeEach(function(){
     $(document.body).append('<svg id="test" width="500" viewBox="0 0 2000 1000"><path id="test-path"></path></svg>');
     $svg = $('#test');
