@@ -1,14 +1,14 @@
 describe('element manipulation', function(){
   'use strict';
 
-  var $svg, $container;
+  var $svg, $container, remove;
   var Pt = SVGroovy.Point;
   beforeEach(function(){
     $(document.body).append('<div id="container"><svg id="svg" viewBox="0 0 2000 1000"></svg></div>');
     $svg = $('#svg');
     $container = $('#container');
     $container.width(200).height(100);
-    Hammerhead.managePosition.call({
+    remove = Hammerhead.managePosition.call({
       $element: $svg,
       element: $svg[0],
       getConfig: _.peruse({})
@@ -16,6 +16,7 @@ describe('element manipulation', function(){
   });
 
   afterEach(function(){
+    remove();
     $container.remove();
   });
 
@@ -80,6 +81,15 @@ describe('element manipulation', function(){
         done();
       }, 20);
       expect($svg.css('-webkit-transform')).toEqual('matrix(2, 0, 0, 2, 0, 0)');
+    }, 20);
+  });
+
+  it('it should remove all bean events', function(done){
+    remove();
+    bean.fire($svg[0], 'displace', Pt(2, 3));
+    setTimeout(function(){
+      expect($svg.css('-webkit-transform')).toEqual('matrix(1, 0, 0, 1, 0, 0)');
+      done();
     }, 20);
   });
 });
