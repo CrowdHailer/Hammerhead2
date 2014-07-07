@@ -321,12 +321,7 @@ var Hammerhead = {};
       properFix = missingCTM($element), // windows FIX
       viewBoxZoom = 1,
       viewBox = VB($element.attr('viewBox')),
-      HOME = viewBox;
-
-    var animationLoop,
-      thisScale,
-      maxScale,
-      minScale,
+      animationLoop,
       currentMatrix;
 
     function renderCSS(){
@@ -375,52 +370,6 @@ var Hammerhead = {};
 
     $element.css(xBtransform());
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-    
-
-    
-
-    function startofanim(){
-      beginAnimation();
-      maxScale = this.getConfig('maxZoom')/viewBoxZoom;
-      minScale = this.getConfig('minZoom')/viewBoxZoom;
-      thisScale = 1;
-    }
-
-    function dragaction(data){
-      currentMatrix = Mx.forTranslation(data.delta);
-    };
-
-    function pinchaction(data){
-      var scale = Math.max(Math.min(data.scale, maxScale), minScale);
-      currentMatrix = Mx.forMagnification(scale);
-      thisScale = scale;
-    };
-
-    function endofanimation(data){
-      if (thisScale === 1) {
-        var fixedTranslation = Pt.scalar(properFix)(data.delta);
-        var inverseCTM = $element[0].getScreenCTM().inverse();
-        inverseCTM.e = 0;
-        inverseCTM.f = 0;
-        var scaleTo = Pt.matrixTransform(inverseCTM);
-        var svgTrans = scaleTo(fixedTranslation);
-        viewBox = VB.translate(svgTrans)(viewBox);
-      } else{
-        var scale = Math.max(Math.min(thisScale, maxScale), minScale);
-        viewBoxZoom *= scale;
-        viewBox = VB.zoom(scale)()(viewBox);
-      }
-      cancelAnimationFrame(animationLoop);
-      currentMatrix = Mx();
-      requestAnimationFrame(function(){
-        $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-        $element.css(xBtransform());
-      });
-    };
-
-    
-
-    
 
   };
 }(Hammerhead));
