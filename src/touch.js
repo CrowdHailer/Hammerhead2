@@ -12,6 +12,7 @@
 
     hammertime.on('touch', function(event){
       live = isComponent(event.target);
+      console.log(live)
     });
 
     hammertime.on('drag', function(event){
@@ -27,17 +28,17 @@
       }
     });
 
-    hammertime.on('release', function(){
-      if (live) {
-        if (dragging) {
-          bean.fire(element, 'translate', Pt(event.gesture));
-        } else{
-          bean.fire(element, 'magnify', event.gesture.scale);
-        }
-        live = false;
-        dragging = true;
-      }
-    });
+    // hammertime.on('release', function(){
+    //   if (live) {
+    //     if (dragging) {
+    //       bean.fire(element, 'translate', Pt(event.gesture));
+    //     } else{
+    //       bean.fire(element, 'magnify', event.gesture.scale);
+    //     }
+    //     live = false;
+    //     dragging = true;
+    //   }
+    // });
   };
   var tower = Belfry.getTower();
 

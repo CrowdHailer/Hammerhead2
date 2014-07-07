@@ -1,16 +1,39 @@
-describe('notification of gestures', function(){
+ddescribe('notification of gestures', function(){
   'use strict';
 
-  var $svg, $container;
+  var $svg, $path, defaultGesture, remove;
   beforeEach(function(){
-    $(document.body).append('<div id="container"><svg id="svg" viewBox="0 0 2000 1000"></svg></div>');
-    $svg = $('#svg');
-    $container = $('#container');
-    $container.width(200).height(100);
+    $(document.body).append('<svg id="test" width="500" viewBox="0 0 2000 1000"><path id="test-path"></path></svg>');
+    $svg = $('#test');
+    $path = $('#test-path');
+    defaultGesture = {target: $path[0], preventDefault: function(){}};
+    remove = Hammerhead.dispatchTouch.call({
+      $element: $svg,
+      element: $svg[0],
+      isComponent: function(el){
+        return el === $path[0];
+      }
+    });
   });
 
   afterEach(function(){
-    $container.remove();
+    $svg.remove();
+  });
+
+  it('should displace on acive element', function(){
+    var dummy = jasmine.createSpy();
+    bean.on($svg[0], 'displace', dummy);
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('drag', defaultGesture);
+    expect(dummy).toHaveBeenCalled();
+  });
+
+  it('should inflate on acive element', function(){
+    var dummy = jasmine.createSpy('mike');
+    bean.on($svg[0], 'inflate', dummy);
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('pinch', defaultGesture);
+    expect(dummy).toHaveBeenCalled();
   });
 });
 
