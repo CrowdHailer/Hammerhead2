@@ -76,12 +76,12 @@ _.peruse = function(obj){
 //SVGroovy fills NB requires interpolate
 
 SVGroovy.Matrix.asCss = function(matrix){
-  return interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(matrix || SVGroovy.Matrix());
+  return interpolate('matrix3d(%(a)s, %(b)s, 0, 0, %(c)s, %(d)s, 0, 0, 0, 0, 1, 0, %(e)s, %(f)s, 0, 1)')(matrix || SVGroovy.Matrix());
 };
 
 // check svg owner
 
-var hammertime = Hammer(document);
+
 
 var Hammerhead = {};
 
@@ -169,7 +169,7 @@ var Hammerhead = {};
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    }
+    };
     update();
 
     bean.on(window, 'resize', update);
@@ -184,132 +184,68 @@ var Hammerhead = {};
   'use strict';
 
   var Pt = SVGroovy.Point;
+  var hammertime = Hammer(document);
   
   parent.dispatchTouch = function(){
     // TDD with cumin method, gesture handler and deactivate return.
     var element = this.element,
       isComponent = this.isComponent,
       live = false,
-      dragging = true;
+      dragging = false,
+      pinching = false;
 
     hammertime.on('touch', function(event){
+      event.gesture.preventDefault();
       live = isComponent(event.target);
     });
 
     hammertime.on('drag', function(event){
-      if (live && dragging) {
+      event.gesture.preventDefault();
+      if (live && !pinching) {
+        dragging = event;
         bean.fire(element, 'displace', Pt(event.gesture));
       }
     });
 
     hammertime.on('pinch', function(event){
+      event.gesture.preventDefault();
       if (live) {
         dragging = false;
+        pinching = event;
         bean.fire(element, 'inflate', event.gesture.scale);
       }
     });
 
     hammertime.on('release', function(){
+      event.gesture.preventDefault();
       if (live) {
-        if (dragging) {
-          bean.fire(element, 'translate', Pt(event.gesture));
-        } else{
-          bean.fire(element, 'magnify', event.gesture.scale);
+        if (dragging) { 
+          bean.fire(element, 'translate', Pt(dragging.gesture));
+        }
+        if (pinching) {
+          bean.fire(element, 'magnify', pinching.gesture.scale);
         }
         live = false;
-        dragging = true;
+        pinching = false;
+        dragging = false;
       }
     });
-  };
-  var tower = Belfry.getTower();
 
-  var alertStart = tower.publish('start');
-  var alertDrag = tower.publish('drag');
-  var alertPinch = tower.publish('pinch');
-  var alertEnd = tower.publish('end');
-
-  function watchTouch(event){
-    if (event.target.ownerSVGElement === this.getElement()) {
-      this.handlers.touch = false;
-      this.handlers.drag = handleDrag;
-      this.handlers.pinch = handlePinch;
-      this.handlers.release = endHandler;
-      alertStart(this.getElement());
-    }
-    return this;
-  }
-
-  function handleDrag(event){
-    alertDrag({
-      element: this.getElement(),
-      delta: SVGroovy.Point(event.gesture)
-    });
-    return this;
-  }
-
-  function handlePinch(event){
-    this.handlers.drag = false;
-    alertPinch({
-      element: this.getElement(),
-      center: SVGroovy.Point(event.gesture.center),
-      scale: event.gesture.scale
-    });
-    return this;
-  }
-
-  function endHandler(event){
-    this.handlers.touch = watchTouch;
-    this.handlers.drag = false;
-    this.handlers.pinch = false;
-    alertEnd({
-      element: this.getElement(),
-      delta: SVGroovy.Point(event.gesture),
-      scale: event.gesture.scale
-    });
-    return this;
-  }
-
-  parent.touchDispatch = function($element){
-    var element = $element[0];
-
-    var instance = Object.create({});
-    instance.getElement = function(){
-      return element;
+    return function(){
+      hammertime.dispose();
     };
-    instance.handlers = {
-      touch: watchTouch,
-    };
-
-    function gestureHandler(event){
-      event.gesture.preventDefault();
-      if(instance.handlers[event.type]) {
-        instance = instance.handlers[event.type].call(instance, event);
-      }
-    }
-
-    instance.activate = function activate(){
-      hammertime.on('touch drag pinch release', gestureHandler);
-    };
-
-    instance.deactivate = function deactivate(){
-      hammertime.off('touch drag pinch release', gestureHandler);
-    };
-
-    // instance.activate();
-    return instance;
-
   };
 }(Hammerhead));
 (function(parent){
   'use strict';
+  //cumin compose map map
+  // limit zoom
+  // round pixels
 
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
     xBtransform = _.compose(transformObject, Mx.asCss);
-  //cumin compose map map
-  // limit zoom
-  // round pixels
 
   parent.managePosition = function(){
     var $element = this.$element,
@@ -330,8 +266,8 @@ var Hammerhead = {};
     }
 
     function renderViewBox(){
+      cancelAnimationFrame(animationLoop);
       requestAnimationFrame( function(){
-        cancelAnimationFrame(animationLoop);
         $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
       });

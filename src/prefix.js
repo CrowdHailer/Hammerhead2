@@ -76,11 +76,11 @@ _.peruse = function(obj){
 //SVGroovy fills NB requires interpolate
 
 SVGroovy.Matrix.asCss = function(matrix){
-  return interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(matrix || SVGroovy.Matrix());
+  return interpolate('matrix3d(%(a)s, %(b)s, 0, 0, %(c)s, %(d)s, 0, 0, 0, 0, 1, 0, %(e)s, %(f)s, 0, 1)')(matrix || SVGroovy.Matrix());
 };
 
 // check svg owner
 
-var hammertime = Hammer(document);
+
 
 var Hammerhead = {};
