@@ -36,6 +36,12 @@ ddescribe('managing overflow padding of active elements', function(){
     expect($svg.css('margin')).toEqual('-75px -150px');
   });
 
+  it('should update inner dimensions', function(){
+    $container.width(300).height(150);
+    bean.fire(window, 'resize');
+    expect($svg.width()).toEqual(600);
+    expect($svg.height()).toEqual(300);
+  });
   xit('should set a elements margin outside the parent, default 50%', function(){
     outer.width(200).height(100);
     Hammerhead.regulateOverflow.call({
