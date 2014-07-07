@@ -12,6 +12,8 @@
     var width = $parent.width();
     $element
       .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
+      .width(width * factor)
+      .height(height * factor);
     return function(){};
   };
 

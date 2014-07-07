@@ -1,9 +1,9 @@
-describe('managing overflow padding of active elements', function(){
+ddescribe('managing overflow padding of active elements', function(){
   'use strict';
 
   var $svg, $container, remove;
   beforeEach(function(){
-    $(document.body).append('<div id="container"><svg id="svg" viewBox="0 0 2000 1000"></svg></div>');
+    $(document.body).append('<div id="container"><div id="svg" viewBox="0 0 2000 1000"></div></div>');
     $svg = $('#svg');
     $container = $('#container');
     $container.width(200).height(100);
@@ -21,8 +21,13 @@ describe('managing overflow padding of active elements', function(){
     $container.remove();
   });
 
-  iit('should set an elements overflow margin', function(){
+  it('should set inner element overflow margin', function(){
     expect($svg.css('margin')).toEqual('-50px -100px');
+  });
+
+  it('should set inner element dimensions', function(){
+    expect($svg.width()).toEqual(400);
+    expect($svg.height()).toEqual(200);
   });
 
   xit('should set a elements margin outside the parent, default 50%', function(){
