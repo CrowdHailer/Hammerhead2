@@ -40,14 +40,14 @@ describe('notification of gestures', function(){
 
   it('should displace after touch on acive element', function(){
     hammertime.trigger('touch', defaultGesture);
-    hammertime.trigger('drag', defaultGesture);
-    expect(onDisplace).toHaveBeenCalled();
+    hammertime.trigger('drag', _.augment(defaultGesture)({deltaX: 2, deltaY: 3}));
+    expect(onDisplace).toHaveBeenCalledWith(SVGroovy.Point(2, 3));
   });
 
   it('should inflate after touch on acive element', function(){
     hammertime.trigger('touch', defaultGesture);
-    hammertime.trigger('pinch', defaultGesture);
-    expect(onInflate).toHaveBeenCalled();
+    hammertime.trigger('pinch', _.augment(defaultGesture)({scale: 2}));
+    expect(onInflate).toHaveBeenCalledWith(2);
   });
 
   it('should translate on release after dragging', function(){
