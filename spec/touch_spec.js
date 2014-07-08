@@ -105,9 +105,16 @@ describe('notification of gestures', function(){
     hammertime.trigger('drag', defaultGesture);
     expect(onDisplace).not.toHaveBeenCalled();
   });
+
   it('should not inflate after touch on inacive element', function(){
     hammertime.trigger('touch', _.augment(defaultGesture)({target: {}}));
     hammertime.trigger('pinch', defaultGesture);
     expect(onInflate).not.toHaveBeenCalled();
+  });
+
+  it('should pass translation as displace argument', function(){
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('drag', _.augment(defaultGesture)({deltaX: 2, deltaY: 3}));
+    expect(onDisplace).toHaveBeenCalledWith(SVGroovy.Point(2, 3));
   });
 });
