@@ -80,4 +80,16 @@ describe('notification of gestures', function(){
     hammertime.trigger('drag', defaultGesture);
     expect(preventDefault.calls.count()).toEqual(2);
   });
+
+  it('should prevent default pinch action', function(){
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('pinch', defaultGesture);
+    expect(preventDefault.calls.count()).toEqual(2);
+  });
+
+  it('should prevent default release action', function(){
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('release', defaultGesture);
+    expect(preventDefault.calls.count()).toEqual(2);
+  });
 });
