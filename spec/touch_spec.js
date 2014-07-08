@@ -36,33 +36,33 @@ describe('notification of gestures', function(){
     $svg.remove();
   });
 
-  it('should displace on acive element', function(){
+  it('should displace after touch on acive element', function(){
     hammertime.trigger('touch', defaultGesture);
     hammertime.trigger('drag', defaultGesture);
     expect(onDisplace).toHaveBeenCalled();
   });
 
-  it('should inflate on acive element', function(){
+  it('should inflate after touch on acive element', function(){
     hammertime.trigger('touch', defaultGesture);
     hammertime.trigger('pinch', defaultGesture);
     expect(onInflate).toHaveBeenCalled();
   });
 
-  it('should translate after dragging', function(){
+  it('should translate on release after dragging', function(){
     hammertime.trigger('touch', defaultGesture);
     hammertime.trigger('drag', defaultGesture);
     hammertime.trigger('release', defaultGesture);
     expect(onTranslate).toHaveBeenCalled();
   });
 
-  it('should magnify after pinch', function(){
+  it('should magnify on release after pinch', function(){
     hammertime.trigger('touch', defaultGesture);
     hammertime.trigger('pinch', defaultGesture);
     hammertime.trigger('release', defaultGesture);
     expect(onMagnify).toHaveBeenCalled();
   });
 
-  it('should not call without pinch or drag', function(){
+  it('should not call without pinch or drag action', function(){
     hammertime.trigger('touch', defaultGesture);
     hammertime.trigger('release', defaultGesture);
     expect(onTranslate).not.toHaveBeenCalled();
