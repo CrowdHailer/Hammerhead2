@@ -117,4 +117,10 @@ describe('notification of gestures', function(){
     hammertime.trigger('drag', _.augment(defaultGesture)({deltaX: 2, deltaY: 3}));
     expect(onDisplace).toHaveBeenCalledWith(SVGroovy.Point(2, 3));
   });
+
+  it('should pass scale as inflate argument', function(){
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('pinch', _.augment(defaultGesture)({scale: 2}));
+    expect(onInflate).toHaveBeenCalledWith(2);
+  });
 });
