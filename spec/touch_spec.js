@@ -92,4 +92,11 @@ describe('notification of gestures', function(){
     hammertime.trigger('release', defaultGesture);
     expect(preventDefault.calls.count()).toEqual(2);
   });
+
+  it('should not drag after a pinch', function(){
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('pinch', defaultGesture);
+    hammertime.trigger('drag', defaultGesture);
+    expect(onDisplace).not.toHaveBeenCalled();
+  });
 });
