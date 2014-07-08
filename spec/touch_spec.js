@@ -105,4 +105,9 @@ describe('notification of gestures', function(){
     hammertime.trigger('drag', defaultGesture);
     expect(onDisplace).not.toHaveBeenCalled();
   });
+  it('should not inflate after touch on inacive element', function(){
+    hammertime.trigger('touch', _.augment(defaultGesture)({target: {}}));
+    hammertime.trigger('pinch', defaultGesture);
+    expect(onInflate).not.toHaveBeenCalled();
+  });
 });
