@@ -22,10 +22,10 @@ describe('notification of gestures', function(){
         return el === path;
       }
     });
-    onDisplace = jasmine.createSpy();
-    onInflate = jasmine.createSpy();
-    onTranslate = jasmine.createSpy();
-    onMagnify = jasmine.createSpy();
+    onDisplace = jasmine.createSpy('displace');
+    onInflate = jasmine.createSpy('inflate');
+    onTranslate = jasmine.createSpy('translate');
+    onMagnify = jasmine.createSpy('magnify');
     bean.on(svg, 'displace', onDisplace);
     bean.on(svg, 'inflate', onInflate);
     bean.on(svg, 'translate', onTranslate);
@@ -96,6 +96,12 @@ describe('notification of gestures', function(){
   it('should not drag after a pinch', function(){
     hammertime.trigger('touch', defaultGesture);
     hammertime.trigger('pinch', defaultGesture);
+    hammertime.trigger('drag', defaultGesture);
+    expect(onDisplace).not.toHaveBeenCalled();
+  });
+
+  it('should not displace after touch on inacive element', function(){
+    hammertime.trigger('touch', _.augment(defaultGesture)({target: {}}));
     hammertime.trigger('drag', defaultGesture);
     expect(onDisplace).not.toHaveBeenCalled();
   });
