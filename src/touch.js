@@ -18,7 +18,7 @@
     });
 
     hammertime.on('drag', function(event){
-      // event.gesture.preventDefault();
+      event.gesture.preventDefault();
       if (live && !pinching) {
         dragging = event;
         bean.fire(element, 'displace', Pt(event.gesture));

@@ -75,6 +75,9 @@ describe('notification of gestures', function(){
     expect(preventDefault).toHaveBeenCalled();
   });
 
-
-
+  it('should prevent default drag action', function(){
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('drag', defaultGesture);
+    expect(preventDefault.calls.count()).toEqual(2);
+  });
 });
