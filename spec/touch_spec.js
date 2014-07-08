@@ -13,7 +13,8 @@ describe('notification of gestures', function(){
     $path = $('#test-path');
     svg = $svg[0];
     path = $path[0];
-    defaultGesture = {target: path, preventDefault: function(){}};
+    preventDefault = jasmine.createSpy('preventDefault');
+    defaultGesture = {target: path, preventDefault: preventDefault};
     remove = Hammerhead.dispatchTouch.call({
       $element: $svg,
       element: $svg[0],
@@ -68,4 +69,12 @@ describe('notification of gestures', function(){
     expect(onTranslate).not.toHaveBeenCalled();
     expect(onMagnify).not.toHaveBeenCalled();
   });
+
+  it('should prevent default touch action', function(){
+    hammertime.trigger('touch', defaultGesture);
+    expect(preventDefault).toHaveBeenCalled();
+  });
+
+
+
 });

@@ -13,7 +13,7 @@
       pinching = false;
 
     hammertime.on('touch', function(event){
-      // event.gesture.preventDefault();
+      event.gesture.preventDefault();
       live = isComponent(event.target);
     });
 
