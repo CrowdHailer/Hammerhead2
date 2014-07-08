@@ -20,7 +20,7 @@
     hammertime.on('drag', function(event){
       event.gesture.preventDefault();
       if (live && !pinching) {
-        dragging = event;
+        dragging = Pt(event.gesture);
         bean.fire(element, 'displace', Pt(event.gesture));
       }
     });
@@ -38,7 +38,7 @@
       event.gesture.preventDefault();
       if (live) {
         if (dragging) { 
-          bean.fire(element, 'translate', Pt(dragging.gesture));
+          bean.fire(element, 'translate', dragging);
         }
         if (pinching) {
           bean.fire(element, 'magnify', pinching.gesture.scale);

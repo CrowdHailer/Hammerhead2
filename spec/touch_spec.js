@@ -3,6 +3,7 @@ describe('notification of gestures', function(){
   // nothing for touch release without pinch or drag
   // use last drag or pinch data
   // might need throttling but animframe could be acceptable
+  // SVGPoint could use string method
 
   var $svg, $path, svg, path, defaultGesture, remove, preventDefault,
     onDisplace, onInflate, onTranslate, onMagnify;
@@ -122,5 +123,13 @@ describe('notification of gestures', function(){
     hammertime.trigger('touch', defaultGesture);
     hammertime.trigger('pinch', _.augment(defaultGesture)({scale: 2}));
     expect(onInflate).toHaveBeenCalledWith(2);
+  });
+
+  it('should pass last translation as translate argument', function(){
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('drag', _.augment(defaultGesture)({deltaX: 2, deltaY: 3}));
+    hammertime.trigger('drag', _.augment(defaultGesture)({deltaX: 4, deltaY: 5}));
+    hammertime.trigger('release', _.augment(defaultGesture)({deltaX: 6, deltaY: 7}));
+    expect(onTranslate).toHaveBeenCalledWith(SVGroovy.Point(4, 5));
   });
 });
