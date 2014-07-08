@@ -59,7 +59,7 @@ describe('notification of gestures', function(){
 
   it('should magnify on release after pinch', function(){
     hammertime.trigger('touch', defaultGesture);
-    hammertime.trigger('pinch', defaultGesture);
+    hammertime.trigger('pinch', _.augment(defaultGesture)({scale: 2}));
     hammertime.trigger('release', defaultGesture);
     expect(onMagnify).toHaveBeenCalled();
   });
@@ -96,7 +96,7 @@ describe('notification of gestures', function(){
 
   it('should not drag after a pinch', function(){
     hammertime.trigger('touch', defaultGesture);
-    hammertime.trigger('pinch', defaultGesture);
+    hammertime.trigger('pinch', _.augment(defaultGesture)({scale: 2}));
     hammertime.trigger('drag', defaultGesture);
     expect(onDisplace).not.toHaveBeenCalled();
   });
@@ -131,5 +131,13 @@ describe('notification of gestures', function(){
     hammertime.trigger('drag', _.augment(defaultGesture)({deltaX: 4, deltaY: 5}));
     hammertime.trigger('release', _.augment(defaultGesture)({deltaX: 6, deltaY: 7}));
     expect(onTranslate).toHaveBeenCalledWith(SVGroovy.Point(4, 5));
+  });
+
+  it('should pass last pinch scale as magnify argument', function(){
+    hammertime.trigger('touch', defaultGesture);
+    hammertime.trigger('pinch', _.augment(defaultGesture)({scale: 2}));
+    hammertime.trigger('pinch', _.augment(defaultGesture)({scale: 3}));
+    hammertime.trigger('release', _.augment(defaultGesture)({scale: 4}));
+    expect(onMagnify).toHaveBeenCalledWith(3);
   });
 });
