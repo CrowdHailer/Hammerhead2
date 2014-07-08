@@ -4,29 +4,31 @@ describe('notification of gestures', function(){
   // use last drag or pinch data
   // might need throttling but animframe could be acceptable
 
-  var $svg, $path, defaultGesture, remove,
+  var $svg, $path, svg, path, defaultGesture, remove, preventDefault,
     onDisplace, onInflate, onTranslate, onMagnify;
   var hammertime = Hammer(document);
   beforeEach(function(){
     $(document.body).append('<svg id="test" width="500" viewBox="0 0 2000 1000"><path id="test-path"></path></svg>');
     $svg = $('#test');
     $path = $('#test-path');
-    defaultGesture = {target: $path[0], preventDefault: function(){}};
+    svg = $svg[0];
+    path = $path[0];
+    defaultGesture = {target: path, preventDefault: function(){}};
     remove = Hammerhead.dispatchTouch.call({
       $element: $svg,
       element: $svg[0],
       isComponent: function(el){
-        return el === $path[0];
+        return el === path;
       }
     });
     onDisplace = jasmine.createSpy();
     onInflate = jasmine.createSpy();
     onTranslate = jasmine.createSpy();
     onMagnify = jasmine.createSpy();
-    bean.on($svg[0], 'displace', onDisplace);
-    bean.on($svg[0], 'inflate', onInflate);
-    bean.on($svg[0], 'translate', onTranslate);
-    bean.on($svg[0], 'magnify', onMagnify);
+    bean.on(svg, 'displace', onDisplace);
+    bean.on(svg, 'inflate', onInflate);
+    bean.on(svg, 'translate', onTranslate);
+    bean.on(svg, 'magnify', onMagnify);
   });
 
   afterEach(function(){

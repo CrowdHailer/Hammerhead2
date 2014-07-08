@@ -13,12 +13,12 @@
       pinching = false;
 
     hammertime.on('touch', function(event){
-      event.gesture.preventDefault();
+      // event.gesture.preventDefault();
       live = isComponent(event.target);
     });
 
     hammertime.on('drag', function(event){
-      event.gesture.preventDefault();
+      // event.gesture.preventDefault();
       if (live && !pinching) {
         dragging = event;
         bean.fire(element, 'displace', Pt(event.gesture));
@@ -26,7 +26,7 @@
     });
 
     hammertime.on('pinch', function(event){
-      event.gesture.preventDefault();
+      // event.gesture.preventDefault();
       if (live) {
         dragging = false;
         pinching = event;
@@ -35,7 +35,7 @@
     });
 
     hammertime.on('release', function(){
-      event.gesture.preventDefault();
+      // event.gesture.preventDefault();
       if (live) {
         if (dragging) { 
           bean.fire(element, 'translate', Pt(dragging.gesture));
