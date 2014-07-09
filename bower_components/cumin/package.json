@@ -1,6 +1,6 @@
 {
   "name": "cumin",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "functional library",
   "main": "''",
   "scripts": {
@@ -10,14 +10,13 @@
   "license": "MIT",
   "devDependencies": {
     "grunt": "0.4.x",
-    "karma-jasmine": "~0.1.5",
+    "karma-jasmine": "^0.2.2",
     "karma-phantomjs-launcher": "~0.1.4",
-    "karma": "~0.10.10",
-    "karma-spec-reporter": "0.0.12",
+    "karma": "^0.12.16",
+    "karma-spec-reporter": "0.0.13",
     "grunt-contrib-concat": "^0.4.0",
     "grunt-contrib-uglify": "^0.4.0",
-    "grunt-karma": "0.6.2",
+    "grunt-karma": "^0.8.3",
     "grunt-strip-code": "^0.1.2"
   }
-
 }

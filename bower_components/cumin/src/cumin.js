@@ -9,139 +9,136 @@
 // functions return frozen objects
 
 // JavaScript all things? function(executable method invokable), collection, primitive, void(null undef)
-var _ = (function(){
+var _ = (function () {
+  'use strict';
 
   var FROZEN = true;
+  var BREAKER = {};
 
 // basic iterators
 
-  function eachArray(operation){
+  function eachArray(operation) {
   // iterates array left to right
   // assumes array type
-    return function(array){
+    return function (array) {
       for (var i = 0; i < array.length; i++) {
-        operation(array[i], i);
+        if (operation.call(this, array[i], i) === BREAKER) { return; }
       }
     };
   }
 
-  function eachArrayRight(operation){
+  function eachArrayRight(operation) {
   // iterates array right to left
   // assumes array type
-    return function(array){
+    return function (array) {
       for (var i = array.length - 1; i > -1; i--) {
-        operation(array[i], i);
+        if (operation.call(this, array[i], i) === BREAKER) { return; }
       }
     };
   }
 
-  function eachObject(operation){
+  function eachObject(operation) {
   // iterates through object key/value pairs
   // no order assumed
-    return function(object){
-      eachArray(function(key){
-        operation(object[key], key);
+    return function (object) {
+      var context = this;
+      eachArray(function (key) {
+        return operation.call(context, object[key], key);
       })(Object.keys(object));
     };
   }
 
-  function each(operation){
+  function each(operation) {
   // iterates through object/array/arguments
   // iterates left to right when given array/arguments
-    return function(collection){
+    return function (collection) {
       if (arguments.length > 1) {
         collection = argsToList(arguments);
       }
       if (isArray(collection)) {
-        eachArray(operation)(collection);
+        eachArray(operation).call(this, collection);
       } else {
-        eachObject(operation)(collection);
+        eachObject(operation).call(this, collection);
       }
     };
   }
 
 // Basic collection operations
 
-  function mapArray(operation){
-    return function(array){
+  function mapArray(operation) {
+    return function (array) {
       var results = [];
-      eachArray(function(element, index){
-        results.push(operation(element, index));
-      })(array);
-      return FROZEN? Object.freeze(results) : results;
+      eachArray(function (element, index) {
+        results.push(operation.call(this, element, index));
+      }).call(this, array);
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  function mapObject(operation){
-    return function(object){
+  function mapObject(operation) {
+    return function (object) {
       var results = {};
-      eachObject(function(value, key){
-        results[key] = operation(value, key);
-      })(object);
-      return FROZEN? Object.freeze(results) : results;
+      eachObject(function (value, key) {
+        results[key] = operation.call(this, value, key);
+      }).call(this, object);
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  function map(operation){
-    return function(collection){
+  function map(operation) {
+    return function (collection) {
       if (arguments.length > 1) {
         collection = argsToList(arguments);
       }
       if (isArray(collection)) {
-        return mapArray(operation)(collection);
+        return mapArray(operation).call(this, collection);
       } else {
-        return mapObject(operation)(collection);
+        return mapObject(operation).call(this, collection);
       }
     };
   }
 
-  function filterArray(operation){
-    return function(array){
+  function filterArray(operation) {
+    return function (array) {
       var results = [];
-      eachArray(function(element, index){
-        if (operation(element, index)) { results.push(element); }
-      })(array);
-      return FROZEN? Object.freeze(results) : results;
+      eachArray(function (element, index) {
+        if (operation.call(this, element, index)) { results.push(element); }
+      }).call(this, array);
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  var rejectArray = compose(filterArray, not);
-
-  function filterObject(operation){
-    return function(object){
+  function filterObject(operation) {
+    return function (object) {
       var results = {};
-      eachObject(function(value, key){
-        if (operation(value, key)) { results[key] = value;}
-      })(object);
-      return FROZEN? Object.freeze(results) : results;
+      eachObject(function (value, key) {
+        if (operation.call(this, value, key)) { results[key] = value; }
+      }).call(this, object);
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  var rejectObject = compose(filterObject, not);
-
-  function filter(operation){
-    return function(collection){
+  function filter(operation) {
+    return function (collection) {
       if (arguments.length > 1) {
         collection = argsToList(arguments);
       }
       if (isArray(collection)) {
-        return filterArray(operation)(collection);
+        return filterArray(operation).call(this, collection);
       } else {
-        return filterObject(operation)(collection);
+        return filterObject(operation).call(this, collection);
       }
     };
   }
 
-  var reject = compose(filter, not);
-
-  function reduce(initial){
+  function reduce(initial) {
     // The same code works here for arrays and objects so does not have varient.
-    return function(operation){
-      return function(){
+    return function (operation) {
+      return function () {
         var memo = initial;
-        each(function(item, location){
-          memo = isDefined(memo) ? operation(memo)(item, location) : item;
-        }).apply({}, arguments);
+        each(function (item, location) {
+          memo = isDefined(memo) ? operation.call(this, memo).call(this, item, location) : item;
+        }).apply(this, arguments);
         return memo;
       };
     };
@@ -149,195 +146,216 @@ var _ = (function(){
 
 // Higher collection operations
 
-  function all(operation){
+  function find(predicate) {
+    return function() {
+      var result;
+      each(function (item) {
+        if (predicate.call(this, item)) {
+          result = item;
+          return BREAKER;
+        }
+      }).apply(this, arguments);
+      return result;
+    };
+  }
+
+  function all(operation) {
     operation = operation || I;
-    return function(){
+    return function () {
       var memo = true;
-      each(function(item, location){
-        memo = memo && operation(item, location);
-      }).apply({}, arguments);
+      each(function (item, location) {
+        memo = operation.call(this, item, location);
+        return memo ? undefined : BREAKER;
+      }).apply(this, arguments);
       return memo;
     };
     // return location of first fail or length as location??
   }
 
-  function any(operation){
+  function any(operation) {
     operation = operation || I;
-    return function(){
+    return function () {
       var memo = false;
-      each(function(item, location){
-        memo = memo || operation(item, location);
-      }).apply({}, arguments);
+      each(function (item, location) {
+        memo = operation.call(this, item, location);
+        return memo ? BREAKER : undefined;
+      }).apply(this, arguments);
       return memo;
     };
     // return location of first success or length as location??
   }
 
-  function min(operation){
+  function min(operation) {
     operation = operation || I;
-    return function(){
+    return function () {
       var memo;
-      each(function(item){
-        memo = memo && (operation(memo) < operation(item)) ? memo : item;
-      }).apply({}, arguments);
+      each(function (item) {
+        memo = memo && (operation.call(this, memo) < operation.call(this, item)) ? memo : item;
+      }).apply(this, arguments);
       return memo;
     };
   }
 
-  function max(operation){
+  function max(operation) {
     operation = operation || I;
-    return function(){
+    return function () {
       var memo;
-      each(function(item){
-        memo = memo && (operation(memo) > operation(item)) ? memo : item;
-      }).apply({}, arguments);
+      each(function (item) {
+        memo = memo && (operation.call(this, memo) > operation.call(this, item)) ? memo : item;
+      }).apply(this, arguments);
       return memo;
     };
   }
 
 // Array
 
-  function cleave(n){
-    return function(array){
-      n = n < 0 ? array.length + n : n ;
+  function cleave(n) {
+    return function (array) {
+      n = n < 0 ? array.length + n : n;
       return [array.slice(0, n), array.slice(n)];
     };
   }
 
-  function cyclic(n){
+  function cyclic(n) {
     var results = [];
-    times(n)(function(){
+    times(n)(function () {
       results.push([]);
     });
-    return function(collection){
-      eachArray(function(element, index){
+    return function (collection) {
+      eachArray(function (element, index) {
         results[index % n].push(element);
       })(collection);
       return results;
     };
   }
 
-  function within(array){
+  function within(array) {
     if (arguments.length > 1) {
       array = argsToList(arguments);
     }
-    return function(item){
+    return function (item) {
       return array.indexOf(item) !== -1;
     };
   }
 
 // Object 
 
-  function extend(extra){
+  function extend(extra) {
     // adds extra key vales to second passed object
-    return function(object){
-      eachObject(function(value, key){
+    return function (object) {
+      eachObject(function (value, key) {
         object[key] = value;
       })(extra);
       return object;
     };
   }
 
-  function augment(object){
-    return function(extra){
-      eachObject(function(value, key){
+  function augment(object) {
+    return function (extra) {
+      eachObject(function (value, key) {
         object[key] = value;
       })(extra);
       return object;
     };
   }
 
-  function foundation(object){
+  function foundation(object) {
     // builds a new object from the properties of a foundation object and extention object.
-    return function(extra){
+    return function (extra) {
       var results = {};
-      each(eachObject(function(value, key){
+      each(eachObject(function (value, key) {
         results[key] = value;
       }))(object || {}, extra || {});
-      return FROZEN? Object.freeze(results) : results;
+      return FROZEN ? Object.freeze(results) : results;
     };
   }
 
-  function overlay(extra){
+  function overlay(extra) {
     // builds a new object from the properties of a foundation object and extention object.
-    return function(object){
+    return function (object) {
       var results = {};
-      each(eachObject(function(value, key){
+      each(eachObject(function (value, key) {
         results[key] = value;
       }))(object || {}, extra || {});
-      return FROZEN? Object.freeze(results) : results;
+      return FROZEN ? Object.freeze(results) : results;
     };
-  }  
+  }
 
 // Function operations
 
-  function compose(){
-    var funcs = arguments;
-    return function(){
-      var args = arguments;
-      eachArrayRight(function(func){
-        args = [func.apply(this, args)];
-      })(funcs);
-      return args[0];
+  function adjoin(f) {
+    return function (g) {
+      return function () {
+        return f.call(this, (g.apply(this, arguments)));
+      };
     };
   }
 
-  function invoke(){
+  function invoke() {
     var args = arguments;
-    return function(func){
-      return func.apply({}, args);
+    return function (func) {
+      return func.apply(this, args);
     };
   }
 
-  function debounce(wait){
-    return function(func){
-      var timeout, args;
-      return function(){
-        args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(function(){
-          func.apply({}, args);
-        }, wait);
-      };
+  function postpone(func) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return function () {
+      return func.apply(this, args);
     };
   }
 
-  function throttle(wait){
-    return function(func){
-      var timeout, args;
-      return function(){
-        args = arguments;
-        if (timeout) { return; }
-        timeout = setTimeout(function(){
-          timeout = null;
-          func.apply({}, args);
-        }, wait);
-      };
-    };
-  }
-
-  function times(n){
-    return function(operation){
-      for (var i = 0; i < n; i++){
-        operation(i);
+  function times(n) {
+    return function (operation) {
+      for (var i = 0; i < n; i++) {
+        operation.call(this, i);
       }
     };
   }
 
-  function not(func){
-    return function(){
-      return !func.apply({}, arguments);
+  function debounce(wait) {
+    return function (func) {
+      var timeout, args;
+      return function () {
+        var context = this;
+        args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+          func.apply(context, args);
+        }, wait);
+      };
+    };
+  }
+
+  function throttle(wait) {
+    return function (func) {
+      var timeout, args;
+      return function () {
+        args = arguments;
+        var context = this;
+        if (timeout) { return; }
+        timeout = setTimeout(function () {
+          timeout = null;
+          func.apply(context, args);
+        }, wait);
+      };
+    };
+  }
+
+  function not(func) {
+    return function () {
+      return !func.apply(this, arguments);
     };
   }
 
 // Utilities
 
-  function I(x){
+  function I(x) {
     return x;
   }
 
-  function dot(key){
-    return function(obj){
+  function dot(key) {
+    return function (obj) {
       if (isArray(key) || isObj(key)) {
         return map(invoke(obj))(map(dot)(key));
       }
@@ -345,48 +363,58 @@ var _ = (function(){
     };
   }
 
-  var now = Date.now || function() { return new Date().getTime(); };
-
-  function random(max){
-    return function(){
-      return Math.random()*max|0;
+  function method(key) {
+    return function (obj) {
+      return obj && obj[key] && obj[key]();
     };
   }
 
-  function expose(nameList){
+  var now = Date.now || function () { return new Date().getTime(); };
+
+  function expose(nameList) {
     var fNames = nameList.split(' ');
-    eachArray(function(fName){
+    eachArray(function (fName) {
       window[fName] = _[fName];
     })(fNames);
   }
 
-  function defreeze(){
+  function defreeze() {
     FROZEN = false;
   }
 
-  function refreeze(){
+  function refreeze() {
     FROZEN = true;
   }
 
-  function size(collection){
+  function BREAK() {
+    return BREAKER;
+  }
+
+  function size(collection) {
     return collection.length || Object.keys(collection).length;
   }
 
-  function log(){
+  function log() {
     console.log.apply(console, arguments);
   }
 
-  function position(func){
-    return function(item, position){
+  function position(func) {
+    return function (item, position) {
       return func(position);
     };
   }
 
-  function equals(a){
-    return function(b){
+  function equals(a) {
+    return function (b) {
       return a === b;
     };
   }
+
+  var compose = reduce()(adjoin);
+  var rejectArray = compose(filterArray, not);
+  var rejectObject = compose(filterObject, not);
+  var reject = compose(filter, not);
+
   var _ =  {
     eachArray: eachArray,
     eachArrayRight: eachArrayRight,
@@ -405,9 +433,10 @@ var _ = (function(){
     reject: reject,
     reduce: reduce,
 
+    find: find,
     all: all, //poss every 
     any: any, //poss sum use any as anything eg first from obj or and shift to obj
-    min: min, 
+    min: min,
     max: max,
 
     cyclic: cyclic,
@@ -419,17 +448,19 @@ var _ = (function(){
     foundation: foundation,
     overlay: overlay,
 
+    adjoin: adjoin,
     compose: compose,
     invoke: invoke,
+    postpone: postpone,
     debounce: debounce,
     throttle: throttle,
     not: not,
 
     I: I,
     dot: dot,
+    method: method,
     now: now,
     times: times,
-    random: random,
 
     expose: expose,
     defreeze: defreeze,
@@ -438,6 +469,7 @@ var _ = (function(){
     log: log,
     position: position,
     equals: equals,
+    BREAK: BREAK
   };
   return _;
 }());

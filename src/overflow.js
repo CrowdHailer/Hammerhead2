@@ -1,30 +1,30 @@
 (function(parent){
-  var tower = Belfry.getTower();
+  'use strict';
 
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
 
-  $(window).on('resize', tower.publish('windowResize'));
+  parent.regulateOverflow = function(){
+    var surplus = this.getConfig('overflowSurplus'),
+      factor = 2 * surplus + 1,
+      $element = this.$element,
+      $parent = $element.parent();
 
-  function createOverflowUpdater(){
+    var update = function(){
+      var height = $parent.height(),
+        width = $parent.width();
 
-    var surplus = this.getConfig('overflowSurplus');
-    var factor = 2 * surplus + 1;
-    var $parent = this.$element.parent();
-
-    return _.debounce(this.getConfig('resizeDelay'))(function(){
-      var height = $parent.height();
-      var width = $parent.width();
-      this.$element
+      $element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    }).bind(this);
-  }
+    };
+    update();
 
-  parent.regulateOverflow = function(){
-    var updateOverflow = createOverflowUpdater.call(this);
-    
-    updateOverflow();
-    tower.subscribe('windowResize')(updateOverflow);
+    bean.on(window, 'resize', update);
+
+    return function(){
+      bean.off(window, 'resize', update);
+    };
   };
+
 }(Hammerhead));

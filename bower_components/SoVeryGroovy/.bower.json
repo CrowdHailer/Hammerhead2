@@ -1,6 +1,6 @@
 {
   "name": "SoVeryGroovy",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "authors": [
     "Peter <peterhsaxton@gmail.com>"
   ],
@@ -13,16 +13,16 @@
     "spec"
   ],
   "dependencies": {
-    "cumin": "0.6.1"
+    "cumin": "0.8.0"
   },
   "homepage": "https://github.com/CrowdHailer/SoVeryGroovy",
-  "_release": "0.1.1",
+  "_release": "0.1.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.1.1",
-    "commit": "73527a464bdb783d8bf2a293447d7887e7de7ddf"
+    "tag": "v0.1.2",
+    "commit": "806934f734d9f7a21c6c905f58b1828e2714a947"
   },
   "_source": "git://github.com/CrowdHailer/SoVeryGroovy.git",
-  "_target": "0.1.1",
+  "_target": "0.1.2",
   "_originalSource": "SoVeryGroovy"
 }

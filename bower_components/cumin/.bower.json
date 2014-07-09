@@ -1,6 +1,6 @@
 {
   "name": "cumin",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "homepage": "https://github.com/CrowdHailer/cuminjs",
   "authors": [
     "Peter <peterhsaxton@gmail.com>"
@@ -26,13 +26,13 @@
     "bower_components",
     "spec"
   ],
-  "_release": "0.7.0",
+  "_release": "0.8.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.7.0",
-    "commit": "50c245f26cf3ccb9ecde5599bf7be9c4ee5e752c"
+    "tag": "v0.8.0",
+    "commit": "0bf43e39e809e1a69a3de4c78e1046e405f0a8e1"
   },
   "_source": "git://github.com/CrowdHailer/cuminjs.git",
-  "_target": "0.7.0",
+  "_target": "0.8.0",
   "_originalSource": "cumin"
 }

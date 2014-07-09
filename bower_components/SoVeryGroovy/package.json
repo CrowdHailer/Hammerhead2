@@ -1,6 +1,6 @@
 {
   "name": "SoVeryGroovy",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Convenient API for generating svg components",
   "main": "index.js",
   "scripts": {
@@ -10,13 +10,13 @@
   "license": "MIT",
   "devDependencies": {
     "grunt": "0.4.x",
-    "karma-jasmine": "~0.1.5",
+    "karma-jasmine": "~0.2.2",
     "karma-phantomjs-launcher": "~0.1.4",
-    "karma": "~0.10.10",
+    "karma": "~0.12.16",
     "karma-spec-reporter": "0.0.12",
     "grunt-contrib-concat": "^0.4.0",
     "grunt-contrib-uglify": "^0.4.0",
-    "grunt-karma": "0.6.2",
+    "grunt-karma": "0.8.3",
     "grunt-strip-code": "^0.1.2"
   }
 }

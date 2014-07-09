@@ -66,19 +66,6 @@ function missingCTM($element){
 
 // cumin fills
 
-_.debounce = function(wait){
-  return function(func){
-    var timeout, args;
-    return function(){
-      var context = this;
-      args = arguments;
-      clearTimeout(timeout);
-      timeout = setTimeout(function(){
-        func.apply(context, args);
-      }, wait);
-    };
-  };
-};
 
 _.peruse = function(obj){
   return function(key){
@@ -89,26 +76,12 @@ _.peruse = function(obj){
 //SVGroovy fills NB requires interpolate
 
 SVGroovy.Matrix.asCss = function(matrix){
-  return interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(matrix || SVGroovy.Matrix());
-};
-
-SVGroovy.Matrix.forTranslation = function(point){
-  return SVGroovy.Matrix.translating(point.x, point.y);
-};
-
-SVGroovy.Matrix.forMagnification = function(scale){
-  return SVGroovy.Matrix.scaling(scale);
+  return interpolate('matrix3d(%(a)s, %(b)s, 0, 0, %(c)s, %(d)s, 0, 0, 0, 0, 1, 0, %(e)s, %(f)s, 0, 1)')(matrix || SVGroovy.Matrix());
 };
 
 // check svg owner
 
-function checkSVGTarget(svg){
-  return function(target){
-    return (target.ownerSVGElement || target) === svg;
-  };
-}
 
-var hammertime = Hammer(document);
 
 var Hammerhead = {};
 
@@ -178,214 +151,177 @@ var Hammerhead = {};
   parent.ViewBox = create;
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower();
+  'use strict';
 
   var marginTemp = interpolate('-%(height)spx -%(width)spx');
 
-  $(window).on('resize', tower.publish('windowResize'));
+  parent.regulateOverflow = function(){
+    var surplus = this.getConfig('overflowSurplus'),
+      factor = 2 * surplus + 1,
+      $element = this.$element,
+      $parent = $element.parent();
 
-  function createOverflowUpdater(){
+    var update = function(){
+      var height = $parent.height(),
+        width = $parent.width();
 
-    var surplus = this.getConfig('overflowSurplus');
-    var factor = 2 * surplus + 1;
-    var $parent = this.$element.parent();
-
-    return _.debounce(this.getConfig('resizeDelay'))(function(){
-      var height = $parent.height();
-      var width = $parent.width();
-      this.$element
+      $element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
         .width(width * factor)
         .height(height * factor);
-    }).bind(this);
-  }
+    };
+    update();
 
-  parent.regulateOverflow = function(){
-    var updateOverflow = createOverflowUpdater.call(this);
-    
-    updateOverflow();
-    tower.subscribe('windowResize')(updateOverflow);
+    bean.on(window, 'resize', update);
+
+    return function(){
+      bean.off(window, 'resize', update);
+    };
   };
+
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower();
+  'use strict';
 
-  var alertStart = tower.publish('start');
-  var alertDrag = tower.publish('drag');
-  var alertPinch = tower.publish('pinch');
-  var alertEnd = tower.publish('end');
+  var Pt = SVGroovy.Point;
+  var hammertime = Hammer(document);
+  
+  parent.dispatchTouch = function(){
+    // TDD with cumin method, gesture handler and deactivate return.
+    var element = this.element,
+      isComponent = this.isComponent,
+      live = false,
+      dragging = false,
+      pinching = false;
 
-  function watchTouch(event){
-    if (event.target.ownerSVGElement === this.getElement()) {
-      this.handlers.touch = false;
-      this.handlers.drag = handleDrag;
-      this.handlers.pinch = handlePinch;
-      this.handlers.release = endHandler;
-      alertStart(this.getElement());
-    }
-    return this;
-  }
-
-  function handleDrag(event){
-    alertDrag({
-      element: this.getElement(),
-      delta: SVGroovy.Point(event.gesture)
-    });
-    return this;
-  }
-
-  function handlePinch(event){
-    this.handlers.drag = false;
-    alertPinch({
-      element: this.getElement(),
-      center: SVGroovy.Point(event.gesture.center),
-      scale: event.gesture.scale
-    });
-    return this;
-  }
-
-  function endHandler(event){
-    this.handlers.touch = watchTouch;
-    this.handlers.drag = false;
-    this.handlers.pinch = false;
-    alertEnd({
-      element: this.getElement(),
-      delta: SVGroovy.Point(event.gesture),
-      scale: event.gesture.scale
-    });
-    return this;
-  }
-
-  parent.touchDispatch = function($element){
-    var element = $element[0];
-
-    var instance = Object.create({});
-    instance.getElement = function(){
-      return element;
-    };
-    instance.handlers = {
-      touch: watchTouch,
-    };
-
-    function gestureHandler(event){
+    hammertime.on('touch', function(event){
       event.gesture.preventDefault();
-      if(instance.handlers[event.type]) {
-        instance = instance.handlers[event.type].call(instance, event);
+      live = isComponent(event.target);
+    });
+
+    hammertime.on('drag', function(event){
+      event.gesture.preventDefault();
+      if (live && !pinching) {
+        dragging = Pt(event.gesture);
+        bean.fire(element, 'displace', Pt(event.gesture));
       }
-    }
+    });
 
-    instance.activate = function activate(){
-      hammertime.on('touch drag pinch release', gestureHandler);
+    hammertime.on('pinch', function(event){
+      event.gesture.preventDefault();
+      if (live) {
+        dragging = false;
+        pinching = event.gesture.scale;
+        bean.fire(element, 'inflate', pinching);
+      }
+    });
+
+    hammertime.on('release', function(){
+      event.gesture.preventDefault();
+      if (live) {
+        if (dragging) { 
+          bean.fire(element, 'translate', dragging);
+        }
+        if (pinching) {
+          bean.fire(element, 'magnify', pinching);
+        }
+        live = false;
+        pinching = false;
+        dragging = false;
+      }
+    });
+
+    return function(){
+      hammertime.dispose();
     };
-
-    instance.deactivate = function deactivate(){
-      hammertime.off('touch drag pinch release', gestureHandler);
-    };
-
-    instance.activate();
-    return instance;
-
   };
 }(Hammerhead));
 (function(parent){
-  var tower = Belfry.getTower(),
-    Pt = SVGroovy.Point,
+  'use strict';
+  //cumin compose map map
+  // limit zoom
+  // round pixels
+
+  var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
-    VB = parent.ViewBox;
-
-  var listenStart = tower.subscribe('start');
-  var listenDrag = tower.subscribe('drag');
-  var listenPinch = tower.subscribe('pinch');
-  var listenEnd = tower.subscribe('end');
-
-  var XBtransform = _.compose(transformObject, Mx.asCss);
+    VB = parent.ViewBox,
+    xBtransform = _.compose(transformObject, Mx.asCss);
 
   parent.managePosition = function(){
-    var $element = this.$element;
-    var properFix = missingCTM($element), // windows FIX
-      viewBoxZoom = 1;
-
-    var HOME = viewBox = VB($element.attr('viewBox'));
-
-    var animationLoop,
-      thisScale,
-      maxScale,
-      minScale,
+    var $element = this.$element,
+      element = this.element,
+      properFix = missingCTM($element), // windows FIX
+      viewBoxZoom = 1,
+      viewBox = VB($element.attr('viewBox')),
+      animationLoop,
       currentMatrix;
 
-    listenStart(function(){
-      beginAnimation();
-      maxScale = this.getConfig('maxZoom')/viewBoxZoom;
-      minScale = this.getConfig('minZoom')/viewBoxZoom;
-      thisScale = 1;
-    }.bind(this));
-
-    listenDrag(function(data){
-      currentMatrix = Mx.forTranslation(data.delta);
-    });
-
-    listenPinch(function(data){
-      var scale = Math.max(Math.min(data.scale, maxScale), minScale);
-      currentMatrix = Mx.forMagnification(scale);
-      thisScale = scale;
-    });
-
-    listenEnd(function(data){
-      if (thisScale === 1) {
-        var fixedTranslation = Pt.scalar(properFix)(data.delta);
-        var inverseCTM = $element[0].getScreenCTM().inverse();
-        inverseCTM.e = 0;
-        inverseCTM.f = 0;
-        var scaleTo = Pt.matrixTransform(inverseCTM);
-        var svgTrans = scaleTo(fixedTranslation);
-        viewBox = VB.translate(svgTrans)(viewBox);
-      } else{
-        var scale = Math.max(Math.min(thisScale, maxScale), minScale);
-        viewBoxZoom *= scale;
-        viewBox = VB.zoom(scale)()(viewBox);
+    function renderCSS(){
+      if (!animationLoop) {
+        animationLoop = requestAnimationFrame(function(){
+          $element.css(xBtransform(currentMatrix));
+          animationLoop = false;
+        });
       }
+    }
+
+    function renderViewBox(){
       cancelAnimationFrame(animationLoop);
-      currentMatrix = Mx();
-      requestAnimationFrame(function(){
+      requestAnimationFrame( function(){
+        $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-        $element.css(XBtransform());
       });
+    }
+
+    bean.on(element, 'displace', function(point){
+      currentMatrix = Mx.toTranslate(point);
+      renderCSS();
     });
 
-    function render(){
-      $element.css(XBtransform(currentMatrix));
-      animationLoop = requestAnimationFrame( render );
-    }
+    bean.on(element, 'inflate', function(scaleFactor){
+      currentMatrix = Mx.toScale(scaleFactor);
+      renderCSS();
+    });
 
-    function beginAnimation(){
-      animationLoop = requestAnimationFrame( render );
-    }
+    bean.on(element, 'translate', function(delta){
+      properFix = 1;
+      var fixedTranslation = Pt.scalar(properFix)(delta);
+      var inverseCTM = $element[0].getScreenCTM().inverse();
+      inverseCTM.e = 0;
+      inverseCTM.f = 0;
+      var scaleTo = Pt.matrixTransform(inverseCTM);
+      var svgTrans = scaleTo(fixedTranslation);
+      viewBox = VB.translate(svgTrans)(viewBox);
+      renderViewBox();
+    });
 
-    $element.css(XBtransform());
+    bean.on(element, 'magnify', function(scale){
+      viewBox = VB.zoom(scale)()(viewBox);
+      renderViewBox();
+    });
+
+    $element.css(xBtransform());
     $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
 
-    tower.subscribe('home')(function(){
-      $element.css(XBtransform());
-      viewBox = HOME;
-      $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
-    });
+    return function(){
+      bean.off(element);
+    };
   };
 }(Hammerhead));
 (function(parent){
   var tower = Belfry.getTower();
 
-  var alertStart = tower.publish('start');
-  var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
   parent.mousewheelDispatch = function(){
+
     
-    var SVGElement = this.$element[0];
+    var element = this.$element[0];
     var scale;
     var factor = 1 + this.getConfig('mousewheelSensitivity');
 
     var finishScrolling = _.debounce(this.getConfig('mousewheelDelay'))(function(scaleFactor){
-      alertEnd({scale: scaleFactor});
+      bean.fire(element, 'magnify', scaleFactor);
       scale = null;
     });
 
@@ -394,7 +330,6 @@ var Hammerhead = {};
         if (!this.isComponent(event.target)) return;
 
         scale = 1;
-        alertStart('wheel');
       }
 
       if (event.wheelDelta > 0) {
@@ -403,9 +338,7 @@ var Hammerhead = {};
         scale /= factor;
       }
 
-      alertPinch({
-        element: SVGElement,
-        scale: scale});
+      bean.fire(element, 'inflate', scale);
       finishScrolling(scale);
     }.bind(this);
 
@@ -416,13 +349,7 @@ var Hammerhead = {};
 (function(parent){
   "use strict";
 
-  var tower = Belfry.getTower();
-
-  var prototype = {
-    home: function(){
-      tower.publish('home')(this.$element[0]);
-    }
-  };
+  var prototype = {};
 
   var buildConfig = _.foundation({
     mousewheelSensitivity: 0.1,
@@ -433,28 +360,33 @@ var Hammerhead = {};
     resizeDelay: 200
   });
 
-  var noElement = interpolate("SVG element '%(id)s' not found");
+  function checkSVGTarget(svg){
+    return function(target){
+      return (target.ownerSVGElement || target) === svg;
+    };
+  }
 
   function init(svgId, options){
-    var $svg = $('svg#' + svgId);
-    var element = $svg[0];
+    var $element = $('svg#' + svgId);
+    var element = $element[0];
 
     if (!element) {
-      console.warn(noElement({id: svgId}));
+      console.warn(interpolate("SVG element '%(id)s' not found")({id: svgId}));
       return false;
     }
 
-    var instance = Object.create(prototype);
-    instance.$element = $svg;
-    instance.element = element;
-    instance.isComponent = checkSVGTarget(element);
-    instance.getConfig = _.peruse(buildConfig(options));
+    var instance = _.augment(Object.create(prototype))({
+      $element: $element,
+      element: element,
+      isComponent: checkSVGTarget(element),
+      getConfig: _.peruse(buildConfig(options))
+    });
 
-    parent.regulateOverflow.call(instance);
-    parent.touchDispatch($svg);
+    instance.clear = parent.regulateOverflow.call(instance);
+    parent.dispatchTouch.call(instance);
     parent.managePosition.call(instance);
     parent.mousewheelDispatch.call(instance);
-
+    
     return instance;
   }
   parent.create = init;

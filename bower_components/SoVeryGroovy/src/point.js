@@ -2,7 +2,6 @@
   "use strict";
 
   var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
-  var origin = darkSVG.createSVGPoint();
 
   function create(x, y){
     if (isObj(x)) {
