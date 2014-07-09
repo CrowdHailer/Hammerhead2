@@ -1,18 +1,17 @@
 (function(parent){
   var tower = Belfry.getTower();
 
-  var alertStart = tower.publish('start');
-  var alertPinch = tower.publish('pinch');
   var alertEnd = tower.publish('end');
 
   parent.mousewheelDispatch = function(){
+
     
-    var SVGElement = this.$element[0];
+    var element = this.$element[0];
     var scale;
     var factor = 1 + this.getConfig('mousewheelSensitivity');
 
     var finishScrolling = _.debounce(this.getConfig('mousewheelDelay'))(function(scaleFactor){
-      alertEnd({scale: scaleFactor});
+      bean.fire(element, 'magnify', scaleFactor);
       scale = null;
     });
 
@@ -21,7 +20,6 @@
         if (!this.isComponent(event.target)) return;
 
         scale = 1;
-        alertStart('wheel');
       }
 
       if (event.wheelDelta > 0) {
@@ -30,9 +28,7 @@
         scale /= factor;
       }
 
-      alertPinch({
-        element: SVGElement,
-        scale: scale});
+      bean.fire(element, 'inflate', scale);
       finishScrolling(scale);
     }.bind(this);
 

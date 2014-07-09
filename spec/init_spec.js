@@ -19,7 +19,7 @@ describe('Vaild initialisation process', function(){
     spyOn(Hammerhead, 'regulateOverflow');
     spyOn(Hammerhead, 'dispatchTouch');
     spyOn(Hammerhead, 'managePosition');
-    // spyOn(Hammerhead, 'mousewheelDispatch');
+    spyOn(Hammerhead, 'mousewheelDispatch');
     spyOn(window, '$').and.returnValue([element]);
     created = Hammerhead.create('name');
   });
@@ -30,7 +30,7 @@ describe('Vaild initialisation process', function(){
     expect(Hammerhead.regulateOverflow).toHaveBeenCalledWith();
     expect(Hammerhead.dispatchTouch).toHaveBeenCalledWith();
     expect(Hammerhead.managePosition).toHaveBeenCalledWith();
-    // expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith();
+    expect(Hammerhead.mousewheelDispatch).toHaveBeenCalledWith();
   });
   it('should make available the element', function(){
     expect(created.$element[0]).toBe(element);
