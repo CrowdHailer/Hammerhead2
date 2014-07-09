@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Hammerhead Example page</title>
-  <link rel="stylesheet" href="debug/style.css">
+  <link rel="stylesheet" href="dist/hammerhead2.css">
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 </head>
 <body>
@@ -107,40 +107,13 @@
   <script type="text/javascript" src="bower_components/cumin/dist/math.min.js"></script>
   <script type="text/javascript" src="bower_components/SoVeryGroovy/dist/SoVeryGroovy.min.js"></script>
   <script type="text/javascript" src="bower_components/belfry/dist/belfry.min.js"></script>
+  <script type="text/javascript" src="bower_components/bean/bean.min.js"></script>
   <script type="text/javascript" src="dist/HammerHead2.min.js"></script>
 
   <script>
     var id = 'the-pear';
     Hammerhead.create(id);
 
-    var mouseBroadcast = (function(tower){
-      var alertStart = tower.publish('start');
-      var alertDrag = tower.publish('drag');
-      var alertPinch = tower.publish('pinch');
-      var alertEnd = tower.publish('end');
-
-      var scrolling = false;
-      var scroll = 0;
-      var finishScrolling = _.debounce(200)(function(){
-        alertEnd('wheel');
-        scrolling = false;
-      });
-
-      return function($element){
-        $(document).on('mousewheel', function(event){
-          if (!scrolling) {
-            scrolling = true;
-            alertStart('wheel');
-          }
-          scroll += event.wheelDelta;
-          alertPinch({element: $element[0], scale: Math.pow(1.2,scroll/720)});
-          finishScrolling();
-        });
-
-      };
-
-
-    }(Belfry.getTower()));
 
   </script>
 </body>
