@@ -131,9 +131,8 @@ module.exports = function(grunt) {
 
     connect: {
       options: {
-        open: true,
+        port: 9000,
         hostname: 'localhost',
-        keepalive: true,
       },
       debug: {
         options: {
@@ -144,11 +143,54 @@ module.exports = function(grunt) {
         options: {
           base: ['bower_components', 'fullfat', 'demo']
         }
+      },
+      debugLocal: {
+        options: {
+          base: ['bower_components', 'src', 'debug'],
+          open: true,
+          keepalive: true
+        }
+      },
+      demoLocal: {
+        options: {
+          base: ['bower_components', 'fullfat', 'demo'],
+          open: true,
+          keepalive: true
+        }
+      }
+    },
+
+    localtunnel: {
+      options: {
+        port: 9000,
+        open: true,
+        keepalive: true
+      },
+      debug: {
+      },
+      demo: {
+        options: {
+          port: 9000
+        }
       }
     }
 
   });
 
   grunt.registerTask('build', ['clean', 'newer:jshint:source', 'karma', 'concat', 'uglify', 'copy']);
-  grunt.registerTask('demo', ['build', 'connect:demo']);
+  grunt.registerTask('demo', function(target){
+    if (target === 'share') {
+      grunt.task.run(['build', 'connect:demo', 'localtunnel:demo']);
+    } else {
+      grunt.task.run(['build', 'connect:demoLocal']);
+    }
+  });
+  grunt.registerTask('debug', function(target){
+    if (target === 'share') {
+      grunt.task.run(['connect:debug', 'localtunnel:debug']);
+    } else{
+      grunt.task.run(['connect:debugLocal']);
+    }
+  });
+
 };
