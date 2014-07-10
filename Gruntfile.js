@@ -164,6 +164,7 @@ module.exports = function(grunt) {
       options: {
         port: 9000,
         open: true,
+        subdomain: 'hammerhead2',
         keepalive: true
       },
       debug: {
