@@ -492,60 +492,6 @@ var _ = (function () {
 !function(a){"use strict";function b(a){a=a||0;var b=Math.pow(10,a),c=Math.pow(.1,a+1);return function(a){return Math.round(a*b+c)/b}}function c(a){return a=a||0,function(){return Math.random()*a|0}}a.round=b,a.random=c}(_);
 /*! cumin 04-07-2014 */
 !function(a){a.pluck=a.compose(a.map,a.dot),a.pick=a.compose(a.filter,a.position,a.within),a.omit=a.compose(a.filter,a.position,a.not,a.within)}(_);
-(function (global) {
-  "use strict";
-
-  var instance;
-
-  function init(){
-    var channels = {};
-    var uid = -1;
-
-    function subscribe(topic){
-      return function(reaction){
-        var channel = channels[topic] = channels[topic] || {};
-        channel[++uid] = reaction;
-        return uid;
-      };
-    }
-
-    function publish(topic){
-      return function(content){
-        var response = false;
-        _.eachObject(function(action){
-          action(content, topic);
-          response = true;
-        })(channels[topic] || {});
-        return response;
-      };
-    }
-
-    function unsubscribe(topic){
-      return function(uid){
-        if (uid) {
-          delete channels[topic][uid];
-        } else {
-          channels[topic] = {};
-        }
-      };
-    }
-
-    return{
-      subscribe: subscribe,
-      unsubscribe: unsubscribe,
-      publish: publish
-    };
-  }
-
-  global.Belfry = {
-    getTower: function(){
-      if (!instance) {
-        instance = init();
-      }
-      return instance;
-    }
-  };
-}(this));
 var SVGroovy = {};
 (function(parent){
   "use strict";
@@ -655,6 +601,8 @@ var SVGroovy = {};
     return create().translate(point.x, point.y);
   };
 }(SVGroovy));
+/* global _, SVGroovy*/
+
 // String interpolations
 
 function interpolate(s) {
@@ -742,7 +690,11 @@ SVGroovy.Matrix.asCss = function(matrix){
 
 var Hammerhead = {};
 
+/* global Hammerhead, _, SVGroovy*/
+
 (function(parent){
+  'use strict';
+
   var Pt = SVGroovy.Point;
   function create(minimal, maximal){
     if (typeof minimal === 'string') { return createFromString(minimal); }
@@ -807,6 +759,8 @@ var Hammerhead = {};
   extendMethods(create);
   parent.ViewBox = create;
 }(Hammerhead));
+/* global Hammerhead, bean, interpolate*/
+
 (function(parent){
   'use strict';
 
@@ -837,6 +791,8 @@ var Hammerhead = {};
   };
 
 }(Hammerhead));
+/* global Hammerhead, bean, SVGroovy, Hammer*/
+
 (function(parent){
   'use strict';
 
@@ -876,7 +832,7 @@ var Hammerhead = {};
     hammertime.on('release', function(){
       event.gesture.preventDefault();
       if (live) {
-        if (dragging) { 
+        if (dragging) {
           bean.fire(element, 'translate', dragging);
         }
         if (pinching) {
@@ -893,6 +849,8 @@ var Hammerhead = {};
     };
   };
 }(Hammerhead));
+/* global Hammerhead, _, bean, SVGroovy, transformObject, missingCTM, requestAnimationFrame, cancelAnimationFrame*/
+
 (function(parent){
   'use strict';
   //cumin compose map map
@@ -908,7 +866,6 @@ var Hammerhead = {};
     var $element = this.$element,
       element = this.element,
       properFix = missingCTM($element), // windows FIX
-      viewBoxZoom = 1,
       viewBox = VB($element.attr('viewBox')),
       animationLoop,
       currentMatrix;
@@ -965,10 +922,10 @@ var Hammerhead = {};
     };
   };
 }(Hammerhead));
-(function(parent){
-  var tower = Belfry.getTower();
+/* global Hammerhead, _, bean*/
 
-  var alertEnd = tower.publish('end');
+(function(parent){
+  'use strict';
 
   parent.mousewheelDispatch = function(){
 
@@ -984,7 +941,9 @@ var Hammerhead = {};
 
     var handleMousewheel = function(event){
       if (!scale) {
-        if (!this.isComponent(event.target)) return;
+        if (!this.isComponent(event.target)) {
+          return;
+        }
 
         scale = 1;
       }
@@ -1003,8 +962,10 @@ var Hammerhead = {};
   };
 
 }(Hammerhead));
+/* global Hammerhead, _, interpolate*/
+
 (function(parent){
-  "use strict";
+  'use strict';
 
   var prototype = {};
 
