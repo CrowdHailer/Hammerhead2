@@ -119,28 +119,42 @@
   <script type="text/javascript" src="init.js"></script>
 
   <script>
-    var id = 'the-pear';
-    var active = Hammerhead.create(id, {
-      // overflowSurplus: 0.8,
-      // resizeDelay: 200,
-      // maxZoom: 4,
-      // minZoom: 1,
-      // mousewheelSensitivity: 0.2,
-      mousewheelDelay: 100,
-    });
 
-    ////////////////////////////////////////////
-    // DEBUG
-    ////////////////////////////////////////////
-    Hammer.plugins.fakeMultitouch();
-
-    function left(){
+  var active, left, leftfix;
+    window.addEventListener('load', function(){
       'use strict';
 
-      bean.fire(active.element, 'displace', SVGroovy.Point(100, 0));
-    }
+      var id = 'the-pear';
+      active = Hammerhead.create(id, {
+        // overflowSurplus: 0.8,
+        // resizeDelay: 200,
+        // maxZoom: 4,
+        // minZoom: 1,
+        // mousewheelSensitivity: 0.2,
+        mousewheelDelay: 100,
+      });
+      console.log(active);
+      var parent = active.$element.$parent(); 
+      console.log(parent.width(), parent.height());
 
-    bean.on(active.element, 'translate', _.log);
+      ////////////////////////////////////////////
+      // DEBUG
+      ////////////////////////////////////////////
+      Hammer.plugins.fakeMultitouch();
+
+      left = function(n){
+        bean.fire(active.element, 'displace', SVGroovy.Point(n, 0));
+      };
+      leftfix = function(n){
+        bean.fire(active.element, 'translate', SVGroovy.Point(n, 0));
+      };
+
+      bean.on(active.element, 'translate', _.log);
+      bean.on(active.element, 'displace', _.log);
+      bean.on(active.element, 'inflate', _.log);
+      bean.on(active.element, 'magnify', _.log);
+
+    });
 
   </script>
 </body>

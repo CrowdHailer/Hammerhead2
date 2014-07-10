@@ -775,6 +775,7 @@ var Hammerhead = {};
     var update = function(){
       var height = $parent.height(),
         width = $parent.width();
+      console.log(width, height);
 
       $element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
@@ -881,6 +882,7 @@ var Hammerhead = {};
 
     function renderViewBox(){
       cancelAnimationFrame(animationLoop);
+      // animationLoop = false;
       requestAnimationFrame( function(){
         $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
