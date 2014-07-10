@@ -1,3 +1,5 @@
+/* global Hammerhead, bean, SVGroovy, Hammer*/
+
 (function(parent){
   'use strict';
 
@@ -37,7 +39,7 @@
     hammertime.on('release', function(){
       event.gesture.preventDefault();
       if (live) {
-        if (dragging) { 
+        if (dragging) {
           bean.fire(element, 'translate', dragging);
         }
         if (pinching) {

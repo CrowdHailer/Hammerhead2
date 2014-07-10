@@ -1,3 +1,5 @@
+/* global _, SVGroovy*/
+
 // String interpolations
 
 function interpolate(s) {
@@ -85,7 +87,11 @@ SVGroovy.Matrix.asCss = function(matrix){
 
 var Hammerhead = {};
 
+/* global Hammerhead, _, SVGroovy*/
+
 (function(parent){
+  'use strict';
+
   var Pt = SVGroovy.Point;
   function create(minimal, maximal){
     if (typeof minimal === 'string') { return createFromString(minimal); }
@@ -150,6 +156,8 @@ var Hammerhead = {};
   extendMethods(create);
   parent.ViewBox = create;
 }(Hammerhead));
+/* global Hammerhead, bean, interpolate*/
+
 (function(parent){
   'use strict';
 
@@ -180,6 +188,8 @@ var Hammerhead = {};
   };
 
 }(Hammerhead));
+/* global Hammerhead, bean, SVGroovy, Hammer*/
+
 (function(parent){
   'use strict';
 
@@ -219,7 +229,7 @@ var Hammerhead = {};
     hammertime.on('release', function(){
       event.gesture.preventDefault();
       if (live) {
-        if (dragging) { 
+        if (dragging) {
           bean.fire(element, 'translate', dragging);
         }
         if (pinching) {
@@ -236,6 +246,8 @@ var Hammerhead = {};
     };
   };
 }(Hammerhead));
+/* global Hammerhead, _, bean, SVGroovy, transformObject, missingCTM, requestAnimationFrame, cancelAnimationFrame*/
+
 (function(parent){
   'use strict';
   //cumin compose map map
@@ -251,7 +263,6 @@ var Hammerhead = {};
     var $element = this.$element,
       element = this.element,
       properFix = missingCTM($element), // windows FIX
-      viewBoxZoom = 1,
       viewBox = VB($element.attr('viewBox')),
       animationLoop,
       currentMatrix;
@@ -308,10 +319,10 @@ var Hammerhead = {};
     };
   };
 }(Hammerhead));
-(function(parent){
-  var tower = Belfry.getTower();
+/* global Hammerhead, _, bean*/
 
-  var alertEnd = tower.publish('end');
+(function(parent){
+  'use strict';
 
   parent.mousewheelDispatch = function(){
 
@@ -327,7 +338,9 @@ var Hammerhead = {};
 
     var handleMousewheel = function(event){
       if (!scale) {
-        if (!this.isComponent(event.target)) return;
+        if (!this.isComponent(event.target)) {
+          return;
+        }
 
         scale = 1;
       }
@@ -346,8 +359,10 @@ var Hammerhead = {};
   };
 
 }(Hammerhead));
+/* global Hammerhead, _, interpolate*/
+
 (function(parent){
-  "use strict";
+  'use strict';
 
   var prototype = {};
 

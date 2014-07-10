@@ -1,4 +1,8 @@
+/* global Hammerhead, _, SVGroovy*/
+
 (function(parent){
+  'use strict';
+
   var Pt = SVGroovy.Point;
   function create(minimal, maximal){
     if (typeof minimal === 'string') { return createFromString(minimal); }
