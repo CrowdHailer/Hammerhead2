@@ -655,7 +655,7 @@ var SVGroovy = {};
     return create().translate(point.x, point.y);
   };
 }(SVGroovy));
-/* global Hammerhead, _, SVGroovy*/
+/* global _, SVGroovy*/
 
 // String interpolations
 
@@ -886,7 +886,7 @@ var Hammerhead = {};
     hammertime.on('release', function(){
       event.gesture.preventDefault();
       if (live) {
-        if (dragging) { 
+        if (dragging) {
           bean.fire(element, 'translate', dragging);
         }
         if (pinching) {
@@ -995,7 +995,7 @@ var Hammerhead = {};
 
     var handleMousewheel = function(event){
       if (!scale) {
-        if (!this.isComponent(event.target)) { 
+        if (!this.isComponent(event.target)) {
           return;
         }
 
@@ -1016,7 +1016,7 @@ var Hammerhead = {};
   };
 
 }(Hammerhead));
-/* global Hammerhead, _, interpolate*/ 
+/* global Hammerhead, _, interpolate*/
 
 (function(parent){
   'use strict';
