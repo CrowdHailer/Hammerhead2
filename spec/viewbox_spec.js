@@ -1,4 +1,6 @@
 describe('ViewBox', function(){
+  'use strict';
+
   var Pt, VB, p1, p2, viewBox, newViewBox;
   beforeEach(function(){
     Pt = SVGroovy.Point;

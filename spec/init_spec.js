@@ -1,11 +1,14 @@
 describe('Failing initialisation process', function(){
+  'use strict';
+
+  var created;
   beforeEach(function(){
     spyOn(window, '$').and.returnValue([]);
     spyOn(console, 'warn');
     created = Hammerhead.create('incorrect');
   });
   it('should warn the console if no SVG element found', function(){
-    expect(console.warn).toHaveBeenCalledWith("SVG element 'incorrect' not found")
+    expect(console.warn).toHaveBeenCalledWith("SVG element 'incorrect' not found");
   });
   it('should return false if no SVG element found', function(){
     expect(created).toBe(false);
@@ -13,6 +16,8 @@ describe('Failing initialisation process', function(){
 });
 
 describe('Vaild initialisation process', function(){
+  'use strict';
+
   var element = {};
   var created;
   beforeEach(function(){
@@ -60,7 +65,7 @@ describe('Vaild initialisation process', function(){
       overflowSurplus: 5,
       resizeDelay: 6
     };
-     _.each(function(value, setting){
+    _.each(function(value, setting){
       it('should allow overwrite of ' + setting, function(){
         var custom = Hammerhead.create('name', customConfigs);
         expect(custom.getConfig(setting)).toEqual(value);

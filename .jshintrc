@@ -17,5 +17,21 @@
     "strict": true,
     "trailing": true,
     "smarttabs": true,
-    "jquery": true
+    "jquery": true,
+    "globals": {
+      "describe": true,
+      "it": true,
+      "beforeEach": true,
+      "afterEach": true,
+      "jasmine": true,
+      "spyOn": true,
+      "expect": true,
+
+      "$": true,
+      "Hammer": true,
+      "Hammerhead": true,
+      "_": true,
+      "SVGroovy": true,
+      "bean": true
+    }
 }

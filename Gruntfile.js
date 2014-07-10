@@ -54,10 +54,17 @@ module.exports = function(grunt) {
             afterEach: true,
             jasmine: true,
             spyOn: true,
-            expect: true
+            expect: true,
+
+            $: true,
+            Hammer: true,
+            Hammerhead: true,
+            _: true,
+            SVGroovy: true,
+            bean: true
           }
         },
-        src: 'spec/*_spec.js'
+        src: ['spec/*_spec.js', '!spec/agile_spec.js']
       }
     },
 
