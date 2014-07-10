@@ -16,6 +16,11 @@ module.exports = function(grunt) {
         nonull: true,
         src: 'src/hammerhead2.css',
         dest: 'dist/hammerhead2.css'
+      },
+      fullfat: {
+        nonull: true,
+        src: 'src/hammerhead2.css',
+        dest: 'fullfat/hammerhead2.css'
       }
     },
 
@@ -89,7 +94,6 @@ module.exports = function(grunt) {
           'bower_components/cumin/dist/cumin.js',
           'bower_components/cumin/dist/math.min.js',
           'bower_components/cumin/dist/compositions.min.js',
-          'bower_components/belfry/dist/belfry.js',
           'bower_components/SoVeryGroovy/dist/SoVeryGroovy.js',
           'src/prefix.js',
           'src/viewbox.js',
@@ -133,12 +137,18 @@ module.exports = function(grunt) {
       },
       debug: {
         options: {
-          base: ['src', 'bower_components', 'debug']
+          base: ['bower_components', 'src', 'debug']
+        }
+      },
+      demo: {
+        options: {
+          base: ['bower_components', 'fullfat', 'demo']
         }
       }
     }
 
   });
 
-  grunt.registerTask('default', ['clean', 'jshint:source', 'karma', 'concat', 'uglify', 'copy']);
+  grunt.registerTask('build', ['clean', 'jshint:source', 'karma', 'concat', 'uglify', 'copy']);
+  grunt.registerTask('demo', ['build', 'connect:demo']);
 };

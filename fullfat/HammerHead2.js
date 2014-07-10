@@ -492,60 +492,6 @@ var _ = (function () {
 !function(a){"use strict";function b(a){a=a||0;var b=Math.pow(10,a),c=Math.pow(.1,a+1);return function(a){return Math.round(a*b+c)/b}}function c(a){return a=a||0,function(){return Math.random()*a|0}}a.round=b,a.random=c}(_);
 /*! cumin 04-07-2014 */
 !function(a){a.pluck=a.compose(a.map,a.dot),a.pick=a.compose(a.filter,a.position,a.within),a.omit=a.compose(a.filter,a.position,a.not,a.within)}(_);
-(function (global) {
-  "use strict";
-
-  var instance;
-
-  function init(){
-    var channels = {};
-    var uid = -1;
-
-    function subscribe(topic){
-      return function(reaction){
-        var channel = channels[topic] = channels[topic] || {};
-        channel[++uid] = reaction;
-        return uid;
-      };
-    }
-
-    function publish(topic){
-      return function(content){
-        var response = false;
-        _.eachObject(function(action){
-          action(content, topic);
-          response = true;
-        })(channels[topic] || {});
-        return response;
-      };
-    }
-
-    function unsubscribe(topic){
-      return function(uid){
-        if (uid) {
-          delete channels[topic][uid];
-        } else {
-          channels[topic] = {};
-        }
-      };
-    }
-
-    return{
-      subscribe: subscribe,
-      unsubscribe: unsubscribe,
-      publish: publish
-    };
-  }
-
-  global.Belfry = {
-    getTower: function(){
-      if (!instance) {
-        instance = init();
-      }
-      return instance;
-    }
-  };
-}(this));
 var SVGroovy = {};
 (function(parent){
   "use strict";
