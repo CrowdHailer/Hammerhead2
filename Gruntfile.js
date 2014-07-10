@@ -44,7 +44,7 @@ module.exports = function(grunt) {
         },
         reporter: require('jshint-stylish')
       },
-      src: ['src/*.js', '!src/agile.js', '!src/prefix.js'],
+      source: ['src/*.js', '!src/agile.js', '!src/prefix.js'],
       test: {
         options: {
           globals: {
@@ -120,5 +120,5 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['clean', 'jshint:src', 'karma', 'concat', 'uglify', 'copy']);
+  grunt.registerTask('default', ['clean', 'jshint:source', 'karma', 'concat', 'uglify', 'copy']);
 };
