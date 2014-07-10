@@ -15,7 +15,7 @@ describe('ViewBox', function(){
       expect(viewBox.maximal).toEqual(p2);
     });
 
-    it('should be immutable', function(){
+    xit('should be immutable', function(){
       viewBox = VB(p1, p2);
       viewBox.minimal = 3;
       expect(viewBox.minimal).toEqual(p1);
