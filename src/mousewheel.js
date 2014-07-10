@@ -1,7 +1,7 @@
-(function(parent){
-  var tower = Belfry.getTower();
+/* global Hammerhead, _, bean*/
 
-  var alertEnd = tower.publish('end');
+(function(parent){
+  'use strict';
 
   parent.mousewheelDispatch = function(){
 
@@ -17,7 +17,9 @@
 
     var handleMousewheel = function(event){
       if (!scale) {
-        if (!this.isComponent(event.target)) return;
+        if (!this.isComponent(event.target)) { 
+          return;
+        }
 
         scale = 1;
       }

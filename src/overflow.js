@@ -1,3 +1,5 @@
+/* global Hammerhead, bean, interpolate*/
+
 (function(parent){
   'use strict';
 

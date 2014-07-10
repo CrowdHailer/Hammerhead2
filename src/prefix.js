@@ -1,3 +1,5 @@
+/* global Hammerhead, _, SVGroovy*/
+
 // String interpolations
 
 function interpolate(s) {

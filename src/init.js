@@ -1,5 +1,7 @@
+/* global Hammerhead, _, interpolate*/ 
+
 (function(parent){
-  "use strict";
+  'use strict';
 
   var prototype = {};
 

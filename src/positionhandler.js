@@ -1,3 +1,5 @@
+/* global Hammerhead, _, bean, SVGroovy, transformObject, missingCTM, requestAnimationFrame, cancelAnimationFrame*/
+
 (function(parent){
   'use strict';
   //cumin compose map map
@@ -13,7 +15,6 @@
     var $element = this.$element,
       element = this.element,
       properFix = missingCTM($element), // windows FIX
-      viewBoxZoom = 1,
       viewBox = VB($element.attr('viewBox')),
       animationLoop,
       currentMatrix;

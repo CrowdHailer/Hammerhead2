@@ -1,3 +1,5 @@
+/* global Hammerhead, bean, SVGroovy, Hammer*/
+
 (function(parent){
   'use strict';
 
