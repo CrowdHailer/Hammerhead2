@@ -19,6 +19,14 @@ module.exports = function(grunt) {
       }
     },
 
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc',
+        reporter: require('jshint-stylish')
+      },
+      src: ['src/*.js', '!src/agile.js']
+    },
+
     concat: {
       options: {
         separator: '\n'
