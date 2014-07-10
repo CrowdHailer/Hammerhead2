@@ -14,7 +14,6 @@
     var update = function(){
       var height = $parent.height(),
         width = $parent.width();
-      console.log(width, height);
 
       $element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))

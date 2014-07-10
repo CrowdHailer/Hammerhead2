@@ -150,9 +150,13 @@
       };
 
       bean.on(active.element, 'translate', _.log);
-      bean.on(active.element, 'displace', _.log);
-      bean.on(active.element, 'inflate', _.log);
+      // bean.on(active.element, 'displace', _.log);
+      // bean.on(active.element, 'inflate', _.log);
       bean.on(active.element, 'magnify', _.log);
+
+      var hammertime = Hammer(document);
+      hammertime.on('release', function(){
+      });
 
     };
 

@@ -36,7 +36,7 @@
       }
     });
 
-    hammertime.on('release', function(){
+    hammertime.on('release', function(event){
       event.gesture.preventDefault();
       if (live) {
         if (dragging) {
