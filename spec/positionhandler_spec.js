@@ -92,5 +92,20 @@ describe('element manipulation', function(){
       done();
     }, 20);
   });
+
+  it('it should always cancel animation frame', function(done){
+    //render viewbox loop is always executed and can collide with subsequent start events'
+
+    bean.fire($svg[0], 'displace', Pt(0, 100));
+    bean.fire($svg[0], 'translate', Pt(100, 0));
+    setTimeout(function(){
+      bean.fire($svg[0], 'displace', Pt(100, 0));
+      setTimeout(function(){
+        expect($svg.css('-webkit-transform')).toEqual('matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 100, 0, 0, 1)');
+        done();
+      }, 20);
+    }, 20);
+    // expect($svg.css('-webkit-transform')).toEqual('matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)');
+  });
 });
 
