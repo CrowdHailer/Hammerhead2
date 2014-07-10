@@ -10,6 +10,15 @@ module.exports = function(grunt) {
     clean: {
       dist: 'dist'
     },
+
+    copy: {
+      dist: {
+        nonull: true,
+        src: 'src/hammerhead2.css',
+        dest: 'dist/hammerhead2.css'
+      }
+    },
+
     concat: {
       options: {
         separator: '\n'
@@ -69,5 +78,5 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['clean', 'karma', 'concat', 'uglify']);
+  grunt.registerTask('default', ['clean', 'karma', 'concat', 'uglify', 'copy']);
 };
