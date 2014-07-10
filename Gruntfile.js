@@ -60,6 +60,7 @@ module.exports = function(grunt) {
             jasmine: true,
             spyOn: true,
             expect: true,
+            toThrow: true,
 
             $: true,
             Hammer: true,
