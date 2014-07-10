@@ -21,10 +21,44 @@ module.exports = function(grunt) {
 
     jshint: {
       options: {
-        jshintrc: '.jshintrc',
+        node: true,
+        browser: true,
+        esnext: true,
+        bitwise: true,
+        camelcase: true,
+        curly: true,
+        eqeqeq: true,
+        immed: true,
+        indent: 2,
+        latedef: true,
+        newcap: false,
+        noarg: true,
+        // "quotmark": "single",
+        undef: true,
+        unused: true,
+        strict: true,
+        trailing: true,
+        smarttabs: true,
+        globals: {
+          $: true
+        },
         reporter: require('jshint-stylish')
       },
-      src: ['src/*.js', '!src/agile.js', '!src/prefix.js']
+      src: ['src/*.js', '!src/agile.js', '!src/prefix.js'],
+      test: {
+        options: {
+          globals: {
+            describe: true,
+            it: true,
+            beforeEach: true,
+            afterEach: true,
+            jasmine: true,
+            spyOn: true,
+            expect: true
+          }
+        },
+        src: 'spec/*_spec.js'
+      }
     },
 
     concat: {
@@ -86,5 +120,5 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['clean', 'jshint', 'karma', 'concat', 'uglify', 'copy']);
+  grunt.registerTask('default', ['clean', 'jshint:src', 'karma', 'concat', 'uglify', 'copy']);
 };
