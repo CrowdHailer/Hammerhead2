@@ -163,7 +163,7 @@ module.exports = function(grunt) {
     localtunnel: {
       options: {
         port: 9000,
-        open: true,
+        // open: true,
         subdomain: 'hammerhead2',
         keepalive: true
       },

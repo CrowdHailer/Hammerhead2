@@ -134,9 +134,13 @@
     ////////////////////////////////////////////
     Hammer.plugins.fakeMultitouch();
 
-    // var allChannels = ['start', 'drag', 'pinch', 'end', 'windowResize'];
+    function left(){
+      'use strict';
 
-    // _.map(_.compose(_.invoke(_.log), Belfry.getTower().subscribe))(allChannels);
+      bean.fire(active.element, 'displace', SVGroovy.Point(100, 0));
+    }
+
+    bean.on(active.element, 'translate', _.log);
 
   </script>
 </body>
