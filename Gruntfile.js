@@ -149,6 +149,6 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['clean', 'jshint:source', 'karma', 'concat', 'uglify', 'copy']);
+  grunt.registerTask('build', ['clean', 'newer:jshint:source', 'karma', 'concat', 'uglify', 'copy']);
   grunt.registerTask('demo', ['build', 'connect:demo']);
 };
