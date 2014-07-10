@@ -123,6 +123,19 @@ module.exports = function(grunt) {
       unit: {
         configFile: 'karma.conf.js'
       }
+    },
+
+    connect: {
+      options: {
+        open: true,
+        hostname: 'localhost',
+        keepalive: true,
+      },
+      debug: {
+        options: {
+          base: ['src', 'bower_components', 'debug']
+        }
+      }
     }
 
   });
