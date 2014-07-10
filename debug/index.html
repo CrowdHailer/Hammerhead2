@@ -121,7 +121,7 @@
   <script>
 
   var active, left, leftfix;
-    window.addEventListener('load', function(){
+    window.onload = function(){
       'use strict';
 
       var id = 'the-pear';
@@ -154,7 +154,7 @@
       bean.on(active.element, 'inflate', _.log);
       bean.on(active.element, 'magnify', _.log);
 
-    });
+    };
 
   </script>
 </body>
