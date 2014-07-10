@@ -3,9 +3,13 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   require('time-grunt')(grunt);
-  
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+
+    clean: {
+      dist: 'dist'
+    },
     concat: {
       options: {
         separator: '\n'
@@ -40,6 +44,7 @@ module.exports = function(grunt) {
         dest: 'fullfat/<%= pkg.name %>.js'
       }
     },
+
     uglify: {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
@@ -55,12 +60,14 @@ module.exports = function(grunt) {
         }
       }
     },
+
     karma: {
       unit: {
         configFile: 'karma.conf.js'
       }
     }
+
   });
 
-  grunt.registerTask('default', ['karma', 'concat', 'uglify']);
+  grunt.registerTask('default', ['clean', 'karma', 'concat', 'uglify']);
 };
