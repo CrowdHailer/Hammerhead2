@@ -17,7 +17,7 @@
 
     var handleMousewheel = function(event){
       if (!scale) {
-        if (!this.isComponent(event.target)) { 
+        if (!this.isComponent(event.target)) {
           return;
         }
 

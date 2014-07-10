@@ -1,4 +1,4 @@
-/* global Hammerhead, _, SVGroovy*/
+/* global _, SVGroovy*/
 
 // String interpolations
 

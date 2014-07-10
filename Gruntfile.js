@@ -24,7 +24,7 @@ module.exports = function(grunt) {
         jshintrc: '.jshintrc',
         reporter: require('jshint-stylish')
       },
-      src: ['src/*.js', '!src/agile.js']
+      src: ['src/*.js', '!src/agile.js', '!src/prefix.js']
     },
 
     concat: {
@@ -86,5 +86,5 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['clean', 'karma', 'concat', 'uglify', 'copy']);
+  grunt.registerTask('default', ['clean', 'jshint', 'karma', 'concat', 'uglify', 'copy']);
 };

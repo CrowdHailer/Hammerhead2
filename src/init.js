@@ -1,4 +1,4 @@
-/* global Hammerhead, _, interpolate*/ 
+/* global Hammerhead, _, interpolate*/
 
 (function(parent){
   'use strict';

@@ -39,7 +39,7 @@
     hammertime.on('release', function(){
       event.gesture.preventDefault();
       if (live) {
-        if (dragging) { 
+        if (dragging) {
           bean.fire(element, 'translate', dragging);
         }
         if (pinching) {
