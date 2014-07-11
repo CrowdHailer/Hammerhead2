@@ -9,7 +9,7 @@
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
-    xBtransform = _.compose(transformObject, Mx.asCss);
+    xBtransform = _.compose(transformObject, Mx.asCss3d);
 
   parent.managePosition = function(){
     var $element = this.$element,
