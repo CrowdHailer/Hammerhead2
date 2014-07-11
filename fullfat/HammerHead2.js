@@ -296,6 +296,12 @@ var _ = (function () {
     };
   }
 
+  function peruse(obj) {
+    return function(key){
+      return obj[key];
+    };
+  }
+
 // Function operations
 
   function adjoin(f) {
@@ -462,6 +468,7 @@ var _ = (function () {
     augment: augment,
     foundation: foundation,
     overlay: overlay,
+    peruse: peruse,
 
     adjoin: adjoin,
     compose: compose,
@@ -488,9 +495,9 @@ var _ = (function () {
   };
   return _;
 }());
-/*! cumin 04-07-2014 */
+/*! cumin 11-07-2014 */
 !function(a){"use strict";function b(a){a=a||0;var b=Math.pow(10,a),c=Math.pow(.1,a+1);return function(a){return Math.round(a*b+c)/b}}function c(a){return a=a||0,function(){return Math.random()*a|0}}a.round=b,a.random=c}(_);
-/*! cumin 04-07-2014 */
+/*! cumin 11-07-2014 */
 !function(a){a.pluck=a.compose(a.map,a.dot),a.pick=a.compose(a.filter,a.position,a.within),a.omit=a.compose(a.filter,a.position,a.not,a.within)}(_);
 var SVGroovy = {};
 (function(parent){
@@ -511,7 +518,7 @@ var SVGroovy = {};
     var tmp = darkSVG.createSVGPoint();
     tmp.x = x || 0;
     tmp.y = y || 0;
-    return Object.freeze(tmp);
+    return tmp;
   }
 
   function createFromCoordinate(point){
@@ -569,7 +576,7 @@ var SVGroovy = {};
 
   function matrixTransform(m){
     return function(q){
-      return Object.freeze(q.matrixTransform(m));
+      return q.matrixTransform(m);
     };
   }
 
@@ -589,16 +596,34 @@ var SVGroovy = {};
 (function(parent){
   "use strict";
 
+  function interpolate(s) {
+    var i = 0;
+    return function(args){
+      return s.replace(/%(?:\(([^)]+)\))?([%diouxXeEfFgGcrs])/g, function (match, v, t) {
+        if (t === "%") {return "%";}
+        return args[v || i++];
+      });
+    };
+  }
+
   var darkSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+
   function create(){
     return darkSVG.createSVGMatrix();
   }
+
   parent.Matrix = create;
   parent.Matrix.toScale = function(scalar){
     return create().scale(scalar);
   };
   parent.Matrix.toTranslate = function(point){
     return create().translate(point.x, point.y);
+  };
+  parent.Matrix.asCss = function(matrix){
+    return interpolate('matrix(%(a)s, %(b)s, %(c)s, %(d)s, %(e)s, %(f)s)')(matrix || create());
+  };
+  parent.Matrix.asCss3d = function(matrix) {
+    return interpolate('matrix3d(%(a)s, %(b)s, 0, 0, %(c)s, %(d)s, 0, 0, 0, 0, 1, 0, %(e)s, %(f)s, 0, 1)')(matrix || create());
   };
 }(SVGroovy));
 /* global _, SVGroovy*/
@@ -668,25 +693,6 @@ function missingCTM($element){
 
   return _.round(1)(properFix);
 }
-
-// cumin fills
-
-
-_.peruse = function(obj){
-  return function(key){
-    return obj[key];
-  };
-};
-
-//SVGroovy fills NB requires interpolate
-
-SVGroovy.Matrix.asCss = function(matrix){
-  return interpolate('matrix3d(%(a)s, %(b)s, 0, 0, %(c)s, %(d)s, 0, 0, 0, 0, 1, 0, %(e)s, %(f)s, 0, 1)')(matrix || SVGroovy.Matrix());
-};
-
-// check svg owner
-
-
 
 var Hammerhead = {};
 
@@ -782,6 +788,7 @@ var Hammerhead = {};
         .height(height * factor);
     };
     update();
+    setTimeout(update, 1000); //Android fix as easrly window sizes are incorrect
 
     bean.on(window, 'resize', update);
 
@@ -807,30 +814,30 @@ var Hammerhead = {};
       dragging = false,
       pinching = false;
 
-    hammertime.on('touch', function(event){
-      event.gesture.preventDefault();
-      live = isComponent(event.target);
+    hammertime.on('touch', function(evt){
+      evt.gesture.preventDefault();
+      live = isComponent(evt.target);
     });
 
-    hammertime.on('drag', function(event){
-      event.gesture.preventDefault();
+    hammertime.on('drag', function(evt){
+      evt.gesture.preventDefault();
       if (live && !pinching) {
-        dragging = Pt(event.gesture);
-        bean.fire(element, 'displace', Pt(event.gesture));
+        dragging = Pt(evt.gesture);
+        bean.fire(element, 'displace', Pt(evt.gesture));
       }
     });
 
-    hammertime.on('pinch', function(event){
-      event.gesture.preventDefault();
+    hammertime.on('pinch', function(evt){
+      evt.gesture.preventDefault();
       if (live) {
         dragging = false;
-        pinching = event.gesture.scale;
+        pinching = evt.gesture.scale;
         bean.fire(element, 'inflate', pinching);
       }
     });
 
-    hammertime.on('release', function(){
-      event.gesture.preventDefault();
+    hammertime.on('release', function(evt){
+      evt.gesture.preventDefault();
       if (live) {
         if (dragging) {
           bean.fire(element, 'translate', dragging);
@@ -860,7 +867,7 @@ var Hammerhead = {};
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
-    xBtransform = _.compose(transformObject, Mx.asCss);
+    xBtransform = _.compose(transformObject, Mx.asCss3d);
 
   parent.managePosition = function(){
     var $element = this.$element,
@@ -869,6 +876,8 @@ var Hammerhead = {};
       viewBox = VB($element.attr('viewBox')),
       animationLoop,
       currentMatrix;
+    console.log(VB($element.attr('viewBox')));
+    console.log(VB.attrString(viewBox));
 
     function renderCSS(){
       if (!animationLoop) {
@@ -881,6 +890,7 @@ var Hammerhead = {};
 
     function renderViewBox(){
       cancelAnimationFrame(animationLoop);
+      animationLoop = false;
       requestAnimationFrame( function(){
         $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));

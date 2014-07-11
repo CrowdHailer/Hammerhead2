@@ -21,6 +21,7 @@
         .height(height * factor);
     };
     update();
+    setTimeout(update, 1000); //Android fix as easrly window sizes are incorrect
 
     bean.on(window, 'resize', update);
 

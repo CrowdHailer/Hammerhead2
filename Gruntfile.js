@@ -60,6 +60,7 @@ module.exports = function(grunt) {
             jasmine: true,
             spyOn: true,
             expect: true,
+            toThrow: true,
 
             $: true,
             Hammer: true,
@@ -163,7 +164,8 @@ module.exports = function(grunt) {
     localtunnel: {
       options: {
         port: 9000,
-        open: true,
+        // open: true,
+        subdomain: 'hammerhead2',
         keepalive: true
       },
       debug: {

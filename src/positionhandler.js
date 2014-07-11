@@ -9,7 +9,7 @@
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
-    xBtransform = _.compose(transformObject, Mx.asCss);
+    xBtransform = _.compose(transformObject, Mx.asCss3d);
 
   parent.managePosition = function(){
     var $element = this.$element,
@@ -18,6 +18,8 @@
       viewBox = VB($element.attr('viewBox')),
       animationLoop,
       currentMatrix;
+    console.log(VB($element.attr('viewBox')));
+    console.log(VB.attrString(viewBox));
 
     function renderCSS(){
       if (!animationLoop) {
@@ -30,6 +32,7 @@
 
     function renderViewBox(){
       cancelAnimationFrame(animationLoop);
+      animationLoop = false;
       requestAnimationFrame( function(){
         $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
