@@ -15,9 +15,9 @@
   ],
   "dependencies": {
     "hammerjs": "1.0.10",
-    "cumin": "0.8.0",
-    "zepto": "~1.1.3",
-    "SoVeryGroovy": "0.1.2",
+    "cumin": "0.8.1",
+    "zepto": "~1.1.4",
+    "SoVeryGroovy": "0.2.1",
     "bean": "~1.0.14"
   }
 }
