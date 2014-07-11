@@ -66,14 +66,6 @@ function missingCTM($element){
   return _.round(1)(properFix);
 }
 
-// cumin fills
-
-
-_.peruse = function(obj){
-  return function(key){
-    return obj[key];
-  };
-};
 
 //SVGroovy fills NB requires interpolate
 
