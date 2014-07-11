@@ -120,44 +120,43 @@
 
   <script>
 
-  var active, left, leftfix;
+  var active, left, leftfix, go;
     window.onload = function(){
       'use strict';
 
       var id = 'the-pear';
-      active = Hammerhead.create(id, {
-        // overflowSurplus: 0.8,
-        // resizeDelay: 200,
-        // maxZoom: 4,
-        // minZoom: 1,
-        // mousewheelSensitivity: 0.2,
-        mousewheelDelay: 100,
-      });
-      console.log(active.$element);
-      var parent = active.$element.parent(); 
-      console.log(parent.width(), parent.height());
+      go = function(){
+        active = Hammerhead.create(id, {
+          // overflowSurplus: 0.8,
+          // resizeDelay: 200,
+          // maxZoom: 4,
+          // minZoom: 1,
+          // mousewheelSensitivity: 0.2,
+          mousewheelDelay: 100,
+        });
+        var parent = active.$element.parent(); 
 
-      ////////////////////////////////////////////
-      // DEBUG
-      ////////////////////////////////////////////
-      Hammer.plugins.fakeMultitouch();
+        ////////////////////////////////////////////
+        // DEBUG
+        ////////////////////////////////////////////
+        Hammer.plugins.fakeMultitouch();
 
-      left = function(n){
-        bean.fire(active.element, 'displace', SVGroovy.Point(n, 0));
+        left = function(n){
+          bean.fire(active.element, 'displace', SVGroovy.Point(n, 0));
+        };
+        leftfix = function(n){
+          bean.fire(active.element, 'translate', SVGroovy.Point(n, 0));
+        };
+
+        bean.on(active.element, 'translate', _.log);
+        // bean.on(active.element, 'displace', _.log);
+        // bean.on(active.element, 'inflate', _.log);
+        bean.on(active.element, 'magnify', _.log);
+
+        var hammertime = Hammer(document);
+        hammertime.on('release', function(){
+        });
       };
-      leftfix = function(n){
-        bean.fire(active.element, 'translate', SVGroovy.Point(n, 0));
-      };
-
-      bean.on(active.element, 'translate', _.log);
-      // bean.on(active.element, 'displace', _.log);
-      // bean.on(active.element, 'inflate', _.log);
-      bean.on(active.element, 'magnify', _.log);
-
-      var hammertime = Hammer(document);
-      hammertime.on('release', function(){
-      });
-
     };
 
   </script>
