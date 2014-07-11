@@ -66,25 +66,6 @@ function missingCTM($element){
   return _.round(1)(properFix);
 }
 
-// cumin fills
-
-
-_.peruse = function(obj){
-  return function(key){
-    return obj[key];
-  };
-};
-
-//SVGroovy fills NB requires interpolate
-
-SVGroovy.Matrix.asCss = function(matrix){
-  return interpolate('matrix3d(%(a)s, %(b)s, 0, 0, %(c)s, %(d)s, 0, 0, 0, 0, 1, 0, %(e)s, %(f)s, 0, 1)')(matrix || SVGroovy.Matrix());
-};
-
-// check svg owner
-
-
-
 var Hammerhead = {};
 
 /* global Hammerhead, _, SVGroovy*/
@@ -172,7 +153,6 @@ var Hammerhead = {};
     var update = function(){
       var height = $parent.height(),
         width = $parent.width();
-      console.log(width, height);
 
       $element
         .css('margin', marginTemp({height: height * surplus, width: width * surplus}))
@@ -180,6 +160,7 @@ var Hammerhead = {};
         .height(height * factor);
     };
     update();
+    setTimeout(update, 1000); //Android fix as easrly window sizes are incorrect
 
     bean.on(window, 'resize', update);
 
@@ -205,30 +186,30 @@ var Hammerhead = {};
       dragging = false,
       pinching = false;
 
-    hammertime.on('touch', function(event){
-      event.gesture.preventDefault();
-      live = isComponent(event.target);
+    hammertime.on('touch', function(evt){
+      evt.gesture.preventDefault();
+      live = isComponent(evt.target);
     });
 
-    hammertime.on('drag', function(event){
-      event.gesture.preventDefault();
+    hammertime.on('drag', function(evt){
+      evt.gesture.preventDefault();
       if (live && !pinching) {
-        dragging = Pt(event.gesture);
-        bean.fire(element, 'displace', Pt(event.gesture));
+        dragging = Pt(evt.gesture);
+        bean.fire(element, 'displace', Pt(evt.gesture));
       }
     });
 
-    hammertime.on('pinch', function(event){
-      event.gesture.preventDefault();
+    hammertime.on('pinch', function(evt){
+      evt.gesture.preventDefault();
       if (live) {
         dragging = false;
-        pinching = event.gesture.scale;
+        pinching = evt.gesture.scale;
         bean.fire(element, 'inflate', pinching);
       }
     });
 
-    hammertime.on('release', function(){
-      event.gesture.preventDefault();
+    hammertime.on('release', function(evt){
+      evt.gesture.preventDefault();
       if (live) {
         if (dragging) {
           bean.fire(element, 'translate', dragging);
@@ -258,7 +239,7 @@ var Hammerhead = {};
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
-    xBtransform = _.compose(transformObject, Mx.asCss);
+    xBtransform = _.compose(transformObject, Mx.asCss3d);
 
   parent.managePosition = function(){
     var $element = this.$element,
@@ -267,6 +248,8 @@ var Hammerhead = {};
       viewBox = VB($element.attr('viewBox')),
       animationLoop,
       currentMatrix;
+    console.log(VB($element.attr('viewBox')));
+    console.log(VB.attrString(viewBox));
 
     function renderCSS(){
       if (!animationLoop) {
@@ -279,7 +262,7 @@ var Hammerhead = {};
 
     function renderViewBox(){
       cancelAnimationFrame(animationLoop);
-      // animationLoop = false;
+      animationLoop = false;
       requestAnimationFrame( function(){
         $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
