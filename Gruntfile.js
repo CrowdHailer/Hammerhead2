@@ -58,5 +58,5 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('build', ['clean']);
+    grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist']);
 };
