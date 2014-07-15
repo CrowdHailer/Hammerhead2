@@ -55,8 +55,17 @@ module.exports = function(grunt) {
                     'dist/hammerhead2.min.js': 'dist/hammerhead2.js'
                 }
             }
+        },
+
+        // Copy CSS files
+        copy: {
+            dist: {
+                nonull: true,
+                src: 'src/hammerhead2.css',
+                dest: 'dist/hammerhead2.css'
+            }
         }
     });
 
-    grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist']);
+    grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
 };
