@@ -33,7 +33,8 @@ module.exports = function(grunt) {
         jshint: {
             options: {
                 jshintrc: '.jshintrc',
-                reporter: require('jshint-stylish')
+                reporter: require('jshint-stylish'),
+                newcap: false
             },
             grunt: {
                 options: {
@@ -45,6 +46,8 @@ module.exports = function(grunt) {
                 src: 'Gruntfile.js'
             },
             source: {
+                options: {
+                },
                 src: 'src/*.js'
             }
         },
