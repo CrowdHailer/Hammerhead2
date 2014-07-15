@@ -46,6 +46,17 @@ module.exports = function(grunt) {
                 ],
                 dest: 'dist/hammerhead2.js'
             }
+        },
+
+        // Minimise dist files
+        uglify: {
+            dist: {
+                files: {
+                    'dist/hammerhead2.min.js': 'dist/hammerhead2.js'
+                }
+            }
         }
     });
+
+    grunt.registerTask('build', ['clean']);
 };
