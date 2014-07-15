@@ -82,12 +82,38 @@ module.exports = function(grunt) {
             test: {
                 options: {
                     port: 9001,
-                    open: true,
+                    open: false,
                     base: ['bower_components', 'test']
+                }
+            }
+        },
+
+        // Run tests in shell
+        jasmine: {
+            test: {
+                src: [
+                    'src/prefix.js',
+                    'src/viewbox.js',
+                    'src/overflow.js',
+                    'src/positionhandler.js',
+                    'src/touch.js',
+                    'src/mousewheel.js',
+                    'src/init.js'
+                ],
+                options: {
+                    vendor: [
+                        'bower_components/zepto/zepto.min.js',
+                        'bower_components/hammerjs/hammer.min.js',
+                        'bower_components/bean/bean.min.js',
+                        'bower_components/cumin/dist/cumin.min.js',
+                        'bower_components/SoVeryGroovy/dist/SoVeryGroovy.min.js'
+                    ],
+                    specs: 'test/spec/*',
                 }
             }
         }
     });
 
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
+    grunt.registerTask('test', ['connect:test', 'jasmine:test'])
 };
