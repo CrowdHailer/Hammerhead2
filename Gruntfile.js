@@ -106,6 +106,7 @@ module.exports = function(grunt) {
                         'bower_components/hammerjs/hammer.min.js',
                         'bower_components/bean/bean.min.js',
                         'bower_components/cumin/dist/cumin.min.js',
+                        'bower_components/cumin/dist/math.min.js',
                         'bower_components/SoVeryGroovy/dist/SoVeryGroovy.min.js'
                     ],
                     specs: 'test/spec/*',
@@ -115,5 +116,5 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
-    grunt.registerTask('test', ['connect:test', 'jasmine:test'])
+    grunt.registerTask('test', ['jasmine:test']);
 };
