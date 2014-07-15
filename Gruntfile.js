@@ -85,7 +85,8 @@ module.exports = function(grunt) {
         connect: {
             options: {
                 port: 9000,
-                hostname: '0.0.0.0'
+                hostname: '0.0.0.0',
+                livereload: 35729,
             },
             test: {
                 options: {
@@ -112,9 +113,21 @@ module.exports = function(grunt) {
                     specs: 'test/spec/*',
                 }
             }
+        },
+
+        // Run tasks on file modifications
+        watch: {
+            test: {
+                files: ['test/spec/*.js', 'src/*.js'],
+                options: {
+                    livereload: 35729
+                }
+            }
         }
+
     });
 
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
     grunt.registerTask('test', ['jasmine:test']);
+    grunt.registerTask('livetest', ['connect:test', 'watch:test']);
 };
