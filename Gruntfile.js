@@ -137,11 +137,16 @@ module.exports = function(grunt) {
                     boundHost: '-all-'
                 }
             }
+        },
+
+        // Run multiple blocking tasks
+        concurrent: {
+            test: ['watch:test', 'weinre:dev']
         }
 
     });
 
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
     grunt.registerTask('test', ['jasmine:test']);
-    grunt.registerTask('livetest', ['connect:test', 'watch:test']);
+    grunt.registerTask('livetest', ['connect:test', 'concurrent:test']);
 };
