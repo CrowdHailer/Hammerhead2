@@ -127,6 +127,16 @@ module.exports = function(grunt) {
                     livereload: 35729
                 }
             }
+        },
+
+        // Setup remote debugging
+        weinre: {
+            dev: {
+                options: {
+                    httpPort: 8082,
+                    boundHost: '-all-'
+                }
+            }
         }
 
     });
