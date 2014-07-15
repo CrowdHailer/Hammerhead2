@@ -3,8 +3,24 @@ module.exports = function(grunt) {
     
     // Load grunt tasks automatically
     require('load-grunt-tasks')(grunt);
+
+    // Configurable paths
+    var config = {
+        src: [
+            'src/prefix.js',
+            'src/viewbox.js',
+            'src/overflow.js',
+            'src/positionhandler.js',
+            'src/touch.js',
+            'src/mousewheel.js',
+            'src/init.js'
+        ],
+    };
     
     grunt.initConfig({
+
+        // Project settings
+        config: config,
 
         // Empties folders to start fresh
         clean: {
@@ -35,15 +51,7 @@ module.exports = function(grunt) {
                 separator: ';'
             },
             dist: {
-                src: [
-                    'src/prefix.js',
-                    'src/viewbox.js',
-                    'src/overflow.js',
-                    'src/positionhandler.js',
-                    'src/touch.js',
-                    'src/mousewheel.js',
-                    'src/init.js'
-                ],
+                src: config.src,
                 dest: 'dist/hammerhead2.js'
             }
         },
@@ -91,15 +99,7 @@ module.exports = function(grunt) {
         // Run tests in shell
         jasmine: {
             test: {
-                src: [
-                    'src/prefix.js',
-                    'src/viewbox.js',
-                    'src/overflow.js',
-                    'src/positionhandler.js',
-                    'src/touch.js',
-                    'src/mousewheel.js',
-                    'src/init.js'
-                ],
+                src: config.src,
                 options: {
                     vendor: [
                         'bower_components/zepto/zepto.min.js',
