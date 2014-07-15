@@ -27,6 +27,25 @@ module.exports = function(grunt) {
                 },
                 src: 'Gruntfile.js'
             }
+        },
+
+        // Combine source files
+        concat: {
+            options: {
+                separator: ';'
+            },
+            dist: {
+                src: [
+                    'src/prefix.js',
+                    'src/viewbox.js',
+                    'src/overflow.js',
+                    'src/positionhandler.js',
+                    'src/touch.js',
+                    'src/mousewheel.js',
+                    'src/init.js'
+                ],
+                dest: 'dist/hammerhead2.js'
+            }
         }
     });
 };
