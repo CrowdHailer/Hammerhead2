@@ -106,6 +106,11 @@ module.exports = function(grunt) {
                 options: {
                     base: ['bower_components', 'dist', 'demo']
                 }
+            },
+            map: {
+                options: {
+                    base: ['bower_components', 'dist', 'map']
+                }
             }
         },
 
@@ -158,5 +163,6 @@ module.exports = function(grunt) {
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
     grunt.registerTask('test', ['jasmine:test', 'jshint:source']);
     grunt.registerTask('serve', ['build', 'connect:dist:keepalive']);
+    grunt.registerTask('map', ['build', 'connect:map:keepalive']);
     grunt.registerTask('livetest', ['connect:test', 'concurrent:test']);
 };
