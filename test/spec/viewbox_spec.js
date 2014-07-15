@@ -15,13 +15,6 @@ describe('ViewBox', function(){
       expect(viewBox.maximal).toEqual(p2);
     });
 
-    it('should be immutable', function(){
-      viewBox = VB(p1, p2);
-      expect(function(){
-        viewBox.minimal = 3;
-      }).toThrow(new TypeError('Attempted to assign to readonly property.'));
-    });
-
     it('from a viewbox attribute string', function(){
       viewBox = VB('1 2 3 4');
       expect(viewBox.minimal.x).toEqual(1);

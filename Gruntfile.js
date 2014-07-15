@@ -83,7 +83,7 @@ module.exports = function(grunt) {
                 options: {
                     port: 9001,
                     open: false,
-                    base: ['bower_components', 'test']
+                    base: ['bower_components', 'src', 'test']
                 }
             }
         },
