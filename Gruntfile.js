@@ -71,6 +71,21 @@ module.exports = function(grunt) {
             test: {
                 src: 'test/index.html'
             }
+        },
+
+        // Run local connect server
+        connect: {
+            options: {
+                port: 9000,
+                hostname: '0.0.0.0'
+            },
+            test: {
+                options: {
+                    port: 9001,
+                    open: true,
+                    base: ['bower_components', 'test']
+                }
+            }
         }
     });
 
