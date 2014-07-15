@@ -64,6 +64,13 @@ module.exports = function(grunt) {
                 src: 'src/hammerhead2.css',
                 dest: 'dist/hammerhead2.css'
             }
+        },
+
+        // Install bower dependencies
+        wiredep: {
+            test: {
+                src: 'test/index.html'
+            }
         }
     });
 
