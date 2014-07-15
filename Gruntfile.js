@@ -48,7 +48,7 @@ module.exports = function(grunt) {
             source: {
                 options: {
                 },
-                src: 'src/*.js'
+                src: ['src/*.js', '!src/prefix.js']
             }
         },
 
@@ -118,6 +118,7 @@ module.exports = function(grunt) {
                         'bower_components/SoVeryGroovy/dist/SoVeryGroovy.min.js'
                     ],
                     specs: 'test/spec/*',
+                    display: 'short'
                 }
             }
         },
@@ -149,7 +150,7 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
+    grunt.registerTask('build', ['test', 'jshint:source', 'clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
     grunt.registerTask('test', ['jasmine:test']);
     grunt.registerTask('livetest', ['connect:test', 'concurrent:test']);
 };
