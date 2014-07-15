@@ -32,7 +32,8 @@ module.exports = function(grunt) {
         // Check code quality
         jshint: {
             options: {
-                jshintrc: '.jshintrc'
+                jshintrc: '.jshintrc',
+                reporter: require('jshint-stylish')
             },
             grunt: {
                 options: {
