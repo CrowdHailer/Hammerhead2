@@ -40,18 +40,17 @@
 
     // Missing windows pixel density fix 
     window.missingCTM = function ($element){
-        var elWidth = $element.width(),
-        elHeight = $element.height(),
+        var elWidth = $element.width() || $element[0].width.baseVal.value,
+        elHeight = $element.height() || $element[0].height.baseVal.value,
         CTMScale = $element[0].getScreenCTM().a,
         boxWidth = $element.attr('viewBox').split(' ')[2],
         boxHeight = $element.attr('viewBox').split(' ')[3],
         widthRatio = (boxWidth* CTMScale) / elWidth,
         heightRatio = (boxHeight * CTMScale) / elHeight,
         properFix = widthRatio > heightRatio ? widthRatio : heightRatio;
-
-        return _.round(1)(properFix);
+        return properFix;
     };
-    
+
     window.Hammerhead = {};
 }());
 

@@ -133,7 +133,7 @@ module.exports = function(grunt) {
                         'bower_components/SoVeryGroovy/dist/SoVeryGroovy.min.js'
                     ],
                     specs: 'test/spec/*',
-                    display: 'short'
+                    // display: 'short'
                 }
             }
         },
