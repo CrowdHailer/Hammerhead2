@@ -5,9 +5,9 @@
 
     parent.mousewheelDispatch = function(){
 
-        var element = this.$element[0];
-        var scale;
-        var factor = 1 + this.getConfig('mousewheelSensitivity');
+        var element = this.$element[0],
+            scale,
+            factor = 1 + this.getConfig('mousewheelSensitivity');
 
         var finishScrolling = _.debounce(this.getConfig('mousewheelDelay'))(function(scaleFactor){
             bean.fire(element, 'magnify', scaleFactor);
