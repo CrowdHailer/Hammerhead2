@@ -26,6 +26,9 @@ module.exports = function(grunt) {
         clean: {
             dist: {
                 src: 'dist'
+            },
+            demo: {
+                src: '.tmp'
             }
         },
 
@@ -78,6 +81,13 @@ module.exports = function(grunt) {
                 nonull: true,
                 src: 'src/hammerhead2.css',
                 dest: 'dist/hammerhead2.css'
+            },
+            demo: {
+                nonull: true,
+                expand: true,
+                flatten: true,
+                src: ['dist/*', 'workflow/*'],
+                dest: '.tmp/'
             }
         },
 
@@ -102,14 +112,9 @@ module.exports = function(grunt) {
                     base: ['bower_components', 'src', 'test']
                 }
             },
-            dist: {
+            demo: {
                 options: {
-                    base: ['bower_components', 'dist', 'demo']
-                }
-            },
-            map: {
-                options: {
-                    base: ['bower_components', 'dist', 'map']
+                    base: ['bower_components', '.tmp', 'demo']
                 }
             }
         },
@@ -140,6 +145,16 @@ module.exports = function(grunt) {
                 options: {
                     livereload: 35729
                 }
+            },
+            source: {
+                files: ['src/*'],
+                tasks: ['build']
+            },
+            dist: {
+                files: ['demo/*.html', 'dist/*'],
+                options: {
+                    livereload: 35729
+                }
             }
         },
 
@@ -155,14 +170,18 @@ module.exports = function(grunt) {
 
         // Run multiple blocking tasks
         concurrent: {
-            test: ['watch:test', 'weinre:dev']
+            options: {
+                logConcurrentOutput: true
+            },
+            test: ['watch:test', 'weinre:dev'],
+            demo: ['watch:source', 'watch:dist', 'weinre:dev']
         }
 
     });
 
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
     grunt.registerTask('test', ['jasmine:test', 'jshint:source']);
-    grunt.registerTask('serve', ['build', 'connect:dist:keepalive']);
+    grunt.registerTask('serve', ['clean:demo', 'build', 'copy:demo', 'connect:demo', 'concurrent:demo']);
     grunt.registerTask('map', ['build', 'connect:map:keepalive']);
     grunt.registerTask('livetest', ['connect:test', 'concurrent:test']);
 };

@@ -101,64 +101,38 @@
       </rdf:RDF>
     </metadata>
   </svg>
-  <script src="http://crowdhailer-debug.herokuapp.com/target/target-script-min.js#anonymous"></script>
   <script type="text/javascript" src="zepto/zepto.js"></script>
   <script type="text/javascript" src="hammerjs/hammer.min.js"></script>
   <script type="text/javascript" src="hammerjs/plugins/hammer.fakemultitouch.js"></script>
-  <script type="text/javascript" src="cumin/dist/cumin.js"></script>
-  <script type="text/javascript" src="cumin/dist/math.min.js"></script>
-  <script type="text/javascript" src="cumin/dist/compositions.min.js"></script>
-  <script type="text/javascript" src="SoVeryGroovy/dist/SoVeryGroovy.js"></script>
   <script type="text/javascript" src="bean/bean.min.js"></script>
-  <script type="text/javascript" src="prefix.js"></script>
-  <script type="text/javascript" src="viewbox.js"></script>
-  <script type="text/javascript" src="overflow.js"></script>
-  <script type="text/javascript" src="touch.js"></script>
-  <script type="text/javascript" src="mousewheel.js"></script>
-  <script type="text/javascript" src="positionhandler.js"></script>
-  <script type="text/javascript" src="init.js"></script>
+  <script src="/cumin/dist/cumin.js"></script>
+  <script src="/cumin/dist/math.min.js"></script>
+  <script src="/SoVeryGroovy/dist/SoVeryGroovy.js"></script>
+
+  <script type="text/javascript" src="hammerhead2.min.js"></script>
 
   <script>
+    var id = 'the-pear';
+    var active = Hammerhead.create(id, {
+      // overflowSurplus: 0.8,
+      // resizeDelay: 200,
+      // maxZoom: 4,
+      // minZoom: 1,
+      // mousewheelSensitivity: 0.2,
+      mousewheelDelay: 100,
+    });
 
-  var active, left, leftfix, go;
-    window.onload = function(){
-      'use strict';
+    ////////////////////////////////////////////
+    // DEBUG
+    ////////////////////////////////////////////
+    Hammer.plugins.fakeMultitouch();
 
-      var id = 'the-pear';
-      go = function(){
-        active = Hammerhead.create(id, {
-          // overflowSurplus: 0.8,
-          // resizeDelay: 200,
-          // maxZoom: 4,
-          // minZoom: 1,
-          // mousewheelSensitivity: 0.2,
-          mousewheelDelay: 100,
-        });
-        var parent = active.$element.parent(); 
 
-        ////////////////////////////////////////////
-        // DEBUG
-        ////////////////////////////////////////////
-        Hammer.plugins.fakeMultitouch();
+  </script>
+  <script >
+      document.write('<script src="http://' + window.location.hostname + ':35729/livereload.js?snipver=1" type="text/javascript"><\/script>');
 
-        left = function(n){
-          bean.fire(active.element, 'displace', SVGroovy.Point(n, 0));
-        };
-        leftfix = function(n){
-          bean.fire(active.element, 'translate', SVGroovy.Point(n, 0));
-        };
-
-        bean.on(active.element, 'translate', _.log);
-        // bean.on(active.element, 'displace', _.log);
-        // bean.on(active.element, 'inflate', _.log);
-        bean.on(active.element, 'magnify', _.log);
-
-        var hammertime = Hammer(document);
-        hammertime.on('release', function(){
-        });
-      };
-    };
-
+      document.write('<script src="http://' + window.location.hostname + ':8082/target/target-script-min.js#anonymous"><\/script>');
   </script>
 </body>
 </html>
