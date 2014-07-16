@@ -140,6 +140,16 @@ module.exports = function(grunt) {
                 options: {
                     livereload: 35729
                 }
+            },
+            source: {
+                files: ['src/*.js'],
+                taks: ['build']
+            },
+            dist: {
+                files: ['demo/*.js', 'dist/*.js'],
+                options: {
+                    livereload: 35729
+                }
             }
         },
 
@@ -165,7 +175,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
     grunt.registerTask('test', ['jasmine:test', 'jshint:source']);
-    grunt.registerTask('serve', ['build', 'connect:dist:keepalive']);
+    grunt.registerTask('serve', ['build', 'connect:dist', 'watch']);
     grunt.registerTask('map', ['build', 'connect:map:keepalive']);
     grunt.registerTask('livetest', ['connect:test', 'concurrent:test']);
 };
