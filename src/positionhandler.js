@@ -1,4 +1,4 @@
-/* global Hammerhead, _, bean, SVGroovy, transformObject, missingCTM, requestAnimationFrame, cancelAnimationFrame*/
+/* global Hammerhead, _, bean, SVGroovy, missingCTM, requestAnimationFrame, cancelAnimationFrame*/
 
 (function(parent){
     'use strict';
