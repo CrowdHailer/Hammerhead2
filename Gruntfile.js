@@ -26,6 +26,9 @@ module.exports = function(grunt) {
         clean: {
             dist: {
                 src: 'dist'
+            },
+            demo: {
+                src: '.tmp'
             }
         },
 
@@ -78,6 +81,13 @@ module.exports = function(grunt) {
                 nonull: true,
                 src: 'src/hammerhead2.css',
                 dest: 'dist/hammerhead2.css'
+            },
+            demo: {
+                nonull: true,
+                expand: true,
+                flatten: true,
+                src: ['dist/*', 'workflow/*'],
+                dest: '.tmp/'
             }
         },
 
@@ -102,9 +112,9 @@ module.exports = function(grunt) {
                     base: ['bower_components', 'src', 'test']
                 }
             },
-            dist: {
+            demo: {
                 options: {
-                    base: ['bower_components', 'dist', 'demo']
+                    base: ['bower_components', '.tmp', 'demo']
                 }
             },
             map: {
@@ -175,7 +185,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
     grunt.registerTask('test', ['jasmine:test', 'jshint:source']);
-    grunt.registerTask('serve', ['build', 'connect:dist', 'watch']);
+    grunt.registerTask('serve', ['clean:demo', 'build', 'copy:demo', 'connect:demo', 'watch']);
+    // grunt.registerTask('serve', ['build', 'connect:dist', 'watch']);
     grunt.registerTask('map', ['build', 'connect:map:keepalive']);
     grunt.registerTask('livetest', ['connect:test', 'concurrent:test']);
 };
