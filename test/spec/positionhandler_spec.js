@@ -12,9 +12,9 @@ describe('element manipulation', function(){
         $container = $('#container');
         $container.width(200).height(100);
         remove = Hammerhead.managePosition.call({
-          $element: $svg,
-          element: $svg[0],
-          getConfig: _.peruse({})
+            $element: $svg,
+            element: $svg[0],
+            getConfig: _.peruse({})
         });
     });
 
