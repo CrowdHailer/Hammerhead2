@@ -184,5 +184,5 @@ module.exports = function(grunt) {
     grunt.registerTask('serve', ['clean:demo', 'build', 'copy:demo', 'connect:demo', 'concurrent:demo']);
     grunt.registerTask('map', ['build', 'connect:map:keepalive']);
     grunt.registerTask('livetest', ['connect:test', 'concurrent:test']);
-    grunt.registerTask('heroku', ['clean:demo', 'build', 'copy:demo', 'connect:demo:']);
+    grunt.registerTask('heroku', ['clean:demo', 'build', 'copy:demo']);
 };
