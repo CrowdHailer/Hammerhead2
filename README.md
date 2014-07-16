@@ -5,7 +5,7 @@ Hammerhead 2
 
 [![Code Climate](https://codeclimate.com/github/CrowdHailer/Hammerhead2.png)](https://codeclimate.com/github/CrowdHailer/Hammerhead2)
 
-##### A library to manage navigation over large svg elements
+##### A library to manage navigation over large SVG elements
 This library manipulates and individual svg element on click, touch and mousewheel input. It tries to sensibly utilise hardware accelerated transforms during transition. To gain full benifit of using vector graphics transformations are finalised without hardware accelerated transformations
 
 ### Support
