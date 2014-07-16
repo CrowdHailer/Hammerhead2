@@ -6,6 +6,14 @@
   // limit zoom
   // round pixels
 
+  var transformObject = function(matrixString){
+    return {
+      '-webkit-transform': matrixString,
+      '-ms-transform': matrixString,
+      'transform': matrixString
+    };
+  };
+
   var Pt = SVGroovy.Point,
     Mx = SVGroovy.Matrix,
     VB = parent.ViewBox,
