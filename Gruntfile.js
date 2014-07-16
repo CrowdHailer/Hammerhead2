@@ -152,11 +152,11 @@ module.exports = function(grunt) {
                 }
             },
             source: {
-                files: ['src/*.js'],
+                files: ['src/*'],
                 taks: ['build']
             },
             dist: {
-                files: ['demo/*.js', 'dist/*.js'],
+                files: ['demo/*.html', 'dist/*'],
                 options: {
                     livereload: 35729
                 }
@@ -178,14 +178,15 @@ module.exports = function(grunt) {
             options: {
                 logConcurrentOutput: true
             },
-            test: ['watch:test', 'weinre:dev']
+            test: ['watch:test', 'weinre:dev'],
+            demo: ['watch:source', 'watch:dist', 'weinre:dev']
         }
 
     });
 
     grunt.registerTask('build', ['clean:dist', 'concat:dist', 'uglify:dist', 'copy:dist']);
     grunt.registerTask('test', ['jasmine:test', 'jshint:source']);
-    grunt.registerTask('serve', ['clean:demo', 'build', 'copy:demo', 'connect:demo', 'watch']);
+    grunt.registerTask('serve', ['clean:demo', 'build', 'copy:demo', 'connect:demo', 'concurrent:demo']);
     // grunt.registerTask('serve', ['build', 'connect:dist', 'watch']);
     grunt.registerTask('map', ['build', 'connect:map:keepalive']);
     grunt.registerTask('livetest', ['connect:test', 'concurrent:test']);
