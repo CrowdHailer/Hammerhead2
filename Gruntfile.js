@@ -155,6 +155,9 @@ module.exports = function(grunt) {
 
         // Run multiple blocking tasks
         concurrent: {
+            options: {
+                logConcurrentOutput: true
+            },
             test: ['watch:test', 'weinre:dev']
         }
 
