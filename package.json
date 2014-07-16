@@ -1,6 +1,6 @@
 {
   "name": "HammerHead2",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Updated version of hammerhead library to pan, zoom SVG graphics",
   "main": "index.js",
   "scripts": {
