@@ -6,7 +6,7 @@
   var Pt = SVGroovy.Point;
   function create(minimal, maximal){
     if (typeof minimal === 'string') { return createFromString(minimal); }
-    return Object.freeze({minimal: minimal, maximal: maximal});
+    return {minimal: minimal, maximal: maximal};
   }
 
   function createFromString(viewBoxString){
@@ -32,14 +32,14 @@
   function translate(delta){
     return function(view){
       var transformAll = _.map(Pt.negate(delta));
-      return Object.freeze(transformAll(view));
+      return transformAll(view);
     };
   }
 
   function scale(factor){
     return function(view){
       var transformAll = _.map(Pt.scalar(1.0/factor));
-      return Object.freeze(transformAll(view));
+      return transformAll(view);
     };
   }
 

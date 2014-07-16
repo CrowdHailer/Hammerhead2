@@ -18,8 +18,6 @@
       viewBox = VB($element.attr('viewBox')),
       animationLoop,
       currentMatrix;
-    console.log(VB($element.attr('viewBox')));
-    console.log(VB.attrString(viewBox));
 
     function renderCSS(){
       if (!animationLoop) {

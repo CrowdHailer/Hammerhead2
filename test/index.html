@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Jasmine Spec Runner</title>
+        <link rel="stylesheet" href="bower_components/jasmine/lib/jasmine-core/jasmine.css">
+    </head>
+    <body>
+        <script src="bower_components/jasmine/lib/jasmine-core/jasmine.js"></script>
+        <script src="bower_components/jasmine/lib/jasmine-core/jasmine-html.js"></script>
+        <script src="bower_components/jasmine/lib/jasmine-core/boot.js"></script>
+
+        <!-- include source files here... -->
+        <!-- bower:js -->
+        <script src="/zepto/zepto.js"></script>
+        <script src="/hammerjs/hammer.js"></script>
+        <script src="/cumin/dist/cumin.js"></script>
+        <script src="/cumin/dist/math.min.js"></script>
+        <script src="/bean/bean.js"></script>
+        <script src="/SoVeryGroovy/dist/SoVeryGroovy.js"></script>
+        <!-- endbower -->
+        <script src="prefix.js"></script>
+        <script src="viewbox.js"></script>
+        <script src="overflow.js"></script>
+        <script src="positionhandler.js"></script>
+        <script src="touch.js"></script>
+        <script src="mousewheel.js"></script>
+        <script src="init.js"></script>
+
+        <!-- include spec files here... -->
+        <script src="spec/init_spec.js"></script>
+        <script src="spec/touch_spec.js"></script>
+        <script src="spec/overflow_spec.js"></script>
+        <script src="spec/positionhandler_spec.js"></script>
+        <script src="spec/mousewheel_spec.js"></script>
+        <script src="spec/viewbox_spec.js"></script>
+        <script >
+            document.write('<script src="http://' + window.location.hostname + ':35729/livereload.js?snipver=1" type="text/javascript"><\/script>');
+
+            document.write('<script src="http://' + window.location.hostname + ':8082/target/target-script-min.js#anonymous"><\/script>');
+        </script>
+    </body>
+</html>

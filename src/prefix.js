@@ -1,5 +1,3 @@
-/* global _, SVGroovy*/
-
 // String interpolations
 
 function interpolate(s) {
