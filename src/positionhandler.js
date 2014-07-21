@@ -57,6 +57,7 @@
 
         bean.on(element, 'translate', function(delta){
             properFix = window.missingCTM($element);
+            properFix = 1;
             var fixedTranslation = Pt.scalar(properFix)(delta);
             var inverseCTM = $element[0].getScreenCTM().inverse();
             inverseCTM.e = 0;
