@@ -110,5 +110,13 @@ describe('element manipulation', function(){
         }, 20);
       // expect(getTransform($svg)).toEqual('matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)');
     });
+
+    it('should respond to goTo events', function(done){
+        bean.fire($svg[0], 'goTo', {minimal: {x: 500, y: 500}, maximal: {x: 800, y: 700}});
+        setTimeout(function(){
+            expect($svg.attr('viewBox')).toEqual('350 400 600 400');
+            done();
+        }, 20);
+    });
 });
 

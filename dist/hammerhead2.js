@@ -230,6 +230,11 @@
             renderViewBox();
         });
 
+        bean.on(element, 'goTo', function(data) {
+            viewBox = data;
+            renderViewBox();
+        });
+
         $element.css(xBtransform());
         $element.attr('viewBox', VB.attrString(VB.zoom(0.5)()(viewBox)));
 
